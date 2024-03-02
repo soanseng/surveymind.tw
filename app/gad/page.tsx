@@ -1,81 +1,96 @@
 "use client"
 import React from 'react';
-const GAD7Form = () => {
-  const [score, setScore] = React.useState(0);
-  const [severity, setSeverity] = React.useState("");
-  
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+import Head from 'next/head';
+import useQuestionnaireForm from '@/hooks/useQuestionnaireForm';
 
-    const form = e.currentTarget;
-    const inputs = Array.from(form.elements).filter((el: any) => el.name.startsWith("question-"));
-    const totalScore = inputs
-      .map((el: any) => parseInt(el.value))
-      .reduce((acc: number, n: number) => acc + n, 0);
-    
-    setScore(totalScore);
-    setSeverity(getSeverity(totalScore));
-  };
-
-  const options = [
-    { value: 0, label: "Not at all" },
-    { value: 1, label: "Several days" },
-    { value: 2, label: "More than half the days" },
-    { value: 3, label: "Nearly every day" },
-  ];
-  
-  const getSeverity = (score: number) => {
-    if (score <= 4) return 'Minimal anxiety';
-    if (score <= 9) return 'Mild anxiety';
-    if (score <= 14) return 'Moderate anxiety';
-    return 'Severe anxiety';
-  };
 
   const questions = [
-    "Feeling nervous, anxious, or on edge",
-    "Not being able to stop or control worrying",
-    "Worrying too much about different things",
-    "Trouble relaxing",
-    "Being so restless that it is hard to sit still",
-    "Becoming easily annoyed or irritable",
-    "Feeling afraid, as if something awful might happen"
+    "覺得緊張、焦慮、心情不定",
+    "覺得無法停止或控制焦慮",
+    "對很多不同的事感到擔憂",
+    "難以放鬆",
+    "焦躁不安到難以安靜坐著",
+    "容易心煩或易怒",
+    "感到害怕，就像發生可怕的事情"
   ]
 
+const GAD7Form = () => {
 
+  const {
+    answers,
+    formSubmitted,
+    handleSelectChange,
+    handleSubmit,
+    score,
+    validationMessage,
+  } = useQuestionnaireForm(questions.length);
+
+
+  const getSeverity = (score: number) => {
+    if (score <= 4) return '你沒有任何焦慮的狀況，或僅有一些輕微焦慮';
+    if (score <= 9) return '輕度，需持續監測';
+    if (score <= 14) return '中度，需要進一步的評估，如需要可進行治療 ';
+    return '嚴重，需要立即治療';
+  };
+
+  const severity = getSeverity(score);
 
   return (
     <div>
-    <h1 className="text-2xl font-bold text-gray-800 mb-4">GAD-7 Anxiety</h1>
+      <Head>
+        <title>GAD-7 廣泛性焦慮量表</title>
+      </Head>
+      <h1 className="text-2xl font-bold text-center my-8">
+        廣泛性焦慮量表
+      </h1>
+      <p className="text-center mb-4">在過去兩個星期，以下症狀會多常困擾你?</p>
+      {validationMessage && (
+        <p className="text-red-500 mt-4">{validationMessage}</p>
+      )}
     <form onSubmit={handleSubmit} className="bg-white p-6 rounded shadow">
-      {questions.map((question, qindex) => (
+      {questions.map((question, qindex) => {
+        const isUnanswered = answers[qindex] === null || answers[qindex] === "";
+      return (
         <div key={qindex} className="mb-4">
           <label className="block text-gray-700 text-sm font-bold mb-2">
-            {question}:
+              {formSubmitted && isUnanswered && <span className="text-red-500">*</span>}
+              {qindex + 1}. {question}
           </label>
           <div className="flex space-x-2">
-            {options.map((option, oindex) => (
-              <label key={oindex} className="form-radio-label">
+            {["0", "1", "2", "3"].map((value) => (
+              <label key={value} className="form-radio-label">
                 <input
                   type="radio"
                   name={`question-${qindex}`}
-                  value={option.value}
+                  value={value}
+                  checked={answers[qindex] === value}
+                  onChange={(e) => handleSelectChange(qindex, e.target.value)}
                   className="form-radio h-5 w-5 text-blue-600"
                 />
-                <span className="ml-2 text-gray-700">{option.label}</span>
+                  {value === "0" && "完全沒有"}
+                  {value === "1" && "幾天"}
+                  {value === "2" && "超過一半的天數"}
+                  {value === "3" && "幾乎每天"}
               </label>
             ))}
           </div>
         </div>
-      ))}
+      );
+            })}
 
       <button
         type="submit"
         className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
       >
-        Submit
+      開始測量
       </button>
-      <p className="text-gray-700 mt-4">Your total score is: {score}</p>
-      <p className="text-gray-700 mt-4">Anxiety severity: {severity}</p>
+      {score > 0 && (
+        <>
+      <p className="text-gray-700 mt-4">GAD-7的診斷效度良好，得分10分或以上的敏感度為89%，特異度為82%</p>
+      <p className="text-gray-700 mt-4">你的總分: {score}</p>
+      <p className="text-gray-700 mt-4">焦慮程度: {getSeverity(score)}</p>
+        </>
+      )}
     </form>
     </div>
   );

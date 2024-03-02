@@ -1,6 +1,7 @@
 "use client"
 import { useEffect, useState } from 'react';
 import Head from 'next/head';
+import useQuestionnaireForm from '@/hooks/useQuestionnaireForm';
 
 const questions = [
   "做事時提不起勁或沒有樂趣",
@@ -15,35 +16,14 @@ const questions = [
 ];
 
 const Page = () => {
-  const [answers, setAnswers] = useState(Array(questions.length).fill(null));
-  const [score, setScore] = useState(0);
-  const [validationMessage, setValidationMessage] = useState('');
-  const [formSubmitted, setFormSubmitted] = useState(false);
-
-  const handleSelectChange = (index: number, value: string) => {
-    const newAnswers = [...answers];
-    newAnswers[index] = parseInt(value, 10);
-    setAnswers(newAnswers);
-    setValidationMessage('');
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (answers.every((answer) => answer !== null)) {
-      const totalScore = answers.reduce((acc, current) => acc + current, 0);
-      setScore(totalScore);
-      setValidationMessage('');
-      setFormSubmitted(true);
-    } else {
-      setValidationMessage('請回答所有問題。');
-      setFormSubmitted(true);
-    }
-  };
-
-  useEffect(() => {
-    // This effect is used to calculate the score dynamically if needed
-  }, [answers]);
-
+    const {
+        answers,
+        formSubmitted,
+        handleSelectChange,
+        handleSubmit,
+        score,
+        validationMessage,
+    } = useQuestionnaireForm(questions.length);
   return (
     <div className="container mx-auto px-4">
       <Head>
@@ -56,7 +36,7 @@ const Page = () => {
       {validationMessage && (
         <p className="text-red-500 text-center">{validationMessage}</p>
       )}
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} className="bg-white p-6 rounded shadow">
         {questions.map((question, index) => {
           const isUnanswered = answers[index] === null || answers[index] === '';
         return (
@@ -72,7 +52,7 @@ const Page = () => {
                     type="radio"
                     name={`question-${index}`}
                     value={value}
-                    checked={answers[index] === parseInt(value, 10)}
+                    checked={answers[index] === value}
                     onChange={(e) => handleSelectChange(index, e.target.value)}
                     className="form-radio"
                   />
@@ -91,7 +71,7 @@ const Page = () => {
             type="submit"
             className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700"
           >
-            提交
+            開始測量
           </button>
         </div>
       </form>

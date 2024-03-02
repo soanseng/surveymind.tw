@@ -160,7 +160,7 @@ const Page = () => {
       {validationMessage && (
         <p className="text-red-500 text-center">{validationMessage}</p>
       )}
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} className="bg-white p-6 rounded shadow">
         {currentQuestions.map((question, index) => {
           const isUnanswered = answers[startIndex + index] === null || answers[startIndex + index] === '';
           return (
