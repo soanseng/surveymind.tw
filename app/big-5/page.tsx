@@ -1,6 +1,8 @@
 "use client"
 import { useEffect, useState } from 'react';
 import Head from 'next/head';
+import useQuestionnaireForm from '@/hooks/useQuestionnaireForm';
+import Pagination from '@/hooks/Pagination';
 
 const questions = [
   "Is talkative",
@@ -49,67 +51,35 @@ const questions = [
   "Is sophisticated in art, music, or  literature "
 ];
 
+type ScoreType = {
+  extraversion: number;
+  agreeableness: number;
+  conscientiousness: number;
+  neuroticism: number;
+  openness: number;
+};
+
+
 const reverseScoredItems = [5, 20, 30, 1, 11, 26, 36, 7, 17, 22, 42, 8, 23, 33, 34, 40]
 
 const questionsPerPage = 10;
 
 const Page = () => {
-  const [answers, setAnswers] = useState(Array(questions.length).fill(null));
-  const [currentPage, setCurrentPage ] = useState(0);
-  const [scores, setScores] = useState(null);
-  const [validationMessage, setValidationMessage] = useState('');
-  const [formSubmitted, setFormSubmitted] = useState(false);
-  const [nextClicked, setNextClicked] = useState(false);
-
-  const handleSelectChange = (index: number, value: string) => {
-    let adjustedValue = value;
-
-    if (reverseScoredItems.includes(index + 1)) {
-         adjustedValue = String(6 - parseInt(value))
-    }
-    const newAnswers = [...answers];
-    newAnswers[index] = adjustedValue;
-    setAnswers(newAnswers);
-    setValidationMessage('');
-    setNextClicked(false);
-  };
-
-  const  allQuestionsAnswered = (startIndex: number, endIndex: number) => {
-    return answers.slice(startIndex, endIndex).every((answer) => answer !== null && answer !=='');
-  }
+  const {
+    answers,
+    currentPage,
+    formSubmitted,
+    handleSelectChange,
+    handleSubmit,
+    allQuestionsAnswered,
+    nextPage,
+    prevPage,
+    score,
+    setScore,
+    validationMessage,
+  } = useQuestionnaireForm<ScoreType>(questions.length, questionsPerPage);
 
 
-  const handleNextPage = () => {
-    const startInedx = currentPage * questionsPerPage;
-    const endIndex = startIndex + questionsPerPage;
-    if (allQuestionsAnswered(startInedx, endIndex)) {
-      setCurrentPage(currentPage + 1);
-      setValidationMessage('');
-      setNextClicked(false);
-    } else {
-      setValidationMessage('Please answer all questions before proceeding.');
-      setNextClicked(true)
-    }
-  };
-
-  const handlePreviousPage = () => {
-    setCurrentPage(currentPage - 1);
-    setValidationMessage('');
-    setNextClicked(false);
-  };
-
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    const startIndex = currentPage * questionsPerPage;
-    const endIndex = startIndex + questionsPerPage;
-    if (allQuestionsAnswered(0, questions.length)) {
-      setValidationMessage('');
-    } else {
-      setValidationMessage('Please answer all questions before submitting.');
-    }
-    setFormSubmitted(true);
-  };
 
   useEffect(() => {
     if (formSubmitted) {
@@ -136,18 +106,19 @@ const Page = () => {
       });
     });
 
-      setScores(newScores);
+      setScore(newScores);
     }
   }, [formSubmitted, answers]);
-
-
-
-  
 
   //calculate the range of questions to display
   const startIndex = currentPage * questionsPerPage;
   const endIndex = startIndex + questionsPerPage;
   const currentQuestions = questions.slice(startIndex, endIndex);
+
+  const currentPageQuestionsAnswered = currentQuestions.every((_, index) => {
+    const questionIndex = startIndex + index;
+    return answers[questionIndex] !== null && answers[questionIndex] !== '';
+  });
 
   return (
     <div className="container mx-auto px-4">
@@ -162,41 +133,29 @@ const Page = () => {
       )}
       <form onSubmit={handleSubmit} className="bg-white p-6 rounded shadow">
         {currentQuestions.map((question, index) => {
+          const questionIndex = startIndex + index;
           const isUnanswered = answers[startIndex + index] === null || answers[startIndex + index] === '';
           return (
           <div key={index} className="mb-4">
             <label className="block mb-2 text-lg">
-              {nextClicked && isUnanswered && <span className="text-red-500">*</span>}
-              {startIndex + index + 1}. I see myself as someone who {question}:
+              { isUnanswered && <span className="text-red-500">*</span>}
+              {questionIndex + 1}. I see myself as someone who {question}:
             </label>
             <div className="flex space-x-2">
               {["1", "2", "3", "4", "5"].map((value) => {
-                // Determine if the current question is reverse-scored
-                const isReverseScored = reverseScoredItems.includes(
-                  startIndex + index + 1
-                );
-                // Calculate the displayed value based on whether the question is reverse-scored
-                const displayedValue = isReverseScored
-                  ? String(6 - parseInt(value))
-                  : value;
-                // Determine if this radio button should be checked
-                const isChecked =
-                  answers[startIndex + index] === displayedValue;
-
+                const adjustedValue = reverseScoredItems.includes(questionIndex + 1) 
+                ? String(6 - parseInt(value))
+                : value; 
+                const isChecked = answers[questionIndex] === adjustedValue;
                 return (
-                  <label
-                    key={value}
-                    className={`form-radio-label ${
-                      isChecked ? "text-red-500" : ""
-                    }`}
-                  >
+                  <label key={value} className={`form-radio-label ${isChecked ? "text-red-500" : ""}`}>
                     <input
                       type="radio"
                       name={`question-${startIndex + index}`}
                       value={value} // Keep the original value for correct form submission
                       checked={isChecked}
                       onChange={(e) =>
-                        handleSelectChange(startIndex + index, e.target.value)
+                        handleSelectChange(questionIndex, adjustedValue)
                       }
                       className="form-radio"
                     />
@@ -212,38 +171,17 @@ const Page = () => {
           </div>
           );
         })}
-        <div className="flex justify-between">
-          {currentPage > 0 && (
-            <button
-              type="button"
-              onClick={handlePreviousPage}
-              className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-700"
-            >
-              Previous
-            </button>
-          )}
-          {currentPage < Math.ceil(questions.length / questionsPerPage) - 1 ? (
-            <button
-              type="button"
-              onClick={handleNextPage}
-              className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700"
-            >
-              Next
-            </button>
-          ) : (
-            <button
-              type="submit"
-              className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-700"
-            >
-              Submit
-            </button>
-          )}
-        </div>
+        <Pagination
+          canGoBack={currentPage > 0}
+          canGoForward={currentPageQuestionsAnswered && currentPage < Math.ceil(questions.length / questionsPerPage) - 1}
+          onBack={prevPage}
+          onForward={nextPage}
+        />
       </form>
       {/* screos display logic here */}
-      {formSubmitted && scores && (
+      {formSubmitted && score && (
         <div className="mt-8">
-          {Object.entries(scores).map(([dimension, score]) => (
+          {Object.entries(score).map(([dimension, score]) => (
             <div key={dimension} className="mb-4">
               <label htmlFor={dimension} className="block mb-2 text-lg">
                 {dimension.replace(/([A-Z])/g, " $1").trim()}:

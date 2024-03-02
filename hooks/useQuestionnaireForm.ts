@@ -1,10 +1,11 @@
 import { useState } from 'react';
 
-const useQuestionnaireForm = (questionsLength: number, questionsPerPage: number = questionsLength) => {
+type DefaultScoreType = number;
+function useQuestionnaireForm<TScoreType = DefaultScoreType>(questionsLength: number, questionsPerPage: number = questionsLength) {
   const [answers, setAnswers] = useState(Array(questionsLength).fill(null));
   const [currentPage, setCurrentPage] = useState(0);
   const [formSubmitted, setFormSubmitted] = useState(false);
-  const [score, setScore] = useState(0);
+  const [score, setScore] = useState<TScoreType | null>(null);
   const [validationMessage, setValidationMessage] = useState('');
 
   const handleSelectChange = (index: number, value: string) => {
@@ -42,6 +43,7 @@ const useQuestionnaireForm = (questionsLength: number, questionsPerPage: number 
     prevPage,
     questionsPerPage,
     score,
+    setScore,
     validationMessage,
   };
 };
