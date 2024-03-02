@@ -59,6 +59,7 @@ const Page = () => {
   const [scores, setScores] = useState(null);
   const [validationMessage, setValidationMessage] = useState('');
   const [formSubmitted, setFormSubmitted] = useState(false);
+  const [nextClicked, setNextClicked] = useState(false);
 
   const handleSelectChange = (index: number, value: string) => {
     let adjustedValue = value;
@@ -70,6 +71,7 @@ const Page = () => {
     newAnswers[index] = adjustedValue;
     setAnswers(newAnswers);
     setValidationMessage('');
+    setNextClicked(false);
   };
 
   const  allQuestionsAnswered = (startIndex: number, endIndex: number) => {
@@ -83,14 +85,17 @@ const Page = () => {
     if (allQuestionsAnswered(startInedx, endIndex)) {
       setCurrentPage(currentPage + 1);
       setValidationMessage('');
+      setNextClicked(false);
     } else {
       setValidationMessage('Please answer all questions before proceeding.');
+      setNextClicked(true)
     }
   };
 
   const handlePreviousPage = () => {
     setCurrentPage(currentPage - 1);
     setValidationMessage('');
+    setNextClicked(false);
   };
 
 
@@ -161,7 +166,7 @@ const Page = () => {
           return (
           <div key={index} className="mb-4">
             <label className="block mb-2 text-lg">
-              {isUnanswered && <span className="text-red-500">*</span>}
+              {nextClicked && isUnanswered && <span className="text-red-500">*</span>}
               {startIndex + index + 1}. I see myself as someone who {question}:
             </label>
             <div className="flex space-x-2">
@@ -236,7 +241,7 @@ const Page = () => {
         </div>
       </form>
       {/* screos display logic here */}
-      {scores && (
+      {formSubmitted && scores && (
         <div className="mt-8">
           {Object.entries(scores).map(([dimension, score]) => (
             <div key={dimension} className="mb-4">

@@ -4,13 +4,11 @@ const GAD7Form = () => {
   const [score, setScore] = React.useState(0);
   const [severity, setSeverity] = React.useState("");
   
-  const handleSubmit = (e: {
-    target: any;
-    preventDefault: () => void;
-  }) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const inputs = Array.from(e.target.querySelectorAll("select"));
+    const form = e.currentTarget;
+    const inputs = Array.from(form.elements).filter((el: any) => el.name.startsWith("question-"));
     const totalScore = inputs
       .map((el: any) => parseInt(el.value))
       .reduce((acc: number, n: number) => acc + n, 0);
@@ -33,128 +31,43 @@ const GAD7Form = () => {
     return 'Severe anxiety';
   };
 
+  const questions = [
+    "Feeling nervous, anxious, or on edge",
+    "Not being able to stop or control worrying",
+    "Worrying too much about different things",
+    "Trouble relaxing",
+    "Being so restless that it is hard to sit still",
+    "Becoming easily annoyed or irritable",
+    "Feeling afraid, as if something awful might happen"
+  ]
+
 
 
   return (
     <div>
     <h1 className="text-2xl font-bold text-gray-800 mb-4">GAD-7 Anxiety</h1>
     <form onSubmit={handleSubmit} className="bg-white p-6 rounded shadow">
-      <label
-        htmlFor="feeling-nervous"
-        className="block text-gray-700 text-sm font-bold mb-2"
-      >
-        Feeling nervous, anxious, or on edge:
-      </label>
-      <select
-        id="feeling-nervous"
-        className="shadow appearance-none border rounded w-64 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-4"
-      >
-        {options.map((option, index) => (
-          <option key={index} value={option.value}>
-            {option.label}
-          </option>
-        ))}
-      </select>
-      <label
-        htmlFor="stop-worrying"
-        className="block text-gray-700 text-sm font-bold mb-2"
-      >
-        Not being able to stop or control worrying:
-      </label>
-      <select
-        id="stop-worrying"
-        className="shadow appearance-none border rounded w-64 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-4"
-      >
-        {options.map((option, index) => (
-          <option key={index} value={option.value}>
-            {option.label}
-          </option>
-        ))}
-      </select>
+      {questions.map((question, qindex) => (
+        <div key={qindex} className="mb-4">
+          <label className="block text-gray-700 text-sm font-bold mb-2">
+            {question}:
+          </label>
+          <div className="flex space-x-2">
+            {options.map((option, oindex) => (
+              <label key={oindex} className="form-radio-label">
+                <input
+                  type="radio"
+                  name={`question-${qindex}`}
+                  value={option.value}
+                  className="form-radio h-5 w-5 text-blue-600"
+                />
+                <span className="ml-2 text-gray-700">{option.label}</span>
+              </label>
+            ))}
+          </div>
+        </div>
+      ))}
 
-      <label
-        htmlFor="worrying-too-much"
-        className="block text-gray-700 text-sm font-bold mb-2"
-      >
-        Worrying too much about different things:
-      </label>
-      <select
-        id="worrying-too-much"
-        className="shadow appearance-none border rounded w-64 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-4"
-      >
-        {options.map((option, index) => (
-          <option key={index} value={option.value}>
-            {option.label}
-          </option>
-        ))}
-      </select>
-
-      <label
-        htmlFor="trouble-relaxing"
-        className="block text-gray-700 text-sm font-bold mb-2"
-      >
-        Trouble relaxing:
-      </label>
-      <select
-        id="trouble-relaxing"
-        className="shadow appearance-none border rounded w-64 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-4"
-      >
-        {options.map((option, index) => (
-          <option key={index} value={option.value}>
-            {option.label}
-          </option>
-        ))}
-      </select>
-
-      <label
-        htmlFor="restless"
-        className="block text-gray-700 text-sm font-bold mb-2"
-      >
-       Being so restless that it is hard to sit still
-      </label>
-      <select
-        id="restless"
-        className="shadow appearance-none border rounded w-64 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-4"
-      >
-        {options.map((option, index) => (
-          <option key={index} value={option.value}>
-            {option.label}
-          </option>
-        ))}
-      </select>
-
-      <label
-        htmlFor="easily-annoyed"
-        className="block text-gray-700 text-sm font-bold mb-2"
-      >
-        Becoming easily annoyed or irritable   
-      </label>
-      <select
-        id="easily-annoyed"
-        className="shadow appearance-none border rounded w-64 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-4"
-      >
-        {options.map((option, index) => (
-          <option key={index} value={option.value}>
-            {option.label}
-          </option>
-        ))}
-      </select>
-      <label
-        htmlFor="feeling-afraid"
-        className="block text-gray-700 text-sm font-bold mb-2"
-      >
-        Feeling afraid, as if something awful might happen  
-      </label>
-      <select
-        id="feeling-afraid"
-        className="shadow appearance-none border rounded w-64 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-4"
-      >
-        {options.map((option, index) => (
-          <option key={index} value={option.value}>
-            {option.label}
-          </option>
-        ))}
-      </select>
       <button
         type="submit"
         className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
