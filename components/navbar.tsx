@@ -13,6 +13,9 @@ const Navbar = () => {
         <li>
           <Link href="/phq-9" className="hover:text-gray-300">PHQ-9</Link>
         </li>
+        <li>
+          <Link href="/asrs" className="hover:text-gray-300">ASRS 成人ADHD自我評估問卷</Link>
+        </li>
       </ul>
     </nav>
   );

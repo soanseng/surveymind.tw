@@ -36,6 +36,7 @@ function useQuestionnaireForm<TScoreType = DefaultScoreType>(questionsLength: nu
     answers,
     currentPage,
     formSubmitted,
+    setFormSubmitted,
     handleSelectChange,
     handleSubmit,
     allQuestionsAnswered,
