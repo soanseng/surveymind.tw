@@ -5,50 +5,50 @@ import useQuestionnaireForm from '@/hooks/useQuestionnaireForm';
 import Pagination from '@/hooks/Pagination';
 
 const questions = [
-  "Is talkative",
-  "Tends to find fault with others",
-  "Does a thorough job",
-  "Is depressed, blue",
-  "Is original, comes up with new ideas",
-  "Is reserved",
-  "Is helpful and unselfish with others",
-  "Can be somewhat careless",
-  "Is relaxed, handles stress well",
-  "Is curious about many different things",
-  "Is full of energy",
-  "Starts quarrels with others ",
-  "Is a reliable worker",
-  "Can be tense ",
-  "Is ingenious, a deep thinker",
-  "Generates a lot of enthusiasm",
-  " Has a forgiving nature",
-  "Tends to be disorganized ",
-  "Worries a lot ",
-   "Has an active imagination",
-   "Tends to be quiet ",
-   " Is generally trusting",
-  "Tends to be lazy ",
-  "Is emotionally stable, not easily upset ",
-  " Is inventive ",
-  " Has an assertive personality ",
-  "Can be cold and aloof ",
-  " Perseveres until the task is finished " ,
-  "Can be moody",
-  "Values artistic, aesthetic experiences",
-  " Is sometimes shy, inhibited ",
-  " Is considerate and kind to almost everyone",
-  "Does things efficiently",
-  " Remains calm in tense situations ",
-  "Prefers work that is routine ",
-  " Is outgoing, sociable",
-  "Is sometimes rude to others ",
-  "Makes plans and follows through with them ",
-  "Gets nervous easily ",
-  "Likes to reflect, play with ideas ",
-  "Has few artistic interests",
-  " Likes to cooperate with others",
-  "Is easily distracted ",
-  "Is sophisticated in art, music, or  literature "
+  "健談的",
+  "傾向挑人毛病",
+  "工作仔細",
+  "情緒低落",
+  "會創新、有新想法",
+  "沉默寡言",
+  "樂於助人且無私",
+  "有點粗心",
+  "放鬆的，善於處理壓力",
+  "對很多事情都感到好奇",
+  "充滿活力",
+  "會開啟與他人的爭執",
+  "可信賴的工作者",
+  "緊張的",
+  "聰明的、會深思的人",
+  "有非常多熱情",
+  "有寬容本質",
+  "較沒有條理組織的",
+  "擔心很多的",
+   "具有生動想像力",
+   "較安靜的",
+   "通常容易信賴他人",
+  "較懶散的",
+  "情緒上穩定、不容易煩躁",
+  "有創造力的",
+  "有果決個性的",
+  "對他人冷漠及疏離的",
+  "會堅持到工作完成" ,
+  "情緒不穩定的",
+  "重視藝術及美學經驗",
+  " 有時會害羞、退縮的",
+  " 幾乎對所有人體貼且仁慈的",
+  "做事有效率的",
+  " 在緊張情境也能保持冷靜",
+  "偏好例行性工作",
+  " 喜歡外出、好社交的",
+  "有時會粗魯對待他人",
+  "會訂計畫並依計畫執行",
+  "容易感到緊張的",
+  "喜歡思考、常有想法",
+  "對於藝術興趣很低",
+  " 喜歡與他人合作",
+  "易於分心的",
+  "懂得藝術、音樂和文學"
 ];
 
 type ScoreType = {
@@ -57,6 +57,41 @@ type ScoreType = {
   conscientiousness: number;
   neuroticism: number;
   openness: number;
+};
+
+const dimensionNames = {
+  extraversion: "外向性",
+  agreeableness: "友善性",
+  conscientiousness: "嚴謹性",
+  neuroticism: "神經質",
+  openness: "開放性",
+};
+const dimensionDescriptions = {
+  extraversion: `
+🌟 **外向性** vs. 🌌 **內向性**:  
+- 高分: 您是生活的火花，以充滿活力的方式與社會和周遭的世界互動。您的社交性、活躍度、勇氣和正面情緒為您和周圍的人帶來光亮。
+- 低分: 您是深思熟慮的靈魂，享受獨立和內省的時刻。您的寧靜和深沉思考為您帶來智慧和內在的平靜。
+`,
+  agreeableness: `
+💖 **友善性** vs. 🏔 **獨立性**:  
+- 高分: 您的心中充滿了對他人的關懷和愛。您以利他的態度和社群導向的心態面對世界，展現出溫柔、信任和謙遜的美德。
+- 低分: 您展現出強烈的自我意識和獨立性。您的堅定和自信讓您能夠自主地走自己的路，追求個人目標。
+`,
+  conscientiousness: `
+📘 **嚴謹性** vs. 🌬 **靈活性**:  
+- 高分: 您是計畫和組織的大師，擁有達成目標的堅定意志。您在行動前深思熟慮，以自律和責任感引導自己前進，為夢想鋪路。
+- 低分: 您以開放和靈活的態度面對生活。您的適應性和即興能力讓您能夠自在地應對變化，享受當下。
+`,
+  neuroticism: `
+🍃 **神經質** vs. ☀️ **情緒穩定性**:  
+- 高分: 您擁有豐富的情感世界，即使面對挑戰也能保持情緒的平衡和恢復力。您的敏感是您同理和深度理解他人的橋樑。
+- 低分: 您展現出極高的情緒穩定性和恢復力。您的冷靜和樂觀態度幫助您輕鬆地面對生活的挑戰，保持平衡。
+`,
+  openness: `
+🌈 **開放性** vs. 🏡 **實用性**:  
+- 高分: 您的心胸開闊，對生活充滿好奇。您的創造力和想像力是探索未知、享受生活多樣性的關鍵。
+- 低分: 您著重於實際和實用性，以腳踏實地的方式與世界互動。您的專注和務實態度使您能夠有效地解決問題，實現具體成果。
+`
 };
 
 
@@ -123,10 +158,10 @@ const Page = () => {
   return (
     <div className="container mx-auto px-4">
       <Head>
-        <title>The Big Five Inventory (BFI)</title>
+        <title>五大人格量表 (BFI)</title>
       </Head>
       <h1 className="text-2xl font-bold text-center my-8">
-        The Big Five Inventory (BFI)
+        五大人格量表 (BFI)
       </h1>
       {validationMessage && (
         <p className="text-red-500 text-center">{validationMessage}</p>
@@ -134,58 +169,82 @@ const Page = () => {
       <form onSubmit={handleSubmit} className="bg-white p-6 rounded shadow">
         {currentQuestions.map((question, index) => {
           const questionIndex = startIndex + index;
-          const isUnanswered = answers[startIndex + index] === null || answers[startIndex + index] === '';
+          const isUnanswered =
+            answers[startIndex + index] === null ||
+            answers[startIndex + index] === "";
           return (
-          <div key={index} className="mb-4">
-            <label className="block mb-2 text-lg">
-              { isUnanswered && <span className="text-red-500">*</span>}
-              {questionIndex + 1}. I see myself as someone who {question}:
-            </label>
-            <div className="flex space-x-2">
-              {["1", "2", "3", "4", "5"].map((value) => {
-                const adjustedValue = reverseScoredItems.includes(questionIndex + 1) 
-                ? String(6 - parseInt(value))
-                : value; 
-                const isChecked = answers[questionIndex] === adjustedValue;
-                return (
-                  <label key={value} className={`form-radio-label ${isChecked ? "text-red-500" : ""}`}>
-                    <input
-                      type="radio"
-                      name={`question-${startIndex + index}`}
-                      value={value} // Keep the original value for correct form submission
-                      checked={isChecked}
-                      onChange={(e) =>
-                        handleSelectChange(questionIndex, adjustedValue)
-                      }
-                      className="form-radio"
-                    />
-                    {value === "1" && "Disagree Strongly"}
-                    {value === "2" && "Disagree a Little"}
-                    {value === "3" && "Neither Agree nor Disagree"}
-                    {value === "4" && "Agree a Little"}
-                    {value === "5" && "Agree Strongly"}
-                  </label>
-                );
-              })}
+            <div key={index} className="mb-4">
+              <label className="block mb-2 text-lg">
+                {isUnanswered && <span className="text-red-500">*</span>}
+                {questionIndex + 1}. 我認為我是(有)...{question}:
+              </label>
+              <div className="flex space-x-2">
+                {["1", "2", "3", "4", "5"].map((value) => {
+                  const adjustedValue = reverseScoredItems.includes(
+                    questionIndex + 1
+                  )
+                    ? String(6 - parseInt(value))
+                    : value;
+                  const isChecked = answers[questionIndex] === adjustedValue;
+                  return (
+                    <label
+                      key={value}
+                      className={`form-radio-label ${
+                        isChecked ? "text-red-500" : ""
+                      }`}
+                    >
+                      <input
+                        type="radio"
+                        name={`question-${startIndex + index}`}
+                        value={value} // Keep the original value for correct form submission
+                        checked={isChecked}
+                        onChange={(e) =>
+                          handleSelectChange(questionIndex, adjustedValue)
+                        }
+                        className="form-radio"
+                      />
+                      {value === "1" && "完全不同意"}
+                      {value === "2" && "有點不同意"}
+                      {value === "3" && "不太同意也不否認"}
+                      {value === "4" && "有點同意"}
+                      {value === "5" && "完全同意"}
+                    </label>
+                  );
+                })}
+              </div>
             </div>
-          </div>
           );
         })}
         <Pagination
           canGoBack={currentPage > 0}
-          canGoForward={currentPageQuestionsAnswered && currentPage < Math.ceil(questions.length / questionsPerPage) - 1}
+          canGoForward={
+            currentPageQuestionsAnswered &&
+            currentPage < Math.ceil(questions.length / questionsPerPage) - 1
+          }
           onBack={prevPage}
           onForward={nextPage}
         />
+        {currentPage === Math.ceil(questions.length / questionsPerPage) - 1 &&
+          allQuestionsAnswered() && (
+            <button
+              type="submit"
+              className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700"
+            >
+              開始測量
+            </button>
+          )}
       </form>
-      {/* screos display logic here */}
-      {formSubmitted && score && (
-        <div className="mt-8">
+      {/* score display logic here */}
+      {formSubmitted && score && allQuestionsAnswered() && (
+        <div className="mt-8 bg-gray-100 p-4 rounded shadow">
+    <p className="text-lg mb-4">在我們的旅程中，每個人都展現出獨特的性格特質，這些特質塑造了我們與世界互動的方式。讓我們一起探索您的五大人格特質，並以更溫暖和鼓舞人心的方式來看待它們：</p>
+
           {Object.entries(score).map(([dimension, score]) => (
             <div key={dimension} className="mb-4">
               <label htmlFor={dimension} className="block mb-2 text-lg">
-                {dimension.replace(/([A-Z])/g, " $1").trim()}:
+                {dimensionNames[dimension as keyof typeof dimensionNames]}:
               </label>
+              <p className="mb-2">{dimensionDescriptions[dimension as keyof typeof dimensionDescriptions]}</p>
               <input
                 id={dimension}
                 type="range"
@@ -197,6 +256,7 @@ const Page = () => {
               />
             </div>
           ))}
+          <p className="mb-4">每一種特質都有其獨特之處，無論您在哪一端，都代表著您獨特的個性和看待世界的方式。擁抱您的特質，讓它們引領您走向充滿豐富多彩經歷的人生旅程。🌈</p>
         </div>
       )}
     </div>
