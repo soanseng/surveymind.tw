@@ -16,6 +16,9 @@ const Navbar = () => {
         <li>
           <Link href="/asrs" className="hover:text-gray-300">ASRS 成人ADHD自我評估問卷</Link>
         </li>
+        <li>
+          <Link href="/psqi" className="hover:text-gray-300">匹茲堡睡眠品質量表</Link>
+        </li>
       </ul>
     </nav>
   );

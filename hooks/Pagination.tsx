@@ -7,16 +7,20 @@ interface PaginationProps {
   
   const Pagination: React.FC<PaginationProps> = ({ canGoBack, canGoForward, onBack, onForward }) => (
     <div className="flex justify-between">
-      {canGoBack && (
-        <button onClick={onBack} className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-700">
+        <button 
+        onClick={ canGoBack ? onBack : undefined} 
+        disabled={!canGoBack}
+        className={`px-4 py-2 text-red rounded ${canGoBack ? 'bg- hover:bg-gray-700' : 'bg-gray-300 cursor-not-allowed'}`}
+        >
           Previous
         </button>
-      )}
-      {canGoForward && (
-        <button onClick={onForward} className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700">
+        <button 
+        onClick={canGoForward ? onForward : undefined}
+        disabled={!canGoForward}
+        className={`px-4 py-2 text-red rounded ${canGoForward ? 'bg-gray-500 hover:bg-gray-700' : 'bg-gray-300 cursor-not-allowed'}`}
+        >
           Next
         </button>
-      )}
     </div>
   );
   
