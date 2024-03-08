@@ -1,8 +1,9 @@
 "use client"
-import React from 'react';
+import React, { useState } from 'react';
 import Head from 'next/head';
 import useQuestionnaireForm from '@/hooks/useQuestionnaireForm';
 import Pagination from '@/hooks/Pagination';
+
 
 const questions = [
   {id: 1, question: "過去一個月來，您晚上通常幾點上床睡覺？"},
@@ -24,22 +25,17 @@ const questions = [
 {id: 7, question:  "過去一個月來，當您在開車、用餐、從事日常社交活動時，有多少次覺得難以保持清醒狀態?"},
 {id: 8, question: "過去一個月來，要打起精神來完成您應該做的事情對您 有多少困擾?"},
 {id: 9, question: "過去一個月來，您對您自己的睡眠品質整體評價如何?"},
-{id: 10, question: "你有睡伴和室友嗎?"},
-{id: 11, question: "假如有睡伴或室友，請你問他並繼續作答；過去一個月來，下列情形每星期約出現幾次？"},
-{id: "11a", question: "大聲打鼾" },
-{id: "11b", question: "入睡中出現一陣子停止呼吸現象"},
-{id: "11c", question: "入睡中出現腳（包括腿部）抽動或顫動現象"},
-{id: "11d", question: "夜間起來出現意識混亂或人時地分不清楚現象"},
-{id: "11e", question: "其他入睡中的躁動與不安情形"}
 ]
 
 const selectionA =  [{value: 0, description: "從未發生"}, {value: 1, description: "每週少於 1次"}, {value: 2, description: "每週1-2次"}, {value: 3, description: "每週3次以上"} ]
+const selection2 =  [{value: 0, description: "小於15分鐘"}, {value: 1, description: "16-30分鐘"}, {value: 2, description: "31-60分鐘"}, {value: 3, description: "大於60分鐘"} ]
+const selection4 =  [{value: 0, description: "大於7小時"}, {value: 1, description: "6-7小時"}, {value: 2, description: "5-6小時"}, {value: 3, description: "少於5小時"} ]
 const selection8 =  [{value: 0, description: "完全沒有困擾"}, {value: 1, description: "只有很少困擾"}, {value: 2, description: "有些困擾"}, {value: 3, description: "有很大的困擾"} ]
 const selection9 =  [{value: 0, description: "非常好"}, {value: 1, description: "好"}, {value: 2, description: "不好"}, {value: 3, description: "非常不好"} ]
-const selection10 = [{value: 0, description:"沒有睡伴或室友"}, {value: 0, description: "睡伴同室友不同床"}, {value: 0, description: "睡伴或室友不同臥房"}, {value: 0, description: "睡伴或室友同床"}]
 
-const questionsPerPage = 15
 
+
+  const questionsPerPage = 10;
 
 const PSQIndex: React.FC = () => {
   const {
@@ -50,12 +46,24 @@ const PSQIndex: React.FC = () => {
     nextPage,
     prevPage,
     validationMessage,
-    allQuestionsAnswered,
     formSubmitted,
     setFormSubmitted,
   } = useQuestionnaireForm<string>(questions.length, questionsPerPage); 
 
+  const allQuestionsAnswered = () => {
+    return questions.every((question, index) => {
+      // Skip check for questions with IDs 5 and 10
+      if (question.id === 5 ) {
+        return true;
+      }
+      const answer = answers[index];
+      return answer !== null && answer !== '';
+    });
+  };
 
+  const adjustedQuestionCount = questions.length -1; // Assuming questions 5 is the ones without answers
+  const totalPages = Math.ceil(adjustedQuestionCount / questionsPerPage);
+  
   //calculate the index of the first and last question on the current page
   const firstQuestionIndex = currentPage * questionsPerPage;
   const questionsToShow = questions.slice(firstQuestionIndex, firstQuestionIndex + questionsPerPage);
@@ -66,8 +74,29 @@ const PSQIndex: React.FC = () => {
     return answers[questionIndex] !== null && answers[questionIndex] !== '';
   });
 
-  const canGoForward = currentPage < Math.ceil(questions.length / questionsPerPage  ) - 1;
+  const canGoForward = currentPage < Math.ceil(questions.length / questionsPerPage  ) - 1 && currentPageQuestionsAnswered
   const canGoBack = currentPage > 0;
+
+  interface ScoreResults {
+    component1Score: number;
+    component2Score: number;
+    component3Score: number;
+    component4Score: number;
+    component5Score: number;
+    component6Score: number;
+    component7Score: number;
+    globalScore: number;
+  }
+  const [scores, setScores] = useState<ScoreResults>({
+    component1Score: 0,
+    component2Score: 0,
+    component3Score: 0,
+    component4Score: 0,
+    component5Score: 0,
+    component6Score: 0,
+    component7Score: 0,
+    globalScore: 0,
+  });
 
 // Add this function inside the useQuestionnaireForm hook
 const calculateScores = () => {
@@ -103,24 +132,35 @@ const calculateScores = () => {
   // Calculate global score
   const globalScore = component1Score + component2Score + component3Score + component4Score + component5Score + component6Score + component7Score;
 
-  return globalScore;
+  return {
+    component1Score,
+    component2Score,
+    component3Score,
+    component4Score,
+    component5Score,
+    component6Score,
+    component7Score,
+    globalScore,
+  } 
 };
 const calculateSleepEfficiency = (q1Answer: string, q3Answer: string, q4Answer: string): number => {
   // Parse the answers to get hours. This is a simplified example and might need adjustment based on your input format.
-  const bedTime = parseInt(q1Answer, 10); // Assuming answers are like "22" for 10 PM
-  const wakeTime = parseInt(q3Answer, 10); // Assuming answers are like "7" for 7 AM
+  const [bedHour, bedMinute] = q1Answer.split(":").map(Number); // Converts "HH:MM" to [HH, MM]
+  const [wakeHour, wakeMinute] = q3Answer.split(":").map(Number); // Converts "HH:MM" to [HH, MM]
   const hoursSlept = parseInt(q4Answer, 10); // Assuming answers are direct hours
+ // Calculate total minutes in bed
+ let bedTimeInMinutes = bedHour * 60 + bedMinute;
+ let wakeTimeInMinutes = wakeHour * 60 + wakeMinute;
+ 
 
-  let hoursInBed;
-  if (wakeTime > bedTime) {
-    // Simple case: sleeping and waking up on the same day
-    hoursInBed = wakeTime - bedTime;
-  } else {
-    // Handling the case of going to bed before midnight and waking up the next day
-    hoursInBed = (24 - bedTime) + wakeTime;
-  }
+ // Handling the case of going to bed before midnight and waking up the next day
+ if (wakeTimeInMinutes < bedTimeInMinutes) {
+  wakeTimeInMinutes += 24 * 60; // Add 24 hours in minutes to wake time
+}
 
-  const sleepEfficiency = (hoursSlept / hoursInBed) * 100;
+const totalMinutesInBed = wakeTimeInMinutes - bedTimeInMinutes;
+const sleepEfficiency = (hoursSlept * 60 / totalMinutesInBed) * 100; // Convert hoursSlept to minutes for calculation
+
 
   // Map sleep efficiency to the component 4 score
   if (sleepEfficiency > 85) return 0;
@@ -130,12 +170,17 @@ const calculateSleepEfficiency = (q1Answer: string, q3Answer: string, q4Answer: 
 };
 
 
+
 // Modify handleSubmit to use calculateScores
 const customHandleSubmit = (e: React.FormEvent) => {
   e.preventDefault();
-  if (answers.every(answer => answer !== null && answer !== '')) {
-    const totalScore = calculateScores(); // Use the new function to calculate scores
+  if (allQuestionsAnswered()) {
+    const scores = calculateScores(); // Use the new function to calculate scores
+    console.log("Total score:", scores);
+    setFormSubmitted(true)
+    setScores(scores)
   } else {
+    console.log("please answer all questions");
   }
   setFormSubmitted(true);
 };
@@ -144,14 +189,18 @@ const customHandleSubmit = (e: React.FormEvent) => {
   return (
     <div className="container mx-auto px-4">
       <h1 className="text-2xl font-bold text-center my-8">
-           PSQI 匹茲堡睡眠品質量表</h1>
+        PSQI 匹茲堡睡眠品質量表
+      </h1>
       <p className="text-center mb-4">
-      下列問題是要調查您過去這一個月來的睡眠習慣，請您以平均狀況回答。
+        下列問題是要調查您過去這一個月來的睡眠習慣，請您以平均狀況回答。
       </p>
       {validationMessage && (
         <p className="text-red-500 text-center">{validationMessage}</p>
       )}
-      <form onSubmit={customHandleSubmit} className="bg-white p-6 rounded shadow">
+      <form
+        onSubmit={customHandleSubmit}
+        className="bg-white p-6 rounded shadow"
+      >
         {questionsToShow.map((question, index) => {
           const isUnanswered =
             answers[firstQuestionIndex + index] === null ||
@@ -161,11 +210,14 @@ const customHandleSubmit = (e: React.FormEvent) => {
 
           let selectionType;
           if (
-            typeof question.id === "number" &&
-            question.id >= 1 &&
-            question.id <= 4
+            (typeof question.id === "number" && question.id === 1) ||
+            question.id === 3
           ) {
             selectionType = "text";
+          } else if (question.id === 2) {
+            selectionType = "selection2";
+          } else if (question.id === 4) {
+            selectionType = "selection4";
           } else if (
             (question.id >= "5a" && question.id <= "5j") ||
             question.id === 6 ||
@@ -177,8 +229,6 @@ const customHandleSubmit = (e: React.FormEvent) => {
             selectionType = "selection8";
           } else if (question.id === 9) {
             selectionType = "selection9";
-          } else if (question.id === 10) {
-            selectionType = "selection10";
           }
           // Render title without selection options for questions 5 and 11
           if (isTitle) {
@@ -210,6 +260,10 @@ const customHandleSubmit = (e: React.FormEvent) => {
                   }
                   className="form-input mt-1 block w-3/4 border-2 border-gray-300"
                   style={{ maxWidth: "600px" }}
+                  pattern="\d{2}:\d{2}"
+                  title="請使用24小時制，輸入 HH:MM 格式" //"
+                  placeholder="請使用24小時制，輸入 HH:MM 格式"
+                  required={selectionType === "text"}
                 />
               ) : (
                 <div className="flex space-x-2">
@@ -219,8 +273,12 @@ const customHandleSubmit = (e: React.FormEvent) => {
                     ? selection8
                     : selectionType === "selection9"
                     ? selection9
-                    : selection10
-                  ).map((option) => (
+                    : selectionType === "selection4"
+                    ? selection4
+                    : selectionType === "selection2"
+                    ? selection2
+                    : []
+                  ).map((option: { value: any; description: string }) => (
                     <label
                       key={option.value}
                       className="inline-flex items-center"
@@ -256,28 +314,79 @@ const customHandleSubmit = (e: React.FormEvent) => {
           onForward={nextPage}
           className="my-4"
         />
-        {currentPage === Math.ceil(questions.length / 9) - 1 &&
-          allQuestionsAnswered() && (
-            <div className="text-center">
-              <button
-                type="submit"
-                className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700"
-              >
-                開始測量
-              </button>
-            </div>
-          )}
+        {currentPage === totalPages - 1 && allQuestionsAnswered() && (
+          <div className="text-center">
+            <button
+              type="submit"
+              className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700"
+            >
+              開始測量
+            </button>
+          </div>
+        )}
       </form>
       {formSubmitted && (
         <div>
           <h2 className="text-2xl font-bold text-center my-8">
-            您的睡眠品質分數是: 
+            您的睡眠品質分數是:
           </h2>
+          <div className="text-center">
+            <p>
+              主觀睡眠品質: {scores.component1Score}{" "}
+              <span>(分數越低代表睡眠品質越好)</span>
+            </p>
+            <p>
+              入睡時間（睡眠潛伏期）: {scores.component2Score}{" "}
+              <span>(分數越低代表入睡時間越短)</span>
+            </p>
+            <p>
+              睡眠持續時間: {scores.component3Score}{" "}
+              <span>(分數越低代表睡眠時間越長)</span>
+            </p>
+            <p>
+              睡眠效率: {scores.component4Score}{" "}
+              <span>(分數越低代表睡眠效率越高)</span>
+            </p>
+            <p>
+              睡眠障礙: {scores.component5Score}{" "}
+              <span>(分數越低代表睡眠障礙越少)</span>
+            </p>
+            <p>
+              使用睡眠藥物: {scores.component6Score}{" "}
+              <span>(分數越低代表較少依賴睡眠藥物)</span>
+            </p>
+            <p>
+              日間功能障礙: {scores.component7Score}{" "}
+              <span>(分數越低代表日間功能障礙越少)</span>
+            </p>
+          </div>
+          <div className="text-center mt-4 border-4 border-blue-500 p-4 rounded-lg">
+            <h3 className="text-lg font-semibold mb-2">
+              總分數: {scores.globalScore}
+            </h3>
+            {scores.globalScore <= 5 && (
+              <p>
+                您的睡眠品質很好。這表示您的睡眠狀況在過去一個月內是相當良好的。
+              </p>
+            )}
+            {scores.globalScore > 5 && scores.globalScore <= 10 && (
+              <p>
+                您的睡眠品質一般。這表示您的睡眠狀況在過去一個月內是普通，可能有改善的空間。
+              </p>
+            )}
+            {scores.globalScore > 10 && (
+              <p>
+                您可能需要改善睡眠品質。這表示您的睡眠狀況在過去一個月內可能不是很理想，建議尋求專業建議。
+              </p>
+            )}
+          </div>
         </div>
       )}
-    <p className='text-center mt-8 text-sm'>Buysse, DJ, Reynolds CF, Monk TH, Berman SR, Kupfer DJ: The Pittsburgh
-Sleep Quality Index (PSQI): A new instrument for psychiatric research and
-practice. Psychiatry Research 28:193-213, 1989 </p>
+      <p className="text-center mt-8 text-sm">
+        Buysse, DJ, Reynolds CF, Monk TH, Berman SR, Kupfer DJ: The Pittsburgh
+        Sleep Quality Index (PSQI): A new instrument for psychiatric research
+        and practice. Psychiatry Research 28:193-213, 1989{" "}
+      </p>
     </div>
   );
 };
