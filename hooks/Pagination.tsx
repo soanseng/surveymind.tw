@@ -16,7 +16,7 @@ interface PaginationProps {
         : 'bg-gray-400 text-gray-600 border-2 border-gray-500 cursor-not-allowed'
       }`}
     >
-      Previous
+      上一頁
     </button>
     <button
       onClick={canGoForward ? onForward : undefined}
@@ -27,7 +27,7 @@ interface PaginationProps {
         : 'bg-gray-400 text-gray-600 border-2 border-gray-500 cursor-not-allowed'
       }`}
     >
-      Next
+      下一頁
     </button>
   </div>
   );

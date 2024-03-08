@@ -26,7 +26,8 @@ const GAD7Form = () => {
   } = useQuestionnaireForm(questions.length);
 
 
-  const getSeverity = (score: number) => {
+  const getSeverity = (score: number | null) => {
+    if (score == null) return "請先提供分數";
     if (score <= 4) return '你沒有任何焦慮的狀況，或僅有一些輕微焦慮';
     if (score <= 9) return '輕度，需持續監測';
     if (score <= 14) return '中度，需要進一步的評估，如需要可進行治療 ';
@@ -84,11 +85,14 @@ const GAD7Form = () => {
       >
       開始測量
       </button>
-      {score > 0 && (
+
+      {(score ?? 0) > 0 && (
         <>
       <p className="text-gray-700 mt-4">GAD-7的診斷效度良好，得分10分或以上的敏感度為89%，特異度為82%</p>
       <p className="text-gray-700 mt-4">你的總分: {score}</p>
+      {typeof score === 'number' && (
       <p className="text-gray-700 mt-4">焦慮程度: {getSeverity(score)}</p>
+    )}
         </>
       )}
     </form>

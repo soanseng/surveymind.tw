@@ -136,7 +136,6 @@ const ASRSForm: React.FC = () => {
           canGoForward={currentPageQuestionsAnswered && canGoForward}
           onBack={prevPage}
           onForward={nextPage}
-          className="my-4"
         />
         {currentPage === Math.ceil(questions.length / 9) - 1 &&
           allQuestionsAnswered() && (

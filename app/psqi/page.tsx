@@ -68,13 +68,16 @@ const PSQIndex: React.FC = () => {
   const firstQuestionIndex = currentPage * questionsPerPage;
   const questionsToShow = questions.slice(firstQuestionIndex, firstQuestionIndex + questionsPerPage);
 
-  //should revise for text account
-  const currentPageQuestionsAnswered = questionsToShow.every((_, index) => {
+  const currentPageQuestionsAnswered = questionsToShow.every((question, index) => {
+
+      if (question.id === 5 ) {
+        return true;
+      }
     const questionIndex = firstQuestionIndex + index;
     return answers[questionIndex] !== null && answers[questionIndex] !== '';
   });
 
-  const canGoForward = currentPage < Math.ceil(questions.length / questionsPerPage  ) - 1 && currentPageQuestionsAnswered
+  const canGoForward = currentPage < totalPages - 1 && currentPageQuestionsAnswered
   const canGoBack = currentPage > 0;
 
   interface ScoreResults {
@@ -312,7 +315,6 @@ const customHandleSubmit = (e: React.FormEvent) => {
           canGoForward={canGoForward}
           onBack={prevPage}
           onForward={nextPage}
-          className="my-4"
         />
         {currentPage === totalPages - 1 && allQuestionsAnswered() && (
           <div className="text-center">

@@ -75,7 +75,7 @@ const Page = () => {
           </button>
         </div>
       </form>
-      {score > 0 && (
+      {(score ?? 0) > 0 && (
         <div className="mt-8">
           <p className="text-lg">您的總分是: {score}</p>
           <p>得分10分或更高具有88%的敏感性和88%的特異性，用於主要憂鬱症的篩檢。</p>
