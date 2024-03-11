@@ -14,6 +14,9 @@ const Navbar = () => {
           <Link href="/phq-9" className="hover:text-gray-300">PHQ-9</Link>
         </li>
         <li>
+          <Link href="/tdq" className="hover:text-gray-300">TDQ 台灣人憂鬱症量表</Link>
+        </li>
+        <li>
           <Link href="/asrs" className="hover:text-gray-300">ASRS 成人ADHD自我評估問卷</Link>
         </li>
         <li>

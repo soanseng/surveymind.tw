@@ -8,9 +8,20 @@ export default function Home() {
           <p>在這個平台上，我們提供一系列的心理健康自我評估問卷，希望幫助使用者更好地了解自己的心理狀態。</p>
         </section>
         <section className="grid grid-cols-3 gap-4 my-8">
-          <div className="p-4 shadow rounded">Q1</div>
-          <div className="p-4 shadow rounded">Q2</div>
-          <div className="p-4 shadow rounded">Q3</div>
+          <div className="p-4 shadow rounded">
+            <h3> 科學</h3>
+            <Image src="/images/q1.jpg" alt="q1" width={500} height={500} />
+
+          </div>
+          <div className="p-4 shadow rounded">
+            <h3>實證</h3>
+            <Image src="/images/q2.jpg" alt="q2" width={500} height={500} />
+            </div>
+
+          <div className="p-4 shadow rounded">
+            <h3>自我評估</h3>
+            <Image src="/images/q3.jpg" alt="q3" width={500} height={500} />
+          </div>
         </section>
         <section className="my-8">
           <h2 className="text-xl font-semibold">關於我們</h2>

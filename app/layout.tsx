@@ -1,9 +1,14 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import Navbar from "../components/navbar"
+import { Inter as FontSans } from "next/font/google";
+import Navbar from "../components/navbar";
+import { cn } from "@/lib/utils";
+
 import "./globals.css";
 
-const inter = Inter({ subsets: ["latin"] });
+const fontSans = FontSans({ 
+  subsets: ["latin"],
+  variable: "--font-sans" 
+});
 
 export const metadata: Metadata = {
   title: "文心樂丞診所量表",
@@ -16,8 +21,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={inter.className}>
+    <html lang="en" suppressHydrationWarning>
+      <body 
+      className={cn(
+        "min-h-screen bg-background font-sans antialiased",
+        fontSans.variable
+      )}
+      >
         <Navbar />
         <main className="container mx-auto p-4">{children}</main>
       </body>
