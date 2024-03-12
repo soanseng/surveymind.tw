@@ -57,7 +57,7 @@ const Navbar = () => {
         <div className="md:hidden">
       <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
         <DropdownMenuTrigger asChild>
-            <HamburgerMenuIcon />
+            <HamburgerMenuIcon style={{ width: '36', height: '36' }} />
         </DropdownMenuTrigger>
         <DropdownMenuContent>
           {categories.map((category) => (

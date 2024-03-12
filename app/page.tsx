@@ -18,7 +18,7 @@ export default function Home() {
           <h1 className="text-2xl font-bold">心理健康自我評估平台</h1>
           <p>這是<a href="https://anxiety.com.tw" target="_blank" rel="noopener noreferrer" className="text-blue-300">文心樂丞診所</a>提供一系列的心理健康自我評估問卷，希望幫助使用者更好地了解自己的心理狀態。</p>
         </section>
-        <section className="grid grid-cols-3 gap-4 my-8">
+        <section className="grid grid-cols-1 md:grid-cols-3 gap-4 my-8">
           <Card  className="p-4 shadow rounded">
             <CardHeader>
               <CardTitle >醫學</CardTitle>
