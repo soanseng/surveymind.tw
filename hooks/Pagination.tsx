@@ -1,3 +1,15 @@
+'use client'
+import { useState } from 'react';
+import {
+  AlertDialog,
+  AlertDialogTrigger,
+  AlertDialogContent,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogCancel,
+  AlertDialogAction,
+} from  '@/components/ui/alert-dialog';
+
 interface PaginationProps {
     canGoBack: boolean;
     canGoForward: boolean;
@@ -5,7 +17,17 @@ interface PaginationProps {
     onForward: () => void;
   }
   
-  const Pagination: React.FC<PaginationProps> = ({ canGoBack, canGoForward, onBack, onForward }) => (
+  const Pagination: React.FC<PaginationProps> = ({ canGoBack, canGoForward, onBack, onForward }) => { 
+    const [isAlertDialogOpen, setAlertDialogOpen] = useState(false);
+    const handleForwardClick = () => {
+      if (canGoForward) {
+        onForward();
+      } else {
+        setAlertDialogOpen(true);
+      }
+    };
+
+    return (
     <div className="flex justify-between">
     <button
       onClick={canGoBack ? onBack : undefined}
@@ -19,8 +41,7 @@ interface PaginationProps {
       上一頁
     </button>
     <button
-      onClick={canGoForward ? onForward : undefined}
-      disabled={!canGoForward}
+      onClick={handleForwardClick}
       className={`px-4 py-2 rounded-md ${
         canGoForward
         ? 'bg-emerald-600 text-gray-100 hover:bg-emerald-700 border-2 border-emerald-800'
@@ -29,7 +50,21 @@ interface PaginationProps {
     >
       下一頁
     </button>
+    <AlertDialog open={isAlertDialogOpen} onOpenChange={setAlertDialogOpen}>
+        <AlertDialogTrigger asChild>
+          <button className="hidden">Open Alert Dialog</button>
+        </AlertDialogTrigger>
+        <AlertDialogContent>
+          <AlertDialogTitle>Cannot Proceed</AlertDialogTitle>
+          <AlertDialogDescription>
+            You cannot go forward from this point.
+          </AlertDialogDescription>
+          <AlertDialogCancel onClick={() => setAlertDialogOpen(false)}>Close</AlertDialogCancel>
+        </AlertDialogContent>
+      </AlertDialog>
   </div>
-  );
-  
-  export default Pagination;
+  )
+};
+
+export default Pagination;
+
