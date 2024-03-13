@@ -160,7 +160,7 @@ const getTdqLikelihood = (score: number) => {
             </div>
           )}
       </form>
-      {formSubmitted && (
+      {allQuestionsAnswered() && formSubmitted && (
         <div className="mt-8 bg-gray-100 p-4 rounded">
             <p className="text-lg font-bold mb-4">測量結果</p>
             <p>你的憂鬱指數是：{totalScores} 分</p>

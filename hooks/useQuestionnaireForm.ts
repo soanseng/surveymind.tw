@@ -22,7 +22,7 @@ function useQuestionnaireForm<TScoreType = DefaultScoreType>(questionsLength: nu
         setScore(totalScore);
         setValidationMessage('');
       } else {
-        setValidationMessage('請回答所有問題。');
+        setValidationMessage('請回答本頁所有問題。');
       }
       setFormSubmitted(true);
     };

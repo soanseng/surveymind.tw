@@ -30,7 +30,12 @@ interface PaginationProps {
     return (
     <div className="flex justify-between">
     <button
-      onClick={canGoBack ? onBack : undefined}
+      onClick={ (e) => {
+        e.preventDefault();
+        if (canGoBack) {
+          onBack();
+        }
+      }}
       disabled={!canGoBack}
       className={`px-4 py-2 rounded-md ${
         canGoBack
@@ -41,7 +46,9 @@ interface PaginationProps {
       上一頁
     </button>
     <button
-      onClick={handleForwardClick}
+      onClick={(e) => {
+        e.preventDefault();
+        handleForwardClick()}}
       className={`px-4 py-2 rounded-md ${
         canGoForward
         ? 'bg-emerald-600 text-gray-100 hover:bg-emerald-700 border-2 border-emerald-800'
@@ -55,9 +62,9 @@ interface PaginationProps {
           <button className="hidden">Open Alert Dialog</button>
         </AlertDialogTrigger>
         <AlertDialogContent>
-          <AlertDialogTitle>Cannot Proceed</AlertDialogTitle>
+          <AlertDialogTitle>請回答所有問題</AlertDialogTitle>
           <AlertDialogDescription>
-            You cannot go forward from this point.
+            請回答本頁所有問題。
           </AlertDialogDescription>
           <AlertDialogCancel onClick={() => setAlertDialogOpen(false)}>Close</AlertDialogCancel>
         </AlertDialogContent>
