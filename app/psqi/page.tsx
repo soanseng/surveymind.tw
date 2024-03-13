@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import Head from 'next/head';
 import useQuestionnaireForm from '@/hooks/useQuestionnaireForm';
 import Pagination from '@/hooks/Pagination';
-
+import { Input } from '@/components/ui/input';
 
 const questions = [
   {id: 1, question: "過去一個月來，您晚上通常幾點上床睡覺？"},
@@ -147,23 +147,32 @@ const calculateScores = () => {
   } 
 };
 const calculateSleepEfficiency = (q1Answer: string, q3Answer: string, q4Answer: string): number => {
-  // Parse the answers to get hours. This is a simplified example and might need adjustment based on your input format.
-  const [bedHour, bedMinute] = q1Answer.split(":").map(Number); // Converts "HH:MM" to [HH, MM]
-  const [wakeHour, wakeMinute] = q3Answer.split(":").map(Number); // Converts "HH:MM" to [HH, MM]
+  // Convert time inputs (HH:MM AM/PM) to 24-hour format for easier calculation
+  const convertTo24HourFormat = (time: string) => {
+    let [timePart, period] = time.split(' ');
+    let [hours, minutes] = timePart.split(':').map(Number);
+
+    if (period === 'PM' && hours < 12) {
+      hours += 12;
+    } else if (period === 'AM' && hours === 12) {
+      hours = 0;
+    }
+
+    return hours * 60 + minutes; // Convert hours to minutes
+  };
+
+  const bedTimeInMinutes = convertTo24HourFormat(q1Answer);
+  const wakeTimeInMinutes = convertTo24HourFormat(q3Answer);
   const hoursSlept = parseInt(q4Answer, 10); // Assuming answers are direct hours
- // Calculate total minutes in bed
- let bedTimeInMinutes = bedHour * 60 + bedMinute;
- let wakeTimeInMinutes = wakeHour * 60 + wakeMinute;
- 
 
- // Handling the case of going to bed before midnight and waking up the next day
- if (wakeTimeInMinutes < bedTimeInMinutes) {
-  wakeTimeInMinutes += 24 * 60; // Add 24 hours in minutes to wake time
-}
+  // Calculate total minutes in bed
+  let totalMinutesInBed = wakeTimeInMinutes - bedTimeInMinutes;
+  if (totalMinutesInBed < 0) {
+    // Handles the case where the person goes to bed before midnight and wakes up after midnight
+    totalMinutesInBed += 24 * 60;
+  }
 
-const totalMinutesInBed = wakeTimeInMinutes - bedTimeInMinutes;
-const sleepEfficiency = (hoursSlept * 60 / totalMinutesInBed) * 100; // Convert hoursSlept to minutes for calculation
-
+  const sleepEfficiency = (hoursSlept * 60 / totalMinutesInBed) * 100; // Convert hoursSlept to minutes for calculation
 
   // Map sleep efficiency to the component 4 score
   if (sleepEfficiency > 85) return 0;
@@ -171,7 +180,6 @@ const sleepEfficiency = (hoursSlept * 60 / totalMinutesInBed) * 100; // Convert 
   if (sleepEfficiency >= 65) return 2;
   return 3;
 };
-
 
 
 // Modify handleSubmit to use calculateScores
@@ -216,7 +224,7 @@ const customHandleSubmit = (e: React.FormEvent) => {
             (typeof question.id === "number" && question.id === 1) ||
             question.id === 3
           ) {
-            selectionType = "text";
+            selectionType = "time";
           } else if (question.id === 2) {
             selectionType = "selection2";
           } else if (question.id === 4) {
@@ -250,9 +258,9 @@ const customHandleSubmit = (e: React.FormEvent) => {
                 {isUnanswered && <span className="text-red-500">*</span>}
                 {question.id}. {question.question}:
               </label>
-              {selectionType === "text" ? (
-                <input
-                  type="text"
+              {selectionType === "time" ? (
+                <Input
+                  type="time"
                   name={`question-${question.id}`}
                   value={answers[firstQuestionIndex + index] || ""}
                   onChange={(e) =>
@@ -261,12 +269,8 @@ const customHandleSubmit = (e: React.FormEvent) => {
                       e.target.value
                     )
                   }
-                  className="form-input mt-1 block w-3/4 border-2 border-gray-300"
-                  style={{ maxWidth: "600px" }}
-                  pattern="\d{2}:\d{2}"
-                  title="請使用24小時制，輸入 HH:MM 格式" //"
-                  placeholder="請使用24小時制，輸入 HH:MM 格式"
-                  required={selectionType === "text"}
+                  style={{ maxWidth: "300px" }}
+                  required={selectionType === "time"}
                 />
               ) : (
                 <div className="flex space-x-2">
