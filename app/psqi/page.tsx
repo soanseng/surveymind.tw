@@ -4,6 +4,7 @@ import Head from 'next/head';
 import useQuestionnaireForm from '@/hooks/useQuestionnaireForm';
 import Pagination from '@/hooks/Pagination';
 import { Input } from '@/components/ui/input';
+import { useResponsiveDialog } from '@/hooks/useResponsiveDialog';
 
 const questions = [
   {id: 1, question: "過去一個月來，您晚上通常幾點上床睡覺？"},
@@ -182,6 +183,8 @@ const calculateSleepEfficiency = (q1Answer: string, q3Answer: string, q4Answer: 
 };
 
 
+  const { open, setOpen, TriggerComponent, Content, ContentComponent, HeaderComponent, TitleComponent, DescriptionComponent, FooterComponent, CloseComponent } = useResponsiveDialog();
+
 // Modify handleSubmit to use calculateScores
 const customHandleSubmit = (e: React.FormEvent) => {
   e.preventDefault();
@@ -190,6 +193,7 @@ const customHandleSubmit = (e: React.FormEvent) => {
     console.log("Total score:", scores);
     setFormSubmitted(true)
     setScores(scores)
+    setOpen(true);
   } else {
     console.log("please answer all questions");
   }
@@ -320,6 +324,10 @@ const customHandleSubmit = (e: React.FormEvent) => {
           onBack={prevPage}
           onForward={nextPage}
         />
+
+
+      <Content open={open} onOpenChange={setOpen}>
+        <TriggerComponent asChild>
         {currentPage === totalPages - 1 && allQuestionsAnswered() && (
           <div className="text-center">
             <button
@@ -330,12 +338,16 @@ const customHandleSubmit = (e: React.FormEvent) => {
             </button>
           </div>
         )}
-      </form>
+        </TriggerComponent>
+
+      <ContentComponent>
       {formSubmitted && (
         <div>
-          <h2 className="text-2xl font-bold text-center my-8">
-            您的睡眠品質分數是:
-          </h2>
+
+        <HeaderComponent className="text-2xl font-bold">
+                      您的睡眠品質分數是:
+        </HeaderComponent>
+
           <div className="text-center">
             <p>
               主觀睡眠品質: {scores.component1Score}{" "}
@@ -370,6 +382,7 @@ const customHandleSubmit = (e: React.FormEvent) => {
             <h3 className="text-lg font-semibold mb-2">
               總分數: {scores.globalScore}
             </h3>
+            <FooterComponent>
             {scores.globalScore <= 5 && (
               <p>
                 您的睡眠品質很好。這表示您的睡眠狀況在過去一個月內是相當良好的。
@@ -385,9 +398,14 @@ const customHandleSubmit = (e: React.FormEvent) => {
                 您可能需要改善睡眠品質。這表示您的睡眠狀況在過去一個月內可能不是很理想，建議尋求專業建議。
               </p>
             )}
+            </FooterComponent>
           </div>
+
         </div>
       )}
+</ContentComponent>
+    </Content>
+        </form>
       <p className="text-center mt-8 text-sm">
         Buysse, DJ, Reynolds CF, Monk TH, Berman SR, Kupfer DJ: The Pittsburgh
         Sleep Quality Index (PSQI): A new instrument for psychiatric research

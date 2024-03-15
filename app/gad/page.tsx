@@ -2,6 +2,8 @@
 import React from 'react';
 import Head from 'next/head';
 import useQuestionnaireForm from '@/hooks/useQuestionnaireForm';
+import { useResponsiveDialog } from '@/hooks/useResponsiveDialog';
+import { Trigger } from '@radix-ui/react-menubar';
 
 
   const questions = [
@@ -35,7 +37,14 @@ const GAD7Form = () => {
   };
 
   const severity = getSeverity(score);
+  const { open, setOpen, TriggerComponent, Content, ContentComponent, HeaderComponent, TitleComponent, DescriptionComponent, FooterComponent, CloseComponent } = useResponsiveDialog();
 
+
+  const customHandleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    handleSubmit(e);
+    setOpen(true);
+  }
   return (
     <div>
       <Head>
@@ -48,7 +57,7 @@ const GAD7Form = () => {
       {validationMessage && (
         <p className="text-red-500 mt-4">{validationMessage}</p>
       )}
-    <form onSubmit={handleSubmit} className="bg-white p-6 rounded shadow">
+    <form onSubmit={customHandleSubmit} className="bg-white p-6 rounded shadow">
       {questions.map((question, qindex) => {
         const isUnanswered = answers[qindex] === null || answers[qindex] === "";
       return (
@@ -79,22 +88,35 @@ const GAD7Form = () => {
       );
             })}
 
+      <Content open={open} onOpenChange={setOpen}>
+        <TriggerComponent asChild>
       <button
         type="submit"
         className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
       >
       開始測量
       </button>
+        </TriggerComponent>
 
+      <ContentComponent>
+        <HeaderComponent>
+          量表結果
+        </HeaderComponent>
+        <DescriptionComponent>
+      <p className="text-gray-700 mt-4">GAD-7的診斷效度良好，得分10分或以上的敏感度為89%，特異度為82%</p>
+        </DescriptionComponent>
       {(score ?? 0) > 0 && (
         <>
-      <p className="text-gray-700 mt-4">GAD-7的診斷效度良好，得分10分或以上的敏感度為89%，特異度為82%</p>
       <p className="text-gray-700 mt-4">你的總分: {score}</p>
       {typeof score === 'number' && (
+        <FooterComponent>
       <p className="text-gray-700 mt-4">焦慮程度: {getSeverity(score)}</p>
+        </FooterComponent>
     )}
         </>
       )}
+      </ContentComponent>
+      </Content>
     </form>
     </div>
   );

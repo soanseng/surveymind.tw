@@ -3,6 +3,7 @@ import React from 'react';
 import Head from 'next/head';
 import useQuestionnaireForm from '@/hooks/useQuestionnaireForm';
 import Pagination from '@/hooks/Pagination';
+import { useResponsiveDialog } from '@/hooks/useResponsiveDialog';
 
 const questions = [
 "我常常覺得想哭",
@@ -81,9 +82,13 @@ const getTdqLikelihood = (score: number) => {
     return { totalScores, message: getTdqLikelihood(totalScores) };
   };
 
+
+  const { open, setOpen, TriggerComponent, Content, ContentComponent, HeaderComponent, TitleComponent, DescriptionComponent, FooterComponent, CloseComponent } = useResponsiveDialog();
+
   const customHandleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     handleSubmit(e);
+    setOpen(true);
     setFormSubmitted(true);
   }
 
@@ -148,25 +153,40 @@ const getTdqLikelihood = (score: number) => {
           onBack={prevPage}
           onForward={nextPage}
         />
+
+      <Content open={open} onOpenChange={setOpen}>
+
         {currentPage === Math.ceil(questions.length / 9) - 1 &&
           allQuestionsAnswered() && (
             <div className="text-center">
-              <button
+                <TriggerComponent asChild>            
+                  <button
                 type="submit"
                 className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700"
               >
                 開始測量
               </button>
+                </TriggerComponent>
             </div>
           )}
-      </form>
+
+      <ContentComponent>
       {allQuestionsAnswered() && formSubmitted && (
         <div className="mt-8 bg-gray-100 p-4 rounded">
-            <p className="text-lg font-bold mb-4">測量結果</p>
+
+        <HeaderComponent className="text-lg font-bold mb-4">  
+                      測量結果
+        </HeaderComponent>
+
             <p>你的憂鬱指數是：{totalScores} 分</p>
+            <FooterComponent>
             <p className="text-lg">{message}</p>
+            </FooterComponent>
         </div>
       )}
+      </ContentComponent>
+    </Content>
+      </form>
     <p className='text-center mt-8 text-sm'>本量表引用自:行政院國家科學委員會93年11月17日台會綜三字第0930052121號函,台灣人憂鬱問卷之發展係由李昱、楊明仁、賴德仁、邱念陸、周騰達等五人進行;經董氏基金會進行大規模實測,建立具信效度之常模分數,由宋維村醫師、黃國彥教授、胡維顧問醫師、張本聖副教授審訂。  </p>  
     </div>
   );

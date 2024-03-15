@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import Head from 'next/head';
 import useQuestionnaireForm from '@/hooks/useQuestionnaireForm';
 import Pagination from '@/hooks/Pagination';
+import { ScrollArea } from '@radix-ui/react-scroll-area';
 
 const questions = [
   "健談的",
@@ -60,37 +61,32 @@ type ScoreType = {
 };
 
 const dimensionNames = {
-  extraversion: "外向性",
-  agreeableness: "友善性",
-  conscientiousness: "嚴謹性",
-  neuroticism: "神經質",
-  openness: "開放性",
+  extraversion: "🌟 外向性 vs. 🌌 內向性",
+  agreeableness: "💖 友善性 vs. 🏔 獨立性",
+  conscientiousness: "📘 嚴謹性 vs. 🌬 靈活性",
+  neuroticism: "🍃 神經質 vs. ☀️ 情緒穩定性",
+  openness: "🌈 開放性 vs. 🏡 實用性",
 };
 const dimensionDescriptions = {
   extraversion: `
-🌟 **外向性** vs. 🌌 **內向性**:  
-- 高分: 您是生活的火花，以充滿活力的方式與社會和周遭的世界互動。您的社交性、活躍度、勇氣和正面情緒為您和周圍的人帶來光亮。
-- 低分: 您是深思熟慮的靈魂，享受獨立和內省的時刻。您的寧靜和深沉思考為您帶來智慧和內在的平靜。
+- 🌟 外向性: 您是生活的火花，以充滿活力的方式與社會和周遭的世界互動。您的社交性、活躍度、勇氣和正面情緒為您和周圍的人帶來光亮。
+- 🌌 內向性: 您是深思熟慮的靈魂，享受獨立和內省的時刻。您的寧靜和深沉思考為您帶來智慧和內在的平靜。
 `,
   agreeableness: `
-💖 **友善性** vs. 🏔 **獨立性**:  
-- 高分: 您的心中充滿了對他人的關懷和愛。您以利他的態度和社群導向的心態面對世界，展現出溫柔、信任和謙遜的美德。
-- 低分: 您展現出強烈的自我意識和獨立性。您的堅定和自信讓您能夠自主地走自己的路，追求個人目標。
+- 💖 友善性: 您的心中充滿了對他人的關懷和愛。您以利他的態度和社群導向的心態面對世界，展現出溫柔、信任和謙遜的美德。
+- 🏔 獨立性: 您展現出強烈的自我意識和獨立性。您的堅定和自信讓您能夠自主地走自己的路，追求個人目標。
 `,
   conscientiousness: `
-📘 **嚴謹性** vs. 🌬 **靈活性**:  
-- 高分: 您是計畫和組織的大師，擁有達成目標的堅定意志。您在行動前深思熟慮，以自律和責任感引導自己前進，為夢想鋪路。
-- 低分: 您以開放和靈活的態度面對生活。您的適應性和即興能力讓您能夠自在地應對變化，享受當下。
+- 📘 嚴謹性: 您是計畫和組織的大師，擁有達成目標的堅定意志。您在行動前深思熟慮，以自律和責任感引導自己前進，為夢想鋪路。
+- 🌬 靈活性: 您以開放和靈活的態度面對生活。您的適應性和即興能力讓您能夠自在地應對變化，享受當下。
 `,
   neuroticism: `
-🍃 **神經質** vs. ☀️ **情緒穩定性**:  
-- 高分: 您擁有豐富的情感世界，即使面對挑戰也能保持情緒的平衡和恢復力。您的敏感是您同理和深度理解他人的橋樑。
-- 低分: 您展現出極高的情緒穩定性和恢復力。您的冷靜和樂觀態度幫助您輕鬆地面對生活的挑戰，保持平衡。
+- 🍃 神經質: 您擁有豐富的情感世界，即使面對挑戰也能保持情緒的平衡和恢復力。您的敏感是您同理和深度理解他人的橋樑。
+-️ ☀情緒穩定性: 您展現出極高的情緒穩定性和恢復力。您的冷靜和樂觀態度幫助您輕鬆地面對生活的挑戰，保持平衡。
 `,
   openness: `
-🌈 **開放性** vs. 🏡 **實用性**:  
-- 高分: 您的心胸開闊，對生活充滿好奇。您的創造力和想像力是探索未知、享受生活多樣性的關鍵。
-- 低分: 您著重於實際和實用性，以腳踏實地的方式與世界互動。您的專注和務實態度使您能夠有效地解決問題，實現具體成果。
+- 🌈 開放性: 您的心胸開闊，對生活充滿好奇。您的創造力和想像力是探索未知、享受生活多樣性的關鍵。
+- 🏡 實用性: 您著重於實際和實用性，以腳踏實地的方式與世界互動。您的專注和務實態度使您能夠有效地解決問題，實現具體成果。
 `
 };
 
@@ -115,9 +111,6 @@ const Page = () => {
   } = useQuestionnaireForm<ScoreType>(questions.length, questionsPerPage);
 
 
-
-  useEffect(() => {
-    if (formSubmitted) {
     const dimensions = {
       extraversion: [0, 5, 10, 15, 20, 25, 30, 35],
       agreeableness: [1, 6, 11, 16, 21, 26, 31, 36, 41],
@@ -125,6 +118,9 @@ const Page = () => {
       neuroticism: [3, 8, 13, 18, 23, 28, 33, 38],
       openness: [4, 9, 14, 19, 24, 29, 34, 39, 40, 43],
     };
+
+  useEffect(() => {
+    if (formSubmitted) {
 
     let newScores = {
       extraversion: 0,
@@ -155,18 +151,26 @@ const Page = () => {
     return answers[questionIndex] !== null && answers[questionIndex] !== '';
   });
 
+
+  
+  const customHandleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    handleSubmit(e);
+  }
+
   return (
     <div className="container mx-auto px-4">
       <Head>
-        <title>五大人格量表 (BFI)</title>
+        <title>大五人格量表 (BFI)</title>
       </Head>
       <h1 className="text-2xl font-bold text-center my-8">
-        五大人格量表 (BFI)
+        大五人格量表 (BFI)
       </h1>
+      <p className="mb-4 text-cneter"  >總共有44題，每題都有五個選項，請選擇最符合您的答案。</p>
       {validationMessage && (
         <p className="text-red-500 text-center">{validationMessage}</p>
       )}
-      <form onSubmit={handleSubmit} className="bg-white p-6 rounded shadow">
+      <form onSubmit={customHandleSubmit} className="bg-white p-6 rounded shadow">
         {currentQuestions.map((question, index) => {
           const questionIndex = startIndex + index;
           const isUnanswered =
@@ -224,6 +228,9 @@ const Page = () => {
           onBack={prevPage}
           onForward={nextPage}
         />
+
+
+
         {currentPage === Math.ceil(questions.length / questionsPerPage) - 1 &&
           allQuestionsAnswered() && (
             <button
@@ -233,32 +240,45 @@ const Page = () => {
               開始測量
             </button>
           )}
+
       </form>
       {/* score display logic here */}
-      {formSubmitted && score && allQuestionsAnswered() && (
-        <div className="mt-8 bg-gray-100 p-4 rounded shadow">
-    <p className="text-lg mb-4">在我們的旅程中，每個人都展現出獨特的性格特質，這些特質塑造了我們與世界互動的方式。讓我們一起探索您的五大人格特質，並以更溫暖和鼓舞人心的方式來看待它們：</p>
+      { score && formSubmitted && (
 
-          {Object.entries(score).map(([dimension, score]) => (
+        <div className="mt-8 bg-gray-100 p-4 rounded shadow">
+          <h3 className="text-2xl mb-4">量表結果</h3>
+            <p className="text-lg mb-4">在我們的旅程中，每個人都展現出獨特的性格特質，這些特質塑造了我們與世界互動的方式。讓我們一起探索您的五大人格特質，並以更溫暖和鼓舞人心的方式來看待它們：</p>
+          {Object.entries(score).map(([dimension, scoreValue]) => {
+            const dimensionIndexes = dimensions[dimension as keyof typeof dimensions];
+            const maxScore = dimensionIndexes.length * 5; // Calculate max score based on number of questions per dimension
+            const isHigher = scoreValue > maxScore / 2;
+            const description = dimensionDescriptions[dimension as keyof typeof dimensionDescriptions];
+            // Assuming descriptions are separated into higher and lower parts by a specific pattern
+            const splitDescriptions = description.trim().split('\n- ');
+            const resultDescription = isHigher ? splitDescriptions[0] : splitDescriptions[1];
+
+            return(
             <div key={dimension} className="mb-4">
               <label htmlFor={dimension} className="block mb-2 text-lg">
                 {dimensionNames[dimension as keyof typeof dimensionNames]}:
               </label>
-              <p className="mb-2">{dimensionDescriptions[dimension as keyof typeof dimensionDescriptions]}</p>
+              <p className="mb-2">{resultDescription.trim()}</p>
               <input
                 id={dimension}
                 type="range"
                 min="0"
-                max="40"
-                value={String(score)}
+                max={String(maxScore)}
+                value={String(scoreValue)}
                 disabled
                 className="w-full"
               />
             </div>
-          ))}
+          );
+          })}
           <p className="mb-4">每一種特質都有其獨特之處，無論您在哪一端，都代表著您獨特的個性和看待世界的方式。擁抱您的特質，讓它們引領您走向充滿豐富多彩經歷的人生旅程。🌈</p>
         </div>
       )}
+
     </div>
   );
 };

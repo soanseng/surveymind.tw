@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import Head from 'next/head';
 import useQuestionnaireForm from '@/hooks/useQuestionnaireForm';
+import { useResponsiveDialog } from '@/hooks/useResponsiveDialog';
 
 const questions = [
   "做事時提不起勁或沒有樂趣",
@@ -15,6 +16,9 @@ const questions = [
   "有不如死掉或用某種方式傷害自己的念頭"
 ];
 
+
+
+
 const Page = () => {
     const {
         answers,
@@ -24,6 +28,14 @@ const Page = () => {
         score,
         validationMessage,
     } = useQuestionnaireForm(questions.length);
+
+  const { open, setOpen, TriggerComponent, Content, ContentComponent, HeaderComponent, TitleComponent, DescriptionComponent, FooterComponent, CloseComponent } = useResponsiveDialog();
+
+  const customHandleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    handleSubmit(e);
+    setOpen(true);
+  }
   return (
     <div className="container mx-auto px-4">
       <Head>
@@ -36,7 +48,7 @@ const Page = () => {
       {validationMessage && (
         <p className="text-red-500 text-center">{validationMessage}</p>
       )}
-      <form onSubmit={handleSubmit} className="bg-white p-6 rounded shadow">
+      <form onSubmit={customHandleSubmit} className="bg-white p-6 rounded shadow">
         {questions.map((question, index) => {
           const isUnanswered = answers[index] === null || answers[index] === '';
         return (
@@ -66,6 +78,10 @@ const Page = () => {
           </div>
         );
               })}
+
+      <Content open={open} onOpenChange={setOpen}>
+
+        <TriggerComponent asChild>
         <div className="text-center">
           <button
             type="submit"
@@ -74,11 +90,18 @@ const Page = () => {
             開始測量
           </button>
         </div>
-      </form>
+</TriggerComponent>
       {(score ?? 0) > 0 && (
+      <ContentComponent>
+        <HeaderComponent className="text-2xl font-bold">
+          測量結果
+        </HeaderComponent>
+        <DescriptionComponent>
+
+          <p>得分10分或更高具有88%的敏感性和88%的特異性，用於主要憂鬱症的篩檢。</p>
+        </DescriptionComponent>
         <div className="mt-8">
           <p className="text-lg">您的總分是: {score}</p>
-          <p>得分10分或更高具有88%的敏感性和88%的特異性，用於主要憂鬱症的篩檢。</p>
          <p>根據您的得分，您可能的憂鬱症狀程度為：</p>
          <ul>
            <li>0-4分：無至最小憂鬱</li>
@@ -87,9 +110,15 @@ const Page = () => {
            <li>15-19分：中重度憂鬱</li>
            <li>20-27分：重度憂鬱</li>
          </ul>
+         <FooterComponent>
          <p>如果您的得分顯示您可能有憂鬱症，建議尋求專業醫療幫助。</p>
+        </FooterComponent>
         </div>
+    </ContentComponent>
       )}
+    </Content>
+    </form>
+
     </div>
   );
 };
