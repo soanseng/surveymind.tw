@@ -3,6 +3,7 @@ import React from 'react';
 import Head from 'next/head';
 import useQuestionnaireForm from '@/hooks/useQuestionnaireForm';
 import Pagination from '@/hooks/Pagination';
+import { useResponsiveDialog } from '@/hooks/useResponsiveDialog';
 
 const questions = [
 "當必須進行一件枯燥或困難的計劃時，你會多常粗心犯錯？",
@@ -62,10 +63,13 @@ const ASRSForm: React.FC = () => {
     return { partAScores, partBScores };
   };
 
+  const { open, setOpen, TriggerComponent, Content, ContentComponent, HeaderComponent, TitleComponent, DescriptionComponent, FooterComponent, CloseComponent } = useResponsiveDialog();
+
   const customHandleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     handleSubmit(e);
     setFormSubmitted(true);
+    setOpen(true);
   }
 
   // Determine ADHD likelihood based on scores
@@ -78,6 +82,7 @@ const ASRSForm: React.FC = () => {
   const { partAScores, partBScores } = calculateScores();
   const resultA = getADHDLikelihood(partAScores);
   const resultB = getADHDLikelihood(partBScores);
+
 
   return (
     <div className="container mx-auto px-4">
@@ -137,26 +142,45 @@ const ASRSForm: React.FC = () => {
           onBack={prevPage}
           onForward={nextPage}
         />
+      <Content open={open} onOpenChange={setOpen}>
         {currentPage === Math.ceil(questions.length / 9) - 1 &&
           allQuestionsAnswered() && (
             <div className="text-center">
+              <TriggerComponent asChild>
               <button
                 type="submit"
                 className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700"
               >
                 開始測量
               </button>
+              </TriggerComponent>
             </div>
           )}
-      </form>
-      {formSubmitted && (
-        <div className="mt-8 bg-gray-100 p-4 rounded">
-          <p className="text-lg">A部分（不專心）得分: {partAScores} - {resultA}</p>
-          <p className="text-lg">B部分（過動/衝動）得分: {partBScores} - {resultB}</p>
+      <ContentComponent>
+        <HeaderComponent>
+          量表結果
+        </HeaderComponent>
+        <DescriptionComponent>
           <p>如果您在任一部分的得分指向「很可能有ADHD」或「非常可能有ADHD」，建議進行更完整的評估以了解損害和病史。</p>
-          <p>即使得分顯示「不太可能有ADHD」，如果您仍有疑慮，也值得進一步探討，因為有時成年ADHD患者即使症狀輕微也可能遭受顯著損害。</p>
+           <p>即使得分顯示「不太可能有ADHD」，如果您仍有疑慮，也值得進一步探討，因為有時成年ADHD患者即使症狀輕微也可能遭受顯著損害。</p>
+        </DescriptionComponent>
+        <div className="mt-8 bg-gray-100 p-4 rounded">
+            <ul>
+          <li>
+            <p className="text-lg">A部分（不專心）得分: {partAScores} - {resultA}</p>
+          </li>
+          <li>
+          <p className="text-lg">B部分（過動/衝動）得分: {partBScores} - {resultB}</p>
+          </li>
+            </ul>
+          <FooterComponent>
+          <p>如果您有任何問題，請聯絡我們的專業團隊，我們會為您提供協助。</p>
+          </FooterComponent>
+
         </div>
-      )}
+      </ContentComponent>
+      </Content>
+      </form>
     <p className='text-center mt-8 text-sm'>Kessler, R.C., AdlKessler, R.C., Adler, L., Ames, M., Demler, O., Faraone, S., Hiripi, E., Howes, M.J., Jin, R., Secnik, K., Spencer, T., Ustun, T.B., Walters, E.E. (2005). The World Health Organization Adult ADHD Self-Report Scale (ASRS). Psychological Medicine, 35(2), 245-256er, L., Ames, M., Demler, O., Faraone, S., Hiripi, E., Howes, M.J., Jin, R., Secnik, K., Spencer, T., Ustun, T.B., Walters, E.E. (2005). The World Health Organization Adult ADHD Self-Report Scale (ASRS). Psychological Medicine, 35(2), 245-256</p>
     </div>
   );
