@@ -18,7 +18,9 @@ function useQuestionnaireForm<TScoreType = DefaultScoreType>(questionsLength: nu
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (answers.every(answer => answer !== null && answer !== '')) {
-        const totalScore = answers.reduce((acc, current) => acc + parseInt(current, 10), 0);
+        const totalScore = answers.reduce((acc, current) => { 
+          return acc + (current !== "nil" ? parseInt(current, 10) : 0);
+        }, 0);
         setScore(totalScore);
         setValidationMessage('');
       } else {
