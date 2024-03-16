@@ -10,6 +10,9 @@ import {
   AlertDialogAction,
 } from  '@/components/ui/alert-dialog';
 
+import { Button } from "@/components/ui/button"
+
+
 interface PaginationProps {
     canGoBack: boolean;
     canGoForward: boolean;
@@ -29,7 +32,7 @@ interface PaginationProps {
 
     return (
     <div className="flex justify-between">
-    <button
+    <Button
       onClick={ (e) => {
         e.preventDefault();
         if (canGoBack) {
@@ -37,26 +40,26 @@ interface PaginationProps {
         }
       }}
       disabled={!canGoBack}
-      className={`px-4 py-2 rounded-md ${
+      className={` ${
         canGoBack
-        ? 'bg-emerald-600 text-gray-100 hover:bg-emerald-700 border-2 border-emerald-800'
+        ? ''
         : 'bg-gray-400 text-gray-600 border-2 border-gray-500 cursor-not-allowed'
       }`}
     >
       上一頁
-    </button>
-    <button
+    </Button>
+    <Button
       onClick={(e) => {
         e.preventDefault();
         handleForwardClick()}}
-      className={`px-4 py-2 rounded-md ${
+      className={`${
         canGoForward
-        ? 'bg-emerald-600 text-gray-100 hover:bg-emerald-700 border-2 border-emerald-800'
-        : 'bg-gray-400 text-gray-600 border-2 border-gray-500 cursor-not-allowed'
+        ? ''
+        : 'cursor-not-allowed'
       }`}
     >
       下一頁
-    </button>
+    </Button>
     <AlertDialog open={isAlertDialogOpen} onOpenChange={setAlertDialogOpen}>
         <AlertDialogTrigger asChild>
           <button className="hidden">Open Alert Dialog</button>

@@ -28,7 +28,7 @@ const Navbar = () => {
   const categories = [
     { name: '情緒', questionnaire: [ {name: '廣泛性焦慮量表', link: '/gad'}, {name: 'PHQ-9 憂鬱症篩檢問卷', link: '/phq-9'}, {name: '台灣人憂鬱症量表', link:'/tdq'} ] },
     { name: '睡眠', questionnaire: [ {name: 'PSQI 匹茲堡睡眠品質量表', link: '/psqi'} ] },
-    { name: '注意力不集中', questionnaire: [ {name: 'ASRS 成人ADHD自我評估問卷', link:'/asrs'} ] },
+    { name: '注意力不集中', questionnaire: [ {name: 'ASRS 成人ADHD自我評估問卷', link:'/asrs'}, {name:'過動兒家長量表', link: '/snap-4'} ] },
     { name: '失智', questionnaire: [ {name: '早期失智篩檢表', link: '/ad-8'} ] }, // Add links as needed
     { name: '人格', questionnaire: [ {name: '大五人格量表', link: '/big-5'} ] }, // Add links a
   ];
