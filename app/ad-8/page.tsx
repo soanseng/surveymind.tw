@@ -12,6 +12,8 @@ import {
     CardTitle,
   } from "@/components/ui/card"
 
+  import ShareButton from '@/components/ShareButton';
+
 
 const questions = [
   "判斷力上的困難：例如落入圈套或騙局、財務上不好的決定、買了對受禮者不合宜的禮物。",
@@ -146,6 +148,10 @@ const Page = () => {
                   <p>
                     如果您的得分顯示您可能有認知障礙，建議尋求專業醫療幫助。
                   </p>
+                  <ShareButton title="AD-8 極早期失智症篩檢量表" 
+                  text={`得分是:${score} 0-1分：正常認知； 2分或更高：可能存在認知障礙`} 
+                  url="https://surveymind.tw"
+                  />
                 </FooterComponent>
               </div>
             </ContentComponent>

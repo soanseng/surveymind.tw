@@ -228,7 +228,10 @@ const Page = () => {
           onBack={prevPage}
           onForward={nextPage}
           showSubmitButton={currentPage === Math.ceil(questions.length / questionsPerPage) - 1 && allQuestionsAnswered()}
-          onSubmit={() => customHandleSubmit}
+          onSubmit={(e) => {
+            e.preventDefault();
+            customHandleSubmit(e);
+          }}
         />
 
       </form>

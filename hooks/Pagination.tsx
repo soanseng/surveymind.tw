@@ -19,7 +19,7 @@ interface PaginationProps {
   onBack: () => void;
   onForward: () => void;
   showSubmitButton?: boolean; // New prop to control the visibility of the submit button
-  onSubmit?: () => void; // New prop for the submit action
+  onSubmit?: (e: React.MouseEvent<HTMLButtonElement>) => void; // New prop for the submit action
 }
   
   const Pagination: React.FC<PaginationProps> = ({
