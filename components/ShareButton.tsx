@@ -55,6 +55,12 @@ const ShareButton: React.FC<ShareButtonProps> = ({ title, text, url }) => {
 
   return (
     <div>
+      <Button
+        variant="link"
+        onClick={() => window.open("https://lin.ee/4iRHvdC", "_blank")}
+      >
+        文心樂丞官方帳號
+      </Button>
       <Button onClick={handleShare}>分享結果</Button>
       {resultMessage && <p className="result">{resultMessage}</p>}
     </div>

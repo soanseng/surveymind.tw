@@ -13,6 +13,7 @@ import {
   } from "@/components/ui/card"
 
   import ShareButton from '@/components/ShareButton';
+  import { Button } from '@/components/ui/button';
 
 
 const questions = [
@@ -113,18 +114,18 @@ const Page = () => {
         })}
 
         <Content open={open} onOpenChange={setOpen}>
-            {allQuestionsAnswered() && (
+          {allQuestionsAnswered() && (
             <div className="text-center">
-          <TriggerComponent asChild>
-              <button
-                type="submit"
-                className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700"
-              >
-                提交問卷
-              </button>
-          </TriggerComponent>
+              <TriggerComponent asChild>
+                <button
+                  type="submit"
+                  className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700"
+                >
+                  提交問卷
+                </button>
+              </TriggerComponent>
             </div>
-            )}
+          )}
 
           {(score ?? 0) >= 0 && (
             <ContentComponent>
@@ -148,8 +149,9 @@ const Page = () => {
                   <p>
                     如果您的得分顯示您可能有認知障礙，建議尋求專業醫療幫助。
                   </p>
-                  <ShareButton title="AD-8 極早期失智症篩檢量表" 
-                  text={`得分是:${score} 0-1分：正常認知； 2分或更高：可能存在認知障礙，歡迎在 https://surveymind.tw/ad-8 進行篩檢`} 
+                  <ShareButton
+                    title="AD-8 極早期失智症篩檢量表"
+                    text={`得分是:${score} 0-1分：正常認知； 2分或更高：可能存在認知障礙，歡迎在 https://surveymind.tw/ad-8 進行篩檢`}
                   />
                 </FooterComponent>
               </div>
