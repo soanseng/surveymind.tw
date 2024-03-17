@@ -190,8 +190,7 @@ const ASRSForm: React.FC = () => {
                 </p>
                 <ShareButton
                   title="ASRS 成人ADHD自我評估問卷"
-                  text={`A部分得分是:${partAScores} - ${resultA};  B部分得分是:${partBScores} - ${resultB}; `}
-                  url="https://surveymind.tw"
+                  text={`A部分得分是:${partAScores} - ${resultA};  B部分得分是:${partBScores} - ${resultB}; 歡迎在 https://surveymind.tw/asrs 進行篩檢`}
                 />
               </FooterComponent>
             </div>

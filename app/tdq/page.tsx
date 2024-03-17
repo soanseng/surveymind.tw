@@ -4,6 +4,7 @@ import Head from 'next/head';
 import useQuestionnaireForm from '@/hooks/useQuestionnaireForm';
 import Pagination from '@/hooks/Pagination';
 import { useResponsiveDialog } from '@/hooks/useResponsiveDialog';
+import ShareButton from '@/components/ShareButton';
 
 const questions = [
 "我常常覺得想哭",
@@ -181,6 +182,10 @@ const getTdqLikelihood = (score: number) => {
             <p>你的憂鬱指數是：{totalScores} 分</p>
             <FooterComponent>
             <p className="text-lg">{message}</p>
+            <ShareButton
+            title='台灣人憂鬱量表'
+            text={`您的的憂鬱指數是: ${totalScores} 分, ${message} 你可以在 https://surveymind.tw/tdq 進行篩檢`}
+            />
             </FooterComponent>
         </div>
       )}

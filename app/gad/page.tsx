@@ -115,8 +115,7 @@ const GAD7Form = () => {
 
                 <ShareButton
                   title="GAD-7 廣泛性焦慮量表"
-                  text={`我剛剛做了GAD-7 廣泛性焦慮量表，得分是:${score}， 焦慮程度: ${getSeverity(score)}`}
-                  url="https://surveymind.tw"
+                  text={`我剛剛做了GAD-7 廣泛性焦慮量表，得分是:${score}， 焦慮程度: ${getSeverity(score)}，你可以在https://surveymind.tw/gad-7`}
                 />
         </FooterComponent>
     )}

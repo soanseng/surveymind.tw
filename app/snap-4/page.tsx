@@ -4,6 +4,7 @@ import Head from 'next/head';
 import useQuestionnaireForm from '@/hooks/useQuestionnaireForm';
 import Pagination from '@/hooks/Pagination';
 import { useResponsiveDialog } from '@/hooks/useResponsiveDialog';
+import ShareButton from '@/components/ShareButton';
 import {
     Card,
     CardContent,
@@ -113,7 +114,9 @@ const SNAP4Form: React.FC = () => {
       <h1 className="text-2xl font-bold text-center my-8">
         SNAP-IV 兒童ADHD自我評估問卷
       </h1>
-      <p className='text-center mb-4 tesxt-sm'>      設計者：史瓦森(James M. Swanson, Ph.D)；翻譯：高淑芬
+      <p className="text-center mb-4 tesxt-sm">
+        {" "}
+        設計者：史瓦森(James M. Swanson, Ph.D)；翻譯：高淑芬
       </p>
       <p className="text-center mb-4">
         請根據以下問題回答您過去六個月觀察到的孩子行為。
@@ -189,17 +192,20 @@ const SNAP4Form: React.FC = () => {
               <ul>
                 <li>
                   <p className="text-lg">
-                    注意力不足部分得分: {inattentionScores} - {inattentionResult}
+                    注意力不足部分得分: {inattentionScores} -{" "}
+                    {inattentionResult}
                   </p>
                 </li>
                 <li>
                   <p className="text-lg">
-                    過動/衝動部分得分:  {hyperactivityImpulsivityScores} -  {hyperactivityImpulsivityResult}
+                    過動/衝動部分得分: {hyperactivityImpulsivityScores} -{" "}
+                    {hyperactivityImpulsivityResult}
                   </p>
                 </li>
                 <li>
                   <p className="text-lg">
-                    對立反抗的症狀部分得分: {oppositionalDefiantScores} - {oppositionalDefiantResult}
+                    對立反抗的症狀部分得分: {oppositionalDefiantScores} -{" "}
+                    {oppositionalDefiantResult}
                   </p>
                 </li>
               </ul>
@@ -207,6 +213,14 @@ const SNAP4Form: React.FC = () => {
                 <p>
                   如果您對結果有疑問或孩子的症狀在中度到重度範圍內，建議尋求專業醫生進一步評估。
                 </p>
+                <ShareButton
+                  title="SNAP-IV 兒童ADHD自我評估問卷"
+                  text={`我剛剛做了SNAP-IV 兒童ADHD自我評估問卷，結果是: 
+                    注意力不足部分得分: ${inattentionScores} - ${inattentionResult}
+                    過動/衝動部分得分:  ${hyperactivityImpulsivityScores} -  ${hyperactivityImpulsivityResult}
+                    對立反抗的症狀部分得分: ${oppositionalDefiantScores} - ${oppositionalDefiantResult}
+                    `}
+                />
               </FooterComponent>
             </div>
           </ContentComponent>
@@ -217,12 +231,7 @@ const SNAP4Form: React.FC = () => {
           <CardDescription className="text-sm text-gray-500 ">
             The SNAP-IV 26-item scale is an abbreviated version of the Swanson,
             Nolan, and Pelham(SNAP) Questionnaire (Swanson, 1992; Swanson et
-            al., 1983). Items from the DSM-IV criteria for
-            attention-deficit/hyperactivity disorder (ADHD) are included for the
-            two subsets of symptoms: Inattention (items 1–9) and
-            Hyperactivity/Impulsivity (items 10– 18). Also, items from the
-            DSM-IV criteria for oppositional defiant disorder (ODD) are included
-            (items 19–26) because ODD is often present in children with ADHD.
+            al., 1983).
           </CardDescription>
         </CardContent>
       </Card>

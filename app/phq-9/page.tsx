@@ -118,8 +118,7 @@ const Page = () => {
          <p>如果您有自殺念頭，請立即尋求專業醫療幫助。</p>
          <ShareButton
          title="PHQ-9 憂鬱症篩檢問卷"
-         text={`得分是:${score}！，目前嚴重程度是${getSeverity(score)}`}
-         url="https://surveymind.tw/phq-9"
+         text={`得分是:${score}！，目前嚴重程度是${getSeverity(score)}，你可以在https://surveymind.tw/phq-9 進行篩檢`}
          />
         </FooterComponent>
         </div>

@@ -149,8 +149,7 @@ const Page = () => {
                     如果您的得分顯示您可能有認知障礙，建議尋求專業醫療幫助。
                   </p>
                   <ShareButton title="AD-8 極早期失智症篩檢量表" 
-                  text={`得分是:${score} 0-1分：正常認知； 2分或更高：可能存在認知障礙`} 
-                  url="https://surveymind.tw"
+                  text={`得分是:${score} 0-1分：正常認知； 2分或更高：可能存在認知障礙，歡迎在 https://surveymind.tw/ad-8 進行篩檢`} 
                   />
                 </FooterComponent>
               </div>

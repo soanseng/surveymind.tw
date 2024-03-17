@@ -5,6 +5,7 @@ import useQuestionnaireForm from '@/hooks/useQuestionnaireForm';
 import Pagination from '@/hooks/Pagination';
 import { Input } from '@/components/ui/input';
 import { useResponsiveDialog } from '@/hooks/useResponsiveDialog';
+import ShareButton from '@/components/ShareButton';
 
 const questions = [
   {id: 1, question: "過去一個月來，您晚上通常幾點上床睡覺？"},
@@ -398,6 +399,10 @@ const customHandleSubmit = (e: React.FormEvent) => {
                 您可能需要改善睡眠品質。這表示您的睡眠狀況在過去一個月內可能不是很理想，建議尋求專業建議。
               </p>
             )}
+            <ShareButton
+            title='PSQI 匹茲堡睡眠品質量表'
+            text={`我的睡眠品質分數是: ${scores.globalScore}，你可以在 https://surveymind.tw/psqi 進行篩檢`}
+            />
             </FooterComponent>
           </div>
 

@@ -152,12 +152,48 @@ const Page = () => {
     return answers[questionIndex] !== null && answers[questionIndex] !== '';
   });
 
-
-  
   const customHandleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     handleSubmit(e);
   }
+  let dimensionSummaries: string[] = [];
+  const dimensionResults = Object.entries(score || {}).map(([dimension, scoreValue]) => {
+    const dimensionIndexes = dimensions[dimension as keyof typeof dimensions];
+    const maxScore = dimensionIndexes.length * 5; // Calculate max score based on number of questions per dimension
+    const isHigher = scoreValue > maxScore / 2;
+    const description = dimensionDescriptions[dimension as keyof typeof dimensionDescriptions];
+    // Assuming descriptions are separated into higher and lower parts by a specific pattern
+    const splitDescriptions = description.trim().split('\n- ');
+    const resultDescription = isHigher ? splitDescriptions[0] : splitDescriptions[1];
+    const dimensionName = dimensionNames[dimension as keyof typeof dimensionNames].split(":")[0].trim(); // Extracting the name without emojis for the summary
+    const summaryText = `${dimensionName}: ${resultDescription.trim().split(":")[1].trim()}`; // Extracting the description part without the emoji
+    
+    // Add the summary text for the current dimension to the array
+    dimensionSummaries.push(summaryText);
+  
+    return (
+      <div key={dimension} className="mb-4">
+        <label htmlFor={dimension} className="block mb-2 text-lg">
+          {dimensionNames[dimension as keyof typeof dimensionNames]}:
+        </label>
+        <p className="mb-2">{resultDescription.trim()}</p>
+        <input
+          id={dimension}
+          type="range"
+          min="0"
+          max={String(maxScore)}
+          value={String(scoreValue)}
+          disabled
+          className="w-full"
+        />
+      </div>
+    );
+  });
+  
+  // Join the dimension summaries to create a single string for sharing
+  const resultsSummary = dimensionSummaries.join("\n ");
+  
+  
 
   return (
     <div className="container mx-auto px-4">
@@ -167,11 +203,16 @@ const Page = () => {
       <h1 className="text-2xl font-bold text-center my-8">
         大五人格量表 (BFI)
       </h1>
-      <p className="mb-4 text-cneter"  >總共有44題，每題都有五個選項，請選擇最符合您的答案。</p>
+      <p className="mb-4 text-cneter">
+        總共有44題，每題都有五個選項，請選擇最符合您的答案。
+      </p>
       {validationMessage && (
         <p className="text-red-500 text-center">{validationMessage}</p>
       )}
-      <form onSubmit={customHandleSubmit} className="bg-white p-6 rounded shadow">
+      <form
+        onSubmit={customHandleSubmit}
+        className="bg-white p-6 rounded shadow"
+      >
         {currentQuestions.map((question, index) => {
           const questionIndex = startIndex + index;
           const isUnanswered =
@@ -228,56 +269,34 @@ const Page = () => {
           }
           onBack={prevPage}
           onForward={nextPage}
-          showSubmitButton={currentPage === Math.ceil(questions.length / questionsPerPage) - 1 && allQuestionsAnswered()}
+          showSubmitButton={
+            currentPage ===
+              Math.ceil(questions.length / questionsPerPage) - 1 &&
+            allQuestionsAnswered()
+          }
           onSubmit={(e) => {
             e.preventDefault();
             customHandleSubmit(e);
           }}
         />
-
       </form>
       {/* score display logic here */}
-      { score && formSubmitted && (
-
+      {score && formSubmitted && (
         <div className="mt-8 bg-gray-100 p-4 rounded shadow">
           <h3 className="text-2xl mb-4">量表結果</h3>
-            <p className="text-lg mb-4">在我們的旅程中，每個人都展現出獨特的性格特質，這些特質塑造了我們與世界互動的方式。讓我們一起探索您的五大人格特質，並以更溫暖和鼓舞人心的方式來看待它們：</p>
-          {Object.entries(score).map(([dimension, scoreValue]) => {
-            const dimensionIndexes = dimensions[dimension as keyof typeof dimensions];
-            const maxScore = dimensionIndexes.length * 5; // Calculate max score based on number of questions per dimension
-            const isHigher = scoreValue > maxScore / 2;
-            const description = dimensionDescriptions[dimension as keyof typeof dimensionDescriptions];
-            // Assuming descriptions are separated into higher and lower parts by a specific pattern
-            const splitDescriptions = description.trim().split('\n- ');
-            const resultDescription = isHigher ? splitDescriptions[0] : splitDescriptions[1];
-
-            return(
-            <div key={dimension} className="mb-4">
-              <label htmlFor={dimension} className="block mb-2 text-lg">
-                {dimensionNames[dimension as keyof typeof dimensionNames]}:
-              </label>
-              <p className="mb-2">{resultDescription.trim()}</p>
-              <input
-                id={dimension}
-                type="range"
-                min="0"
-                max={String(maxScore)}
-                value={String(scoreValue)}
-                disabled
-                className="w-full"
-              />
-            </div>
-          );
-          })}
+          <p className="text-lg mb-4">
+            在我們的旅程中，每個人都展現出獨特的性格特質，這些特質塑造了我們與世界互動的方式。讓我們一起探索您的五大人格特質，並以更溫暖和鼓舞人心的方式來看待它們：
+          </p>
+          {dimensionResults}
           <ShareButton
-          title='大五人格測驗'
-          text='我剛剛做了大五人格測驗'
-          url='https://surveymind.tw/big-5'
+            title="大五人格測驗"
+            text={`我的結果是: ${resultsSummary}. 歡迎在 https://surveymind.tw/big-5 進行測驗`}
           />
-          <p className="mb-4">每一種特質都有其獨特之處，無論您在哪一端，都代表著您獨特的個性和看待世界的方式。擁抱您的特質，讓它們引領您走向充滿豐富多彩經歷的人生旅程。🌈</p>
+          <p className="mb-4">
+            每一種特質都有其獨特之處，無論您在哪一端，都代表著您獨特的個性和看待世界的方式。擁抱您的特質，讓它們引領您走向充滿豐富多彩經歷的人生旅程。🌈
+          </p>
         </div>
       )}
-
     </div>
   );
 };

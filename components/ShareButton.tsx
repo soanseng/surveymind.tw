@@ -31,7 +31,7 @@ const ShareButton: React.FC<ShareButtonProps> = ({ title, text, url }) => {
         }
       }
     } else {
-      handleCopyToClipboard(`我在${url}做了${title}，結果是${text}。`);
+      handleCopyToClipboard(`我做了${title}，結果是${text}。`);
     }
   };
 
