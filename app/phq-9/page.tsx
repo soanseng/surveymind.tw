@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import Head from 'next/head';
 import useQuestionnaireForm from '@/hooks/useQuestionnaireForm';
 import { useResponsiveDialog } from '@/hooks/useResponsiveDialog';
+import ShareButton from '@/components/ShareButton';
 
 const questions = [
   "做事時提不起勁或沒有樂趣",
@@ -17,6 +18,14 @@ const questions = [
 ];
 
 
+  const getSeverity = (score: number | null) => {
+    if (score == null) return "請先提供分數";
+    if (score <= 4) return '無至最小憂鬱';
+    if (score <= 9) return '輕度憂鬱';
+    if (score <= 14) return '中度憂鬱';
+    if (score <= 19) return '中重度憂鬱';
+    return '重度憂鬱';
+  };
 
 
 const Page = () => {
@@ -103,15 +112,15 @@ const Page = () => {
         <div className="mt-8">
           <p className="text-lg">您的總分是: {score}</p>
          <p>根據您的得分，您可能的憂鬱症狀程度為：</p>
-         <ul>
-           <li>0-4分：無至最小憂鬱</li>
-           <li>5-9分：輕度憂鬱</li>
-           <li>10-14分：中度憂鬱</li>
-           <li>15-19分：中重度憂鬱</li>
-           <li>20-27分：重度憂鬱</li>
-         </ul>
+         <p>{getSeverity(score)}</p>
          <FooterComponent>
          <p>如果您的得分顯示您可能有憂鬱症，建議尋求專業醫療幫助。</p>
+         <p>如果您有自殺念頭，請立即尋求專業醫療幫助。</p>
+         <ShareButton
+         title="PHQ-9 憂鬱症篩檢問卷"
+         text={`得分是:${score}！，目前嚴重程度是${getSeverity(score)}`}
+         url="https://surveymind.tw/phq-9"
+         />
         </FooterComponent>
         </div>
     </ContentComponent>

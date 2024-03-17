@@ -4,6 +4,7 @@ import Head from 'next/head';
 import useQuestionnaireForm from '@/hooks/useQuestionnaireForm';
 import { useResponsiveDialog } from '@/hooks/useResponsiveDialog';
 import { Trigger } from '@radix-ui/react-menubar';
+import ShareButton from '@/components/ShareButton';
 
 
   const questions = [
@@ -111,6 +112,12 @@ const GAD7Form = () => {
       {typeof score === 'number' && (
         <FooterComponent>
       <p className="text-gray-700 mt-4">焦慮程度: {getSeverity(score)}</p>
+
+                <ShareButton
+                  title="GAD-7 廣泛性焦慮量表"
+                  text={`我剛剛做了GAD-7 廣泛性焦慮量表，得分是:${score}， 焦慮程度: ${getSeverity(score)}`}
+                  url="https://surveymind.tw"
+                />
         </FooterComponent>
     )}
         </>

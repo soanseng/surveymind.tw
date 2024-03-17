@@ -4,6 +4,7 @@ import Head from 'next/head';
 import useQuestionnaireForm from '@/hooks/useQuestionnaireForm';
 import Pagination from '@/hooks/Pagination';
 import { ScrollArea } from '@radix-ui/react-scroll-area';
+import ShareButton from '@/components/ShareButton';
 
 const questions = [
   "健談的",
@@ -268,6 +269,11 @@ const Page = () => {
             </div>
           );
           })}
+          <ShareButton
+          title='大五人格測驗'
+          text='我剛剛做了大五人格測驗'
+          url='https://surveymind.tw/big-5'
+          />
           <p className="mb-4">每一種特質都有其獨特之處，無論您在哪一端，都代表著您獨特的個性和看待世界的方式。擁抱您的特質，讓它們引領您走向充滿豐富多彩經歷的人生旅程。🌈</p>
         </div>
       )}
