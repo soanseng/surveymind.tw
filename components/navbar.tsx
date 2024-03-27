@@ -55,9 +55,10 @@ const Navbar = () => {
 
         {/* Mobile Dropdown Menu */}
         <div className="md:hidden">
+          
       <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
         <DropdownMenuTrigger asChild>
-            <HamburgerMenuIcon style={{ width: '36', height: '36' }} />
+            <HamburgerMenuIcon className='w-12 h-12 sm:w-15 sm:h-15 md:w-20 md:h-20' />
         </DropdownMenuTrigger>
         <DropdownMenuContent>
           {categories.map((category) => (
