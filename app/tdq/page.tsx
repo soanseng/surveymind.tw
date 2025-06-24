@@ -261,14 +261,17 @@ const TdqForm: React.FC = () => {
                 下一頁
               </button>
             ) : (
-              allQuestionsAnswered() && (
-                <button
-                  type="submit"
-                  className="bg-green-600 hover:bg-green-700 text-white font-medium py-3 px-8 rounded-lg transition-colors"
-                >
-                  完成評估
-                </button>
-              )
+              <button
+                type="submit"
+                className={`font-medium py-3 px-8 rounded-lg transition-colors ${
+                  allQuestionsAnswered()
+                    ? 'bg-green-600 hover:bg-green-700 text-white'
+                    : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                }`}
+                disabled={!allQuestionsAnswered()}
+              >
+                完成評估
+              </button>
             )}
           </div>
         </form>
