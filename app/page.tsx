@@ -82,6 +82,8 @@ const questionnaires = {
     { name: "台灣人憂鬱症量表", link: "/tdq", time: "8-10分鐘", difficulty: "中等" },
     { name: "輕躁症自我評估量表 (Hypomania)", link: "/hcl-32", time: "10-15分鐘", difficulty: "中等" },
     { name: "OCI-R 強迫症狀量表修訂版", link: "/oci-r", time: "5-8分鐘", difficulty: "簡單" },
+    { name: "創傷後壓力症候群檢核表", link: "/pcl-5", time: "10-15分鐘", difficulty: "中等" },
+    { name: "初級照護PTSD篩檢量表", link: "/pc-ptsd-5", time: "3-5分鐘", difficulty: "簡單" },
   ],
   sleep: [
     { name: "PSQI 匹茲堡睡眠品質量表", link: "/psqi", time: "8-10分鐘", difficulty: "中等" },

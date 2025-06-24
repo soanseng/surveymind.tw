@@ -387,6 +387,54 @@ export const questionnaireSEO: Record<string, SEOConfig> = {
       duration: "5-8分鐘",
       difficulty: "簡單"
     }
+  },
+
+  // PCL-5 - PTSD Checklist for DSM-5
+  "pcl-5": {
+    title: "創傷後壓力症候群檢核表 PCL-5 | PTSD評估 | 創傷症狀篩檢 - 文心樂丞診所",
+    description: "PCL-5創傷後壓力症候群檢核表，DSM-5標準PTSD評估工具。20題全面評估創傷症狀，包含闖入、逃避、認知情緒、警覺反應四大症狀群集。",
+    keywords: [
+      "PCL-5", "創傷後壓力症候群", "PTSD評估", "創傷症狀篩檢", "創傷量表",
+      "PTSD檢核表", "創傷後壓力評估", "DSM-5", "創傷心理評估",
+      "PTSD自我評估", "創傷症狀量表", "心理創傷評估", "創傷篩檢工具"
+    ],
+    openGraph: {
+      title: "PCL-5 創傷後壓力症候群檢核表 - DSM-5標準PTSD評估工具",
+      description: "權威的PTSD自我評估工具，全面評估創傷後症狀，符合最新DSM-5診斷標準。",
+      type: "website",
+      locale: "zh_TW"
+    },
+    structuredData: {
+      name: "PCL-5 創傷後壓力症候群檢核表",
+      description: "評估PTSD症狀和創傷後壓力反應",
+      category: "創傷心理評估",
+      duration: "10-15分鐘",
+      difficulty: "中等"
+    }
+  },
+
+  // PC-PTSD-5 - Primary Care PTSD Screen for DSM-5
+  "pc-ptsd-5": {
+    title: "初級照護PTSD篩檢量表 PC-PTSD-5 | 快速創傷篩檢 | PTSD初篩 - 文心樂丞診所",
+    description: "PC-PTSD-5初級照護PTSD篩檢量表，快速創傷後壓力症候群篩檢工具。兩階段評估：創傷史確認及5題症狀篩檢，適合初步評估使用。",
+    keywords: [
+      "PC-PTSD-5", "初級照護PTSD篩檢", "快速創傷篩檢", "PTSD初篩", "創傷篩檢",
+      "PTSD快速評估", "創傷後壓力初篩", "基層醫療篩檢", "創傷症狀快篩",
+      "PTSD篩檢工具", "創傷心理篩檢", "初步創傷評估", "簡易PTSD測試"
+    ],
+    openGraph: {
+      title: "PC-PTSD-5 初級照護PTSD篩檢量表 - 快速創傷後壓力症候群篩檢",
+      description: "簡潔有效的PTSD快速篩檢工具，適合初步評估創傷後壓力症狀。",
+      type: "website",
+      locale: "zh_TW"
+    },
+    structuredData: {
+      name: "PC-PTSD-5 初級照護PTSD篩檢量表",
+      description: "快速篩檢PTSD症狀的初級照護工具",
+      category: "創傷心理評估",
+      duration: "3-5分鐘",
+      difficulty: "簡單"
+    }
   }
 };
 
