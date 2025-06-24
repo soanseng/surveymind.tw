@@ -100,6 +100,7 @@ const questionnaires = {
   ],
   personality: [
     { name: "大五人格量表", link: "/big-5", time: "15-20分鐘", difficulty: "詳細" },
+    { name: "麥克連邊緣性人格障礙篩查量表", link: "/msi-bpd", time: "3-5分鐘", difficulty: "簡單" },
   ],
   trauma: [
     { name: "創傷後壓力症候群檢核表", link: "/pcl-5", time: "10-15分鐘", difficulty: "中等" },

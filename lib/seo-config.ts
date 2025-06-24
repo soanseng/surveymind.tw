@@ -435,6 +435,30 @@ export const questionnaireSEO: Record<string, SEOConfig> = {
       duration: "3-5分鐘",
       difficulty: "簡單"
     }
+  },
+
+  // MSI-BPD - McLean Screening Instrument for Borderline Personality Disorder
+  "msi-bpd": {
+    title: "邊緣性人格障礙篩檢量表 MSI-BPD | BPD測試 | 人格障礙評估 - 文心樂丞診所",
+    description: "MSI-BPD麥克連邊緣性人格障礙篩查量表，專業BPD篩檢工具。10題快速評估邊緣性人格障礙風險，由哈佛醫學院專家開發的標準化篩檢量表。",
+    keywords: [
+      "MSI-BPD", "邊緣性人格障礙", "BPD篩檢", "人格障礙測試", "邊緣性人格測試",
+      "人格障礙評估", "邊緣性人格篩檢", "BPD評估", "人格障礙診斷",
+      "邊緣性人格障礙量表", "人格障礙篩檢", "麥克連量表", "BPD自我評估"
+    ],
+    openGraph: {
+      title: "MSI-BPD 邊緣性人格障礙篩檢量表 - 專業BPD評估工具",
+      description: "哈佛醫學院開發的邊緣性人格障礙篩檢工具，10題快速評估BPD風險。",
+      type: "website",
+      locale: "zh_TW"
+    },
+    structuredData: {
+      name: "MSI-BPD 麥克連邊緣性人格障礙篩查量表",
+      description: "篩檢邊緣性人格障礙的專業工具",
+      category: "人格特質評估",
+      duration: "3-5分鐘",
+      difficulty: "簡單"
+    }
   }
 };
 

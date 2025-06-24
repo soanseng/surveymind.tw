@@ -36,7 +36,7 @@ const Navbar = () => {
       {name: '臨床失智症評估量表說明', link: '/cdr'}, 
       {name: '功能性評估分級量表', link: '/fast'} 
     ] },
-    { name: '人格', questionnaire: [ {name: '大五人格量表', link: '/big-5'} ] },
+    { name: '人格', questionnaire: [ {name: '大五人格量表', link: '/big-5'}, {name: '麥克連邊緣性人格障礙篩查量表', link: '/msi-bpd'} ] },
     { name: '創傷評估', questionnaire: [ {name: '創傷後壓力症候群檢核表', link: '/pcl-5'}, {name: '初級照護PTSD篩檢量表', link: '/pc-ptsd-5'} ] },
   ];
 
