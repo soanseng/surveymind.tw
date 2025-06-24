@@ -85,6 +85,7 @@ const questionnaires = {
   ],
   sleep: [
     { name: "PSQI 匹茲堡睡眠品質量表", link: "/psqi", time: "8-10分鐘", difficulty: "中等" },
+    { name: "ISI 失眠嚴重度量表", link: "/isi", time: "3-5分鐘", difficulty: "簡單" },
   ],
   attention: [
     { name: "ASRS 成人ADHD自我評估問卷", link: "/asrs", time: "5-8分鐘", difficulty: "簡單" },

@@ -221,6 +221,30 @@ export const questionnaireSEO: Record<string, SEOConfig> = {
     }
   },
 
+  // ISI - Insomnia Severity Index
+  isi: {
+    title: "失眠嚴重度量表 ISI | 失眠症評估 | 睡眠困難檢測 - 文心樂丞診所",
+    description: "ISI失眠嚴重度量表，專業失眠症篩檢工具。快速評估失眠嚴重程度、睡眠困擾對日常生活的影響，由精神科醫師提供的標準化失眠評估。",
+    keywords: [
+      "失眠嚴重度量表", "ISI", "失眠症評估", "失眠測試", "失眠篩檢",
+      "睡眠困擾評估", "失眠症量表", "失眠診斷", "睡眠問題檢測",
+      "失眠嚴重程度", "睡眠障礙", "失眠自我評估", "線上失眠測試"
+    ],
+    openGraph: {
+      title: "ISI 失眠嚴重度量表 - 專業失眠症篩檢評估工具",
+      description: "快速評估失眠嚴重程度，了解睡眠困擾對日常生活的影響，改善睡眠品質。",
+      type: "website",
+      locale: "zh_TW"
+    },
+    structuredData: {
+      name: "ISI 失眠嚴重度量表",
+      description: "評估失眠嚴重程度和對生活的影響",
+      category: "睡眠健康評估",
+      duration: "3-5分鐘",
+      difficulty: "簡單"
+    }
+  },
+
   // AD-8 - Dementia Screening
   "ad-8": {
     title: "失智症篩檢表 AD-8 | 早期失智評估 | 認知功能檢測 - 文心樂丞診所",
