@@ -291,6 +291,102 @@ export const questionnaireSEO: Record<string, SEOConfig> = {
       duration: "15-20分鐘",
       difficulty: "詳細"
     }
+  },
+
+  // SPMSQ - Simple Portable Mental Status Questionnaire
+  spmsq: {
+    title: "簡易認知功能評估表 SPMSQ | 失智症篩檢 | 認知功能測試 - 文心樂丞診所",
+    description: "SPMSQ簡易認知功能評估表，專業失智症篩檢工具。快速評估基本心智狀態、定向感和記憶力，10題認知功能檢測，適合社區篩檢使用。",
+    keywords: [
+      "SPMSQ", "簡易認知功能評估", "失智症篩檢", "認知功能測試", "心智狀態評估",
+      "記憶力評估", "定向感檢測", "失智症測試", "認知障礙篩檢",
+      "老人認知評估", "認知功能檢查", "失智症量表", "認知功能退化"
+    ],
+    openGraph: {
+      title: "SPMSQ 簡易認知功能評估表 - 專業失智症篩檢工具",
+      description: "快速評估認知功能狀態，10題簡易測試，有效篩檢失智症風險。",
+      type: "website",
+      locale: "zh_TW"
+    },
+    structuredData: {
+      name: "SPMSQ 簡易認知功能評估表",
+      description: "篩檢基本心智狀態和認知功能",
+      category: "認知功能評估",
+      duration: "5分鐘",
+      difficulty: "簡單"
+    }
+  },
+
+  // SLUMS - Saint Louis University Mental Status
+  slums: {
+    title: "聖路易大學心智狀態測驗 SLUMS | 輕度認知障礙篩檢 | MCI檢測 - 文心樂丞診所",
+    description: "SLUMS聖路易大學心智狀態測驗，免費認知功能評估工具。對輕度認知障礙(MCI)具高敏感度，30分量表評估記憶、注意力、執行功能等認知領域。",
+    keywords: [
+      "SLUMS", "聖路易大學心智狀態測驗", "輕度認知障礙", "MCI篩檢", "認知功能評估",
+      "失智症篩檢", "記憶力測試", "注意力評估", "執行功能檢測",
+      "認知障礙篩檢", "免費認知測驗", "失智症早期篩檢", "認知功能檢查"
+    ],
+    openGraph: {
+      title: "SLUMS 聖路易大學心智狀態測驗 - 輕度認知障礙專業篩檢工具",
+      description: "免費的認知功能評估工具，對MCI具有高敏感度，適合早期認知障礙篩檢。",
+      type: "website",
+      locale: "zh_TW"
+    },
+    structuredData: {
+      name: "SLUMS 聖路易大學心智狀態測驗",
+      description: "評估認知功能和篩檢輕度認知障礙",
+      category: "認知功能評估",
+      duration: "10分鐘",
+      difficulty: "中等"
+    }
+  },
+
+  // CDR - Clinical Dementia Rating
+  cdr: {
+    title: "臨床失智症評估量表 CDR | 失智症分期 | 長照資源申請評估 - 文心樂丞診所",
+    description: "CDR臨床失智症評估量表，失智症分期黃金標準工具。評估六大功能領域，台灣申請失智共照中心和外籍看護的重要依據，專業失智症嚴重度評估。",
+    keywords: [
+      "CDR", "臨床失智症評估量表", "失智症分期", "失智症評估", "長照資源申請",
+      "失智共照中心", "外籍看護申請", "失智症嚴重度", "認知功能評估",
+      "失智症診斷", "失智症照護", "CDR評分", "失智症量表"
+    ],
+    openGraph: {
+      title: "CDR 臨床失智症評估量表 - 失智症分期與長照資源評估工具",
+      description: "了解CDR評估的重要性，台灣申請失智照護資源的關鍵評估工具。",
+      type: "website",
+      locale: "zh_TW"
+    },
+    structuredData: {
+      name: "CDR 臨床失智症評估量表",
+      description: "評估失智症嚴重程度和功能分期",
+      category: "認知功能評估",
+      duration: "專業評估",
+      difficulty: "專業"
+    }
+  },
+
+  // FAST - Functional Assessment Staging Tool
+  fast: {
+    title: "功能性評估分級量表 FAST | 失智症功能分期 | 照護需求評估 - 文心樂丞診所",
+    description: "FAST功能性評估分級量表，阿茲海默症功能退化評估工具。7個階段功能分期，幫助了解照護需求、預期病程變化，制定適當的照護計畫。",
+    keywords: [
+      "FAST", "功能性評估分級量表", "失智症分期", "阿茲海默症分期", "功能評估",
+      "照護需求評估", "失智症照護", "功能退化評估", "失智症病程",
+      "照護計畫", "安寧療護評估", "失智症功能", "日常生活功能評估"
+    ],
+    openGraph: {
+      title: "FAST 功能性評估分級量表 - 失智症功能分期與照護需求評估",
+      description: "了解失智症功能退化階段，評估照護需求，制定適當的照護計畫。",
+      type: "website",
+      locale: "zh_TW"
+    },
+    structuredData: {
+      name: "FAST 功能性評估分級量表",
+      description: "評估失智症功能退化階段",
+      category: "認知功能評估",
+      duration: "5-8分鐘",
+      difficulty: "簡單"
+    }
   }
 };
 

@@ -93,6 +93,10 @@ const questionnaires = {
   ],
   cognitive: [
     { name: "早期失智篩檢表", link: "/ad-8", time: "3-5分鐘", difficulty: "簡單" },
+    { name: "簡易認知功能評估表", link: "/spmsq", time: "5分鐘", difficulty: "簡單" },
+    { name: "聖路易大學心智狀態測驗", link: "/slums", time: "10分鐘", difficulty: "中等" },
+    { name: "臨床失智症評估量表說明", link: "/cdr", time: "閱讀", difficulty: "專業" },
+    { name: "功能性評估分級量表", link: "/fast", time: "5-8分鐘", difficulty: "簡單" },
   ],
   personality: [
     { name: "大五人格量表", link: "/big-5", time: "15-20分鐘", difficulty: "詳細" },
