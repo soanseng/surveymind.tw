@@ -1,96 +1,297 @@
-import Image from "next/image";
-
 import Link from "next/link";
-
 import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
+} from "@/components/ui/card";
+import { 
+  Heart, 
+  Brain, 
+  Moon, 
+  Focus, 
+  Users, 
+  Star,
+  ArrowRight,
+  CheckCircle,
+  Shield,
+  Clock,
+  Award
+} from "lucide-react";
 
+const questionnaires = {
+  emotion: [
+    { name: "廣泛性焦慮量表", link: "/gad", time: "3-5分鐘", difficulty: "簡單" },
+    { name: "PHQ-9 憂鬱症篩檢問卷", link: "/phq-9", time: "5-8分鐘", difficulty: "簡單" },
+    { name: "台灣人憂鬱症量表", link: "/tdq", time: "8-10分鐘", difficulty: "中等" },
+    { name: "輕燥症自我評估量表", link: "/hcl-32", time: "10-15分鐘", difficulty: "中等" },
+  ],
+  sleep: [
+    { name: "PSQI 匹茲堡睡眠品質量表", link: "/psqi", time: "8-10分鐘", difficulty: "中等" },
+  ],
+  attention: [
+    { name: "ASRS 成人ADHD自我評估問卷", link: "/asrs", time: "5-8分鐘", difficulty: "簡單" },
+    { name: "過動兒家長量表", link: "/snap-4", time: "10-12分鐘", difficulty: "中等" },
+  ],
+  cognitive: [
+    { name: "早期失智篩檢表", link: "/ad-8", time: "3-5分鐘", difficulty: "簡單" },
+  ],
+  personality: [
+    { name: "大五人格量表", link: "/big-5", time: "15-20分鐘", difficulty: "詳細" },
+  ],
+};
+
+const categories = [
+  {
+    id: "emotion",
+    name: "情緒健康",
+    icon: Heart,
+    description: "評估情緒狀態，識別焦慮與憂鬱",
+    color: "bg-red-100 text-red-600",
+    questionnaires: questionnaires.emotion,
+  },
+  {
+    id: "sleep",
+    name: "睡眠品質",
+    icon: Moon,
+    description: "分析睡眠模式，改善休息品質",
+    color: "bg-blue-100 text-blue-600",
+    questionnaires: questionnaires.sleep,
+  },
+  {
+    id: "attention",
+    name: "注意力",
+    icon: Focus,
+    description: "檢測專注力與過動症狀",
+    color: "bg-green-100 text-green-600",
+    questionnaires: questionnaires.attention,
+  },
+  {
+    id: "cognitive",
+    name: "認知功能",
+    icon: Brain,
+    description: "評估記憶力與認知能力",
+    color: "bg-purple-100 text-purple-600",
+    questionnaires: questionnaires.cognitive,
+  },
+  {
+    id: "personality",
+    name: "人格特質",
+    icon: Users,
+    description: "了解個人性格與行為模式",
+    color: "bg-orange-100 text-orange-600",
+    questionnaires: questionnaires.personality,
+  },
+];
+
+const features = [
+  {
+    icon: Shield,
+    title: "醫學實證",
+    description: "採用國際認證的標準化量表",
+  },
+  {
+    icon: Clock,
+    title: "快速便利",
+    description: "3-20分鐘即可完成評估",
+  },
+  {
+    icon: Award,
+    title: "專業解讀",
+    description: "提供詳細的結果分析與建議",
+  },
+];
 
 export default function Home() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <section className="my-8">
-        <h1 className="text-2xl font-bold">心理健康自我評估平台</h1>
-        <p>
-          這是
-          <a
-            href="https://anxiety.com.tw"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-blue-300"
-          >
-            文心樂丞診所
-          </a>
-          提供一系列的心理健康自我評估問卷，希望幫助使用者更好地了解自己的心理狀態。
-        </p>
+    <main className="min-h-screen bg-gradient-to-b from-warm-cream via-background to-warm-peach/20">
+      {/* Hero Section */}
+      <section className="relative overflow-hidden px-4 py-16 md:py-24 lg:py-32">
+        <div className="absolute inset-0 warm-gradient opacity-50" />
+        <div className="container relative mx-auto max-w-6xl">
+          <div className="flex flex-col items-center text-center space-y-8">
+            <div className="animate-fade-in space-y-4">
+              <h1 className="text-balance text-4xl font-bold leading-tight tracking-tighter md:text-6xl lg:text-7xl">
+                開始你的
+                <span className="warm-text-primary"> 心理健康 </span>
+                評估之旅
+              </h1>
+              <p className="mx-auto max-w-2xl text-lg text-muted-foreground md:text-xl lg:text-2xl">
+                由
+                <Link
+                  href="https://anxiety.com.tw"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="warm-text-secondary font-semibold hover:underline"
+                >
+                  文心樂丞診所
+                </Link>
+                陳璿丞醫師提供的專業心理健康自我評估平台，幫助您更好地了解自己的心理狀態
+              </p>
+            </div>
+            
+            <div className="animate-slide-up flex flex-col space-y-4 sm:flex-row sm:space-x-4 sm:space-y-0">
+              <Button 
+                size="lg" 
+                className="warm-bg-primary hover:warm-bg-secondary text-white px-8 py-6 text-lg font-semibold transition-all duration-300 hover:scale-105"
+                asChild
+              >
+                <Link href="#categories">
+                  開始評估 <ArrowRight className="ml-2 h-5 w-5" />
+                </Link>
+              </Button>
+              <Button 
+                variant="outline" 
+                size="lg"
+                className="border-warm-orange text-warm-orange hover:warm-bg-primary hover:text-white px-8 py-6 text-lg font-semibold"
+                asChild
+              >
+                <Link href="#about">了解更多</Link>
+              </Button>
+            </div>
+          </div>
+        </div>
       </section>
-      <section className="grid grid-cols-1 md:grid-cols-3 gap-4 my-8">
-        <Card className="p-4 shadow rounded">
-          <CardHeader>
-            <CardTitle>醫學</CardTitle>
-            <CardDescription>這是一個醫學上常見的自我評估量表</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Image src="/images/q1.jpg" alt="q1" width={500} height={500} />
-            <Link
-              href="/tdq"
-              className="text-blue-500 hover:text-blue-700"
-            >
-              前往台灣人憂鬱量表 (TDQ)
-            </Link>
-          </CardContent>
-        </Card>
 
-        <Card className="p-4 shadow rounded">
-          <CardHeader>
-            <CardTitle>實證</CardTitle>
-            <CardDescription>每個量表都有良好的信效度</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Image src="/images/q2.jpg" alt="q1" width={500} height={500} />
-            <Link
-              href="/snap-4"
-              className="text-blue-500 hover:text-blue-700"
-            >
-              前往過動兒家長量表 (SNAP-IV)
-            </Link>
-          </CardContent>
-        </Card>
-
-        <Card className="p-4 shadow rounded">
-          <CardHeader>
-            <CardTitle>自我評估</CardTitle>
-            <CardDescription>快速評估是否需要協助</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Image src="/images/q3.jpg" alt="q1" width={500} height={500} />
-            <Link
-              href="/big-5"
-              className="text-blue-500 hover:text-blue-700"
-            >
-              前往大五人格量表
-            </Link>
-          </CardContent>
-        </Card>
+      {/* Features Section */}
+      <section className="py-16 px-4">
+        <div className="container mx-auto max-w-6xl">
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
+            {features.map((feature, index) => {
+              const Icon = feature.icon;
+              return (
+                <div
+                  key={index}
+                  className="flex flex-col items-center text-center space-y-4 p-6 rounded-lg hover-lift"
+                >
+                  <div className="rounded-full warm-bg-accent p-4">
+                    <Icon className="h-8 w-8 warm-text-primary" />
+                  </div>
+                  <h3 className="text-xl font-semibold">{feature.title}</h3>
+                  <p className="text-muted-foreground">{feature.description}</p>
+                </div>
+              );
+            })}
+          </div>
+        </div>
       </section>
-      <section className="my-8">
-        <h2 className="text-xl font-semibold">關於我們</h2>
-        <p>
-          我是陳璿丞醫師，希望透過這個簡單的網站，讓更多人能夠快速地自我評估。
-        </p>
-        <p>
-          這些自我評估問卷不能取代專業的診斷和治療。如果您在問卷中發現任何令人擔憂的結果，我們強烈建議您尋求專業醫療人員的幫助。
-        </p>
-        <p>
-          開始您的自我探索之旅，並為自己的心理健康投資。立即選擇一份問卷，開始評估！。
-        </p>
+
+      {/* Categories Section */}
+      <section id="categories" className="py-16 px-4 bg-gradient-to-b from-background to-warm-cream/30">
+        <div className="container mx-auto max-w-6xl">
+          <div className="text-center space-y-4 mb-12">
+            <h2 className="text-3xl font-bold md:text-4xl">心理健康評估分類</h2>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              選擇適合的評估類別，開始您的心理健康自我了解之旅
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {categories.map((category) => {
+              const Icon = category.icon;
+              return (
+                <Card key={category.id} className="hover-lift group cursor-pointer border-2 hover:border-warm-orange/50">
+                  <CardHeader className="text-center">
+                    <div className={`mx-auto rounded-full p-4 w-16 h-16 flex items-center justify-center ${category.color} group-hover:scale-110 transition-transform duration-300`}>
+                      <Icon className="h-8 w-8" />
+                    </div>
+                    <CardTitle className="text-xl">{category.name}</CardTitle>
+                    <CardDescription className="text-base">
+                      {category.description}
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-3">
+                      {category.questionnaires.map((q, idx) => (
+                        <div
+                          key={idx}
+                          className="flex items-center justify-between p-3 rounded-lg bg-muted/50 hover:bg-muted transition-colors"
+                        >
+                          <div className="flex-1">
+                            <Link
+                              href={q.link}
+                              className="font-medium text-sm hover:warm-text-primary transition-colors"
+                            >
+                              {q.name}
+                            </Link>
+                            <div className="flex items-center space-x-2 mt-1">
+                              <span className="text-xs text-muted-foreground flex items-center">
+                                <Clock className="h-3 w-3 mr-1" />
+                                {q.time}
+                              </span>
+                              <span className="text-xs px-2 py-1 rounded-full bg-warm-peach/50 text-warm-brown">
+                                {q.difficulty}
+                              </span>
+                            </div>
+                          </div>
+                          <ArrowRight className="h-4 w-4 text-muted-foreground group-hover:warm-text-primary transition-colors" />
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* About Section */}
+      <section id="about" className="py-16 px-4">
+        <div className="container mx-auto max-w-4xl">
+          <div className="text-center space-y-8">
+            <h2 className="text-3xl font-bold md:text-4xl">關於我們</h2>
+            
+            <Card className="text-left p-8 glass-effect">
+              <div className="space-y-6">
+                <div className="flex items-start space-x-4">
+                  <div className="rounded-full warm-bg-primary p-3">
+                    <Heart className="h-6 w-6 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-semibold mb-2">專業醫師團隊</h3>
+                    <p className="text-muted-foreground leading-relaxed">
+                      我是陳璿丞醫師，希望透過這個簡單的網站，讓更多人能夠快速地進行心理健康自我評估。
+                      每個量表都經過嚴格的醫學驗證，確保評估結果的準確性與可靠性。
+                    </p>
+                  </div>
+                </div>
+                
+                <div className="border-l-4 border-warm-orange pl-6 space-y-3">
+                  <h4 className="font-semibold text-warm-brown">重要提醒</h4>
+                  <div className="space-y-2 text-sm text-muted-foreground">
+                    <div className="flex items-start space-x-2">
+                      <CheckCircle className="h-4 w-4 text-warm-orange mt-0.5 flex-shrink-0" />
+                      <span>這些評估工具僅供參考，不能取代專業的醫學診斷</span>
+                    </div>
+                    <div className="flex items-start space-x-2">
+                      <CheckCircle className="h-4 w-4 text-warm-orange mt-0.5 flex-shrink-0" />
+                      <span>如發現任何令人擔憂的結果，建議尋求專業醫療協助</span>
+                    </div>
+                    <div className="flex items-start space-x-2">
+                      <CheckCircle className="h-4 w-4 text-warm-orange mt-0.5 flex-shrink-0" />
+                      <span>定期進行心理健康評估，有助於維護整體身心健康</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </Card>
+            
+            <div className="pt-8">
+              <Button 
+                size="lg" 
+                className="warm-bg-primary hover:warm-bg-secondary text-white px-8 py-6 text-lg font-semibold"
+                asChild
+              >
+                <Link href="#categories">
+                  立即開始評估 <ArrowRight className="ml-2 h-5 w-5" />
+                </Link>
+              </Button>
+            </div>
+          </div>
+        </div>
       </section>
     </main>
   );
