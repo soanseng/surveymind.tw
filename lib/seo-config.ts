@@ -459,6 +459,30 @@ export const questionnaireSEO: Record<string, SEOConfig> = {
       duration: "3-5分鐘",
       difficulty: "簡單"
     }
+  },
+
+  // SCOFF - Eating Disorder Screening Questionnaire
+  scoff: {
+    title: "SCOFF 飲食障礙篩檢問卷 | 厭食症暴食症篩檢 | 飲食障礙測試 - 文心樂丞診所",
+    description: "SCOFF飲食障礙篩檢問卷，簡易5題快速篩檢厭食症和暴食症風險。由英國聖喬治醫院開發，具100%敏感度的標準化飲食障礙篩檢工具。",
+    keywords: [
+      "SCOFF", "飲食障礙篩檢", "厭食症篩檢", "暴食症篩檢", "飲食障礙測試",
+      "飲食障礙評估", "厭食症測試", "暴食症測試", "飲食行為評估",
+      "飲食問題篩檢", "進食障礙篩檢", "飲食障礙量表", "免費飲食障礙測試"
+    ],
+    openGraph: {
+      title: "SCOFF 飲食障礙篩檢問卷 - 專業厭食症暴食症篩檢工具",
+      description: "英國開發的飲食障礙篩檢工具，5題快速評估厭食症和暴食症風險。",
+      type: "website",
+      locale: "zh_TW"
+    },
+    structuredData: {
+      name: "SCOFF 飲食障礙篩檢問卷",
+      description: "篩檢厭食症和暴食症的簡易工具",
+      category: "飲食健康評估",
+      duration: "2-3分鐘",
+      difficulty: "簡單"
+    }
   }
 };
 

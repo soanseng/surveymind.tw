@@ -18,7 +18,8 @@ import {
   CheckCircle,
   Shield,
   Clock,
-  Award
+  Award,
+  Utensils
 } from "lucide-react";
 import { Metadata } from 'next';
 import { landingPageSEO, baseSEO, organizationStructuredData } from '@/lib/seo-config';
@@ -106,6 +107,9 @@ const questionnaires = {
     { name: "創傷後壓力症候群檢核表", link: "/pcl-5", time: "10-15分鐘", difficulty: "中等" },
     { name: "初級照護PTSD篩檢量表", link: "/pc-ptsd-5", time: "3-5分鐘", difficulty: "簡單" },
   ],
+  eating: [
+    { name: "SCOFF 飲食障礙篩檢問卷", link: "/scoff", time: "2-3分鐘", difficulty: "簡單" },
+  ],
 };
 
 const categories = [
@@ -156,6 +160,14 @@ const categories = [
     description: "評估創傷後壓力相關症狀",
     color: "bg-indigo-100 text-indigo-600",
     questionnaires: questionnaires.trauma,
+  },
+  {
+    id: "eating",
+    name: "飲食評估",
+    icon: Utensils,
+    description: "篩檢飲食障礙與飲食行為問題",
+    color: "bg-pink-100 text-pink-600",
+    questionnaires: questionnaires.eating,
   },
 ];
 
