@@ -1,10 +1,9 @@
 "use client"
-import React from 'react';
+import React, { useState } from 'react';
 import Head from 'next/head';
 import useQuestionnaireForm from '@/hooks/useQuestionnaireForm';
 import Pagination from '@/hooks/Pagination';
 import { useResponsiveDialog } from '@/hooks/useResponsiveDialog';
-
 import ShareButton from '@/components/ShareButton';
 
 const questions = [
@@ -38,11 +37,13 @@ const ASRSForm: React.FC = () => {
     handleSubmit,
     nextPage,
     prevPage,
-    validationMessage,
+    validationMessage: hookValidationMessage,
     allQuestionsAnswered,
     formSubmitted,
     setFormSubmitted,
-  } = useQuestionnaireForm<string>(questions.length, questionsPerPage); 
+  } = useQuestionnaireForm<string>(questions.length, questionsPerPage);
+
+  const [customValidationMessage, setCustomValidationMessage] = useState(''); 
 
 
   //calculate the index of the first and last question on the current page
@@ -55,8 +56,40 @@ const ASRSForm: React.FC = () => {
     return answers[questionIndex] !== null && answers[questionIndex] !== '';
   });
 
-  const canGoForward = currentPage < Math.ceil(questions.length / questionsPerPage  ) - 1;
+  const canGoForward = currentPage < Math.ceil(questions.length / questionsPerPage) - 1;
   const canGoBack = currentPage > 0;
+
+  const getUnansweredQuestionsOnCurrentPage = () => {
+    const unanswered: number[] = [];
+    questionsToShow.forEach((_, index) => {
+      const questionIndex = firstQuestionIndex + index;
+      if (answers[questionIndex] === null || answers[questionIndex] === '') {
+        unanswered.push(questionIndex + 1);
+      }
+    });
+    return unanswered;
+  };
+
+  const handleNextPage = () => {
+    const unansweredQuestions = getUnansweredQuestionsOnCurrentPage();
+    
+    if (unansweredQuestions.length > 0) {
+      if (unansweredQuestions.length > 5) {
+        setCustomValidationMessage(`本頁還有 ${unansweredQuestions.length} 題尚未作答，請完成本頁所有題目後再繼續。`);
+      } else {
+        setCustomValidationMessage(`請回答第 ${unansweredQuestions.join('、')} 題後再繼續下一頁。`);
+      }
+      return;
+    }
+    
+    setCustomValidationMessage('');
+    nextPage();
+  };
+
+  const handleAnswerChange = (index: number, value: string) => {
+    handleSelectChange(index, value);
+    setCustomValidationMessage('');
+  };
 
   //calculate scores
   const calculateScores = () => {
@@ -69,10 +102,22 @@ const ASRSForm: React.FC = () => {
 
   const customHandleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    const unansweredQuestions = getUnansweredQuestionsOnCurrentPage();
+    
+    if (unansweredQuestions.length > 0) {
+      if (unansweredQuestions.length > 5) {
+        setCustomValidationMessage(`本頁還有 ${unansweredQuestions.length} 題尚未作答，請完成本頁所有題目後再提交。`);
+      } else {
+        setCustomValidationMessage(`請回答第 ${unansweredQuestions.join('、')} 題後再提交。`);
+      }
+      return;
+    }
+    
+    setCustomValidationMessage('');
     handleSubmit(e);
     setFormSubmitted(true);
     setOpen(true);
-  }
+  };
 
   // Determine ADHD likelihood based on scores
   const getADHDLikelihood = (score: number) => {
@@ -85,128 +130,247 @@ const ASRSForm: React.FC = () => {
   const resultA = getADHDLikelihood(partAScores);
   const resultB = getADHDLikelihood(partBScores);
 
+  const validationMessage = customValidationMessage || hookValidationMessage;
+
+  // Overall progress calculation
+  const totalAnswered = answers.filter(answer => answer !== null && answer !== '').length;
+  const overallProgress = (totalAnswered / questions.length) * 100;
+
 
   return (
     <div className="container mx-auto px-4">
-      <h1 className="text-2xl font-bold text-center my-8">
-        ASRS 成人ADHD自我評估問卷
-      </h1>
-      <p className="text-center mb-4">
-        請根據以下問題回答您過去六個月的感受與行為。
-      </p>
-      {validationMessage && (
-        <p className="text-red-500 text-center">{validationMessage}</p>
-      )}
-      <form
-        onSubmit={customHandleSubmit}
-        className="bg-white p-6 rounded shadow"
-      >
-        {questionsToShow.map((question, index) => {
-          const questionIndex = firstQuestionIndex + index;
-          const isUnanswered =
-            answers[firstQuestionIndex + index] === null ||
-            answers[firstQuestionIndex + index] === "";
-          return (
-            <div className="mb-4" key={index}>
-              <label className="block mb-2 text-lg">
-                {isUnanswered && <span className="text-red-500">*</span>}
-                {questionIndex + 1}. {question}:
-              </label>
-              <div className="flex space-x-2">
-                {["0", "1", "2", "3", "4"].map((value) => (
-                  <label key={value} className="inline-flex items-center">
-                    <input
-                      type="radio"
-                      name={`question-${firstQuestionIndex + index}`}
-                      value={value}
-                      checked={answers[firstQuestionIndex + index] === value}
-                      onChange={(e) =>
-                        handleSelectChange(
-                          firstQuestionIndex + index,
-                          e.target.value
-                        )
-                      }
-                      className="form-radio text-blue-600"
-                    />
-                    <span className="ml-2">
-                      {value === "0" && "從不"}
-                      {value === "1" && "很少"}
-                      {value === "2" && "有時"}
-                      {value === "3" && "常常"}
-                      {value === "4" && "非常頻繁"}
-                    </span>
-                  </label>
-                ))}
+      <Head>
+        <title>ASRS 成人ADHD自我評估問卷 - 文心樂丞診所</title>
+        <meta name="description" content="ASRS成人ADHD自我報告量表，用於評估成人注意力不足過動症症狀" />
+      </Head>
+      
+      <div className="max-w-4xl mx-auto py-8">
+        <h1 className="text-3xl font-bold text-center mb-6">ASRS 成人ADHD自我評估問卷</h1>
+        
+        <div className="bg-blue-50 p-6 rounded-lg mb-8">
+          <h2 className="text-lg font-semibold mb-4">使用說明</h2>
+          <p className="mb-3">
+            <strong>題目：</strong>請根據以下問題回答您過去六個月的感受與行為。
+          </p>
+          <p className="mb-3">
+            ASRS 是世界衛生組織開發的成人ADHD篩檢工具，分為A部分（不專心症狀）和B部分（過動/衝動症狀）。
+          </p>
+          <p className="text-sm text-gray-600">
+            <strong>重要提醒：</strong>本量表僅供篩檢參考，不能取代專業診斷。如有疑慮請諮詢精神科醫師。
+          </p>
+        </div>
+
+        {/* Overall Progress Indicator */}
+        <div className="mb-6">
+          <div className="flex justify-between items-center mb-2">
+            <span className="text-sm font-medium text-gray-700">總體完成進度</span>
+            <span className="text-sm text-gray-600">
+              {totalAnswered} / {questions.length} 題
+            </span>
+          </div>
+          <div className="w-full bg-gray-200 rounded-full h-2 mb-2">
+            <div 
+              className="bg-blue-600 h-2 rounded-full transition-all duration-300" 
+              style={{ width: `${overallProgress}%` }}
+            ></div>
+          </div>
+          <div className="text-center text-sm text-gray-600">
+            第 {currentPage + 1} 頁，共 {Math.ceil(questions.length / questionsPerPage)} 頁
+            {currentPage === 0 && <span className="ml-2 text-blue-600">（A部分：不專心症狀）</span>}
+            {currentPage === 1 && <span className="ml-2 text-blue-600">（B部分：過動/衝動症狀）</span>}
+            {currentPage === 2 && <span className="ml-2 text-blue-600">（B部分續：過動/衝動症狀）</span>}
+          </div>
+        </div>
+
+        <form onSubmit={customHandleSubmit} className="space-y-6">
+          {questionsToShow.map((question, index) => {
+            const questionIndex = firstQuestionIndex + index;
+            const isUnanswered = answers[questionIndex] === null || answers[questionIndex] === '';
+            return (
+              <div 
+                key={index} 
+                className={`bg-white p-4 rounded-lg shadow-sm border-2 transition-colors ${
+                  isUnanswered && validationMessage 
+                    ? 'border-red-300 bg-red-50' 
+                    : 'border-gray-200'
+                }`}
+              >
+                <h3 className={`text-base font-medium mb-3 ${
+                  isUnanswered && validationMessage ? 'text-red-800' : 'text-gray-900'
+                }`}>
+                  {questionIndex + 1}. {question}
+                  {isUnanswered && validationMessage && (
+                    <span className="ml-2 text-red-600 text-sm">*未作答</span>
+                  )}
+                </h3>
+                <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+                  {["0", "1", "2", "3", "4"].map((value) => {
+                    const labels = ["從不", "很少", "有時", "常常", "非常頻繁"];
+                    return (
+                      <label key={value} className="flex items-center cursor-pointer">
+                        <input
+                          type="radio"
+                          name={`question-${questionIndex}`}
+                          value={value}
+                          checked={answers[questionIndex] === value}
+                          onChange={(e) => handleAnswerChange(questionIndex, e.target.value)}
+                          className="mr-2 h-4 w-4 text-blue-600"
+                        />
+                        <span className="text-sm">{labels[parseInt(value)]}</span>
+                      </label>
+                    );
+                  })}
+                </div>
+              </div>
+            );
+          })}
+
+          {validationMessage && (
+            <div className="bg-red-50 border-2 border-red-300 text-red-800 px-6 py-4 rounded-lg shadow-sm">
+              <div className="flex items-center">
+                <span className="text-red-600 mr-2 text-lg">⚠️</span>
+                <span className="font-medium">{validationMessage}</span>
               </div>
             </div>
-          );
-        })}
-        <Pagination
-          canGoBack={canGoBack}
-          canGoForward={currentPageQuestionsAnswered && canGoForward}
-          onBack={prevPage}
-          onForward={nextPage}
-        />
-        <Content open={open} onOpenChange={setOpen}>
-          {currentPage === Math.ceil(questions.length / 9) - 1 &&
-            allQuestionsAnswered() && (
-              <div className="text-center">
-                <TriggerComponent asChild>
-                  <button
-                    type="submit"
-                    className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700"
-                  >
-                    開始測量
-                  </button>
-                </TriggerComponent>
-              </div>
+          )}
+          {/* Enhanced Pagination */}
+          <div className="flex justify-between items-center">
+            <button
+              type="button"
+              onClick={prevPage}
+              disabled={!canGoBack}
+              className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                canGoBack 
+                  ? 'bg-gray-200 hover:bg-gray-300 text-gray-700' 
+                  : 'bg-gray-100 text-gray-400 cursor-not-allowed'
+              }`}
+            >
+              上一頁
+            </button>
+
+            {canGoForward ? (
+              <button
+                type="button"
+                onClick={handleNextPage}
+                className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-6 rounded-lg transition-colors"
+              >
+                下一頁
+              </button>
+            ) : (
+              allQuestionsAnswered() && (
+                <button
+                  type="submit"
+                  className="bg-green-600 hover:bg-green-700 text-white font-medium py-3 px-8 rounded-lg transition-colors"
+                >
+                  完成評估
+                </button>
+              )
             )}
-          <ContentComponent>
-            <HeaderComponent>量表結果</HeaderComponent>
-            <DescriptionComponent>
-              <p>
-                如果您在任一部分的得分指向「很可能有ADHD」或「非常可能有ADHD」，建議進行更完整的評估以了解損害和病史。
-              </p>
-              <p>
-                即使得分顯示「不太可能有ADHD」，如果您仍有疑慮，也值得進一步探討，因為有時成年ADHD患者即使症狀輕微也可能遭受顯著損害。
-              </p>
-            </DescriptionComponent>
-            <div className="mt-8 bg-gray-100 p-4 rounded">
-              <ul>
-                <li>
-                  <p className="text-lg">
-                    A部分（不專心）得分: {partAScores} - {resultA}
+          </div>
+        </form>
+
+        <Content open={open} onOpenChange={setOpen}>
+          <ContentComponent className="sm:max-w-[500px]">
+            <HeaderComponent>
+              <TitleComponent>ASRS 成人ADHD評估結果</TitleComponent>
+              <DescriptionComponent>
+                您的ADHD症狀評估結果
+              </DescriptionComponent>
+            </HeaderComponent>
+            
+            <div className="py-4">
+              <div className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="text-center p-4 bg-blue-50 rounded-lg">
+                    <div className="text-xl font-bold text-blue-600 mb-2">
+                      A部分：{partAScores} / 36
+                    </div>
+                    <div className="text-sm font-semibold text-gray-800 mb-2">
+                      不專心症狀
+                    </div>
+                    <div className="text-sm text-blue-700">
+                      {resultA.replace('😲', '').replace('🤔', '').replace('🙂', '')}
+                    </div>
+                  </div>
+                  
+                  <div className="text-center p-4 bg-green-50 rounded-lg">
+                    <div className="text-xl font-bold text-green-600 mb-2">
+                      B部分：{partBScores} / 36
+                    </div>
+                    <div className="text-sm font-semibold text-gray-800 mb-2">
+                      過動/衝動症狀
+                    </div>
+                    <div className="text-sm text-green-700">
+                      {resultB.replace('😲', '').replace('🤔', '').replace('🙂', '')}
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="bg-gray-50 p-4 rounded-lg">
+                  <h4 className="font-semibold mb-2">結果解釋：</h4>
+                  <p className="text-sm text-gray-700 leading-relaxed mb-3">
+                    如果您在任一部分的得分指向「很可能有ADHD」或「非常可能有ADHD」，建議進行更完整的評估以了解損害和病史。
                   </p>
-                </li>
-                <li>
-                  <p className="text-lg">
-                    B部分（過動/衝動）得分: {partBScores} - {resultB}
+                  <p className="text-sm text-gray-700 leading-relaxed">
+                    即使得分顯示「不太可能有ADHD」，如果您仍有疑慮，也值得進一步探討，因為有時成年ADHD患者即使症狀輕微也可能遭受顯著損害。
                   </p>
-                </li>
-              </ul>
-              <FooterComponent>
-                <p>
-                  如果您有任何問題，請聯絡我們的專業團隊，我們會為您提供協助。
-                </p>
-                <ShareButton
-                  title="ASRS 成人ADHD自我評估問卷"
-                  text={`A部分得分是:${partAScores} - ${resultA};  B部分得分是:${partBScores} - ${resultB}; 歡迎在 https://surveymind.tw/asrs 進行篩檢`}
-                />
-              </FooterComponent>
+                </div>
+
+                <div className="bg-yellow-50 p-4 rounded-lg border border-yellow-200">
+                  <h4 className="font-semibold text-yellow-800 mb-2">評分標準：</h4>
+                  <ul className="text-sm text-yellow-700 space-y-1">
+                    <li>• 不太可能有ADHD：得分 &lt; 17</li>
+                    <li>• 很可能有ADHD：得分 17-23</li>
+                    <li>• 非常可能有ADHD：得分 ≥ 24</li>
+                    <li>• 建議尋求專業評估以確定診斷</li>
+                  </ul>
+                </div>
+
+                <div className="pt-4">
+                  <ShareButton 
+                    title="ASRS 成人ADHD自我評估問卷"
+                    text={`A部分得分：${partAScores} - ${resultA.replace('😲', '').replace('🤔', '').replace('🙂', '')}；B部分得分：${partBScores} - ${resultB.replace('😲', '').replace('🤔', '').replace('🙂', '')}`}
+                    url={typeof window !== 'undefined' ? window.location.href : ''}
+                  />
+                </div>
+              </div>
             </div>
+
+            <FooterComponent>
+              <CloseComponent className="w-full bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium py-2 px-4 rounded">
+                關閉
+              </CloseComponent>
+            </FooterComponent>
           </ContentComponent>
         </Content>
-      </form>
-      <p className="text-center mt-8 text-sm">
-        Kessler, R.C., AdlKessler, R.C., Adler, L., Ames, M., Demler, O.,
-        Faraone, S., Hiripi, E., Howes, M.J., Jin, R., Secnik, K., Spencer, T.,
-        Ustun, T.B., Walters, E.E. (2005). The World Health Organization Adult
-        ADHD Self-Report Scale (ASRS). Psychological Medicine, 35(2), 245-256er,
-        L., Ames, M., Demler, O., Faraone, S., Hiripi, E., Howes, M.J., Jin, R.,
-        Secnik, K., Spencer, T., Ustun, T.B., Walters, E.E. (2005). The World
-        Health Organization Adult ADHD Self-Report Scale (ASRS). Psychological
-        Medicine, 35(2), 245-256
-      </p>
+        {/* Copyright and Citation Section */}
+        <div className="mt-12 pt-8 border-t border-gray-200">
+          <div className="bg-gray-50 p-6 rounded-lg">
+            <h3 className="text-lg font-semibold mb-4">量表來源與版權</h3>
+            <div className="space-y-3 text-sm text-gray-700">
+              <p>
+                <strong>開發組織：</strong>世界衛生組織 (WHO) 開發的成人ADHD自我報告量表
+              </p>
+              <p>
+                <strong>研究團隊：</strong>Kessler, R.C., Adler, L., Ames, M., 等學者
+              </p>
+              <p>
+                <strong>引用格式 (APA)：</strong>
+              </p>
+              <div className="bg-white p-4 rounded border-l-4 border-blue-500 font-mono text-xs leading-relaxed">
+                Kessler, R. C., Adler, L., Ames, M., Demler, O., Faraone, S., Hiripi, E., ... & Walters, E. E. (2005). 
+                The World Health Organization Adult ADHD Self-Report Scale (ASRS): a short screening scale for use in the general population. 
+                <em>Psychological Medicine</em>, <em>35</em>(2), 245-256. 
+                https://doi.org/10.1017/S0033291704002892
+              </div>
+              <p className="text-xs text-gray-500 mt-3">
+                * ASRS-v1.1是WHO開發的18題版本，具有良好的信效度。
+                A部分9題用於篩檢不專心症狀，B部分9題用於篩檢過動/衝動症狀。
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

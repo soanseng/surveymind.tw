@@ -1,5 +1,5 @@
 "use client"
-import React from 'react';
+import React, { useState } from 'react';
 import Head from 'next/head';
 import useQuestionnaireForm from '@/hooks/useQuestionnaireForm';
 import Pagination from '@/hooks/Pagination';
@@ -53,11 +53,13 @@ const SNAP4Form: React.FC = () => {
     handleSubmit,
     nextPage,
     prevPage,
-    validationMessage,
+    validationMessage: hookValidationMessage,
     allQuestionsAnswered,
     formSubmitted,
     setFormSubmitted,
   } = useQuestionnaireForm<string>(questions.length, questionsPerPage);
+
+  const [customValidationMessage, setCustomValidationMessage] = useState('');
 
   const firstQuestionIndex = currentPage * questionsPerPage;
   const lastQuestionIndex = Math.min(firstQuestionIndex + questionsPerPage, questions.length);
@@ -71,6 +73,38 @@ const SNAP4Form: React.FC = () => {
   const canGoForward = currentPage < Math.ceil(questions.length / questionsPerPage) - 1;
   const canGoBack = currentPage > 0;
 
+  const getUnansweredQuestionsOnCurrentPage = () => {
+    const unanswered: number[] = [];
+    questionsToShow.forEach((_, index) => {
+      const questionIndex = firstQuestionIndex + index;
+      if (answers[questionIndex] === null || answers[questionIndex] === '') {
+        unanswered.push(questionIndex + 1);
+      }
+    });
+    return unanswered;
+  };
+
+  const handleNextPage = () => {
+    const unansweredQuestions = getUnansweredQuestionsOnCurrentPage();
+    
+    if (unansweredQuestions.length > 0) {
+      if (unansweredQuestions.length > 5) {
+        setCustomValidationMessage(`本頁還有 ${unansweredQuestions.length} 題尚未作答，請完成本頁所有題目後再繼續。`);
+      } else {
+        setCustomValidationMessage(`請回答第 ${unansweredQuestions.join('、')} 題後再繼續下一頁。`);
+      }
+      return;
+    }
+    
+    setCustomValidationMessage('');
+    nextPage();
+  };
+
+  const handleAnswerChange = (index: number, value: string) => {
+    handleSelectChange(index, value);
+    setCustomValidationMessage('');
+  };
+
   // Calculate scores for Inattention, Hyperactivity/Impulsivity, and Oppositional Defiant Disorder
   const calculateScores = () => {
     const inattentionScores = answers.slice(0, 9).reduce((acc, curr) => acc + Number(curr), 0);
@@ -83,10 +117,22 @@ const SNAP4Form: React.FC = () => {
 
   const customHandleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    const unansweredQuestions = getUnansweredQuestionsOnCurrentPage();
+    
+    if (unansweredQuestions.length > 0) {
+      if (unansweredQuestions.length > 5) {
+        setCustomValidationMessage(`本頁還有 ${unansweredQuestions.length} 題尚未作答，請完成本頁所有題目後再提交。`);
+      } else {
+        setCustomValidationMessage(`請回答第 ${unansweredQuestions.join('、')} 題後再提交。`);
+      }
+      return;
+    }
+    
+    setCustomValidationMessage('');
     handleSubmit(e);
     setFormSubmitted(true);
     setOpen(true);
-  }
+  };
 
   // Interpret scores to determine symptom severity
   const interpretScore = (score: number, subset: 'inattention' | 'hyperactivityImpulsivity' | 'oppositionalDefiant') => {
@@ -109,132 +155,284 @@ const SNAP4Form: React.FC = () => {
   const hyperactivityImpulsivityResult = interpretScore(hyperactivityImpulsivityScores, 'hyperactivityImpulsivity');
   const oppositionalDefiantResult = interpretScore(oppositionalDefiantScores, 'oppositionalDefiant');
 
+  const validationMessage = customValidationMessage || hookValidationMessage;
+
+  // Overall progress calculation
+  const totalAnswered = answers.filter(answer => answer !== null && answer !== '').length;
+  const overallProgress = (totalAnswered / questions.length) * 100;
+
+  // Section information for progress display
+  const getSectionInfo = (currentPage: number) => {
+    if (currentPage <= 0) return 'A部分：注意力不足症狀 (1-9題)';
+    if (currentPage === 1) return 'B部分：過動/衝動症狀 (10-18題)';
+    if (currentPage === 2) return 'C部分：對立反抗症狀 (19-26題)';
+    return '';
+  };
+
   return (
     <div className="container mx-auto px-4">
-      <h1 className="text-2xl font-bold text-center my-8">
-        SNAP-IV 兒童ADHD自我評估問卷
-      </h1>
-      <p className="text-center mb-4 tesxt-sm">
-        {" "}
-        設計者：史瓦森(James M. Swanson, Ph.D)；翻譯：高淑芬
-      </p>
-      <p className="text-center mb-4">
-        請根據以下問題回答您過去六個月觀察到的孩子行為。
-      </p>
-      {validationMessage && (
-        <p className="text-red-500 text-center">{validationMessage}</p>
-      )}
-      <form
-        onSubmit={customHandleSubmit}
-        className="bg-white p-6 rounded shadow"
-      >
-        {questionsToShow.map((question, index) => {
-          const questionIndex = firstQuestionIndex + index;
-          const isUnanswered =
-            answers[questionIndex] === null || answers[questionIndex] === "";
-          return (
-            <div className="mb-4" key={index}>
-              <label className="block mb-2 text-lg">
-                {isUnanswered && <span className="text-red-500">*</span>}
-                {questionIndex + 1}. {question}:
-              </label>
-              <div className="flex space-x-2">
-                {["0", "1", "2", "3"].map((value) => (
-                  <label key={value} className="inline-flex items-center">
-                    <input
-                      type="radio"
-                      name={`question-${questionIndex}`}
-                      value={value}
-                      checked={answers[questionIndex] === value}
-                      onChange={(e) =>
-                        handleSelectChange(questionIndex, e.target.value)
-                      }
-                      className="form-radio text-blue-600"
-                    />
-                    <span className="ml-2">
-                      {value === "0" && "完全沒有"}
-                      {value === "1" && "有一點點"}
-                      {value === "2" && "還算不少"}
-                      {value === "3" && "非常的多"}
-                    </span>
-                  </label>
-                ))}
+      <Head>
+        <title>SNAP-IV 兒童ADHD評估問卷 - 文心樂丞診所</title>
+        <meta name="description" content="SNAP-IV兒童ADHD評估問卷，用於評估兒童注意力不足過動症症狀" />
+      </Head>
+      
+      <div className="max-w-4xl mx-auto py-8">
+        <h1 className="text-3xl font-bold text-center mb-6">SNAP-IV 兒童ADHD評估問卷</h1>
+        
+        <div className="bg-orange-50 p-6 rounded-lg mb-8">
+          <h2 className="text-lg font-semibold mb-4">家長評估說明</h2>
+          <p className="mb-3">
+            <strong>評估對象：</strong>請根據您過去六個月觀察到的孩子行為進行評估。
+          </p>
+          <p className="mb-3">
+            <strong>設計者：</strong>史瓦森 (James M. Swanson, Ph.D)；中文翻譯：高淑芬醫師
+          </p>
+          <p className="mb-3">
+            SNAP-IV 是評估兒童ADHD症狀的標準化工具，包含注意力不足、過動/衝動、以及對立反抗三個面向的評估。
+          </p>
+          <p className="text-sm text-gray-600">
+            <strong>重要提醒：</strong>本量表僅供篩檢參考，不能取代專業診斷。如有疑慮請諮詢兒童精神科醫師。
+          </p>
+        </div>
+
+        {/* Overall Progress Indicator */}
+        <div className="mb-6">
+          <div className="flex justify-between items-center mb-2">
+            <span className="text-sm font-medium text-gray-700">總體完成進度</span>
+            <span className="text-sm text-gray-600">
+              {totalAnswered} / {questions.length} 題
+            </span>
+          </div>
+          <div className="w-full bg-gray-200 rounded-full h-2 mb-2">
+            <div 
+              className="bg-orange-600 h-2 rounded-full transition-all duration-300" 
+              style={{ width: `${overallProgress}%` }}
+            ></div>
+          </div>
+          <div className="text-center text-sm text-gray-600">
+            第 {currentPage + 1} 頁，共 {Math.ceil(questions.length / questionsPerPage)} 頁
+            <div className="mt-1 text-orange-600 font-medium">
+              {getSectionInfo(currentPage)}
+            </div>
+          </div>
+        </div>
+
+        <form onSubmit={customHandleSubmit} className="space-y-6">
+          {questionsToShow.map((question, index) => {
+            const questionIndex = firstQuestionIndex + index;
+            const isUnanswered = answers[questionIndex] === null || answers[questionIndex] === '';
+            return (
+              <div 
+                key={index} 
+                className={`bg-white p-4 rounded-lg shadow-sm border-2 transition-colors ${
+                  isUnanswered && validationMessage 
+                    ? 'border-red-300 bg-red-50' 
+                    : 'border-gray-200'
+                }`}
+              >
+                <h3 className={`text-base font-medium mb-3 ${
+                  isUnanswered && validationMessage ? 'text-red-800' : 'text-gray-900'
+                }`}>
+                  {questionIndex + 1}. {question}
+                  {isUnanswered && validationMessage && (
+                    <span className="ml-2 text-red-600 text-sm">*未作答</span>
+                  )}
+                </h3>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                  {["0", "1", "2", "3"].map((value) => {
+                    const labels = ["完全沒有", "有一點點", "還算不少", "非常的多"];
+                    return (
+                      <label key={value} className="flex items-center cursor-pointer">
+                        <input
+                          type="radio"
+                          name={`question-${questionIndex}`}
+                          value={value}
+                          checked={answers[questionIndex] === value}
+                          onChange={(e) => handleAnswerChange(questionIndex, e.target.value)}
+                          className="mr-2 h-4 w-4 text-orange-600"
+                        />
+                        <span className="text-sm">{labels[parseInt(value)]}</span>
+                      </label>
+                    );
+                  })}
+                </div>
+              </div>
+            );
+          })}
+
+          {validationMessage && (
+            <div className="bg-red-50 border-2 border-red-300 text-red-800 px-6 py-4 rounded-lg shadow-sm">
+              <div className="flex items-center">
+                <span className="text-red-600 mr-2 text-lg">⚠️</span>
+                <span className="font-medium">{validationMessage}</span>
               </div>
             </div>
-          );
-        })}
-        <Pagination
-          canGoBack={canGoBack}
-          canGoForward={currentPageQuestionsAnswered && canGoForward}
-          onBack={prevPage}
-          onForward={nextPage}
-        />
-        <Content open={open} onOpenChange={setOpen}>
-          {currentPage === Math.ceil(questions.length / questionsPerPage) - 1 &&
-            allQuestionsAnswered() && (
-              <div className="text-center">
-                <TriggerComponent asChild>
-                  <button
-                    type="submit"
-                    className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700"
-                  >
-                    提交評估
-                  </button>
-                </TriggerComponent>
-              </div>
+          )}
+          {/* Enhanced Pagination */}
+          <div className="flex justify-between items-center">
+            <button
+              type="button"
+              onClick={prevPage}
+              disabled={!canGoBack}
+              className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                canGoBack 
+                  ? 'bg-gray-200 hover:bg-gray-300 text-gray-700' 
+                  : 'bg-gray-100 text-gray-400 cursor-not-allowed'
+              }`}
+            >
+              上一頁
+            </button>
+
+            {canGoForward ? (
+              <button
+                type="button"
+                onClick={handleNextPage}
+                className="bg-orange-600 hover:bg-orange-700 text-white font-medium py-2 px-6 rounded-lg transition-colors"
+              >
+                下一頁
+              </button>
+            ) : (
+              allQuestionsAnswered() && (
+                <button
+                  type="submit"
+                  className="bg-green-600 hover:bg-green-700 text-white font-medium py-3 px-8 rounded-lg transition-colors"
+                >
+                  完成評估
+                </button>
+              )
             )}
-          <ContentComponent>
-            <HeaderComponent>評估結果</HeaderComponent>
-            <DescriptionComponent>
-              <p>根據您的回答，以下是孩子的症狀評估結果：</p>
-            </DescriptionComponent>
-            <div className="mt-8 bg-gray-100 p-4 rounded">
-              <ul>
-                <li>
-                  <p className="text-lg">
-                    注意力不足部分得分: {inattentionScores} -{" "}
-                    {inattentionResult}
+          </div>
+        </form>
+        <Content open={open} onOpenChange={setOpen}>
+          <ContentComponent className="sm:max-w-[600px]">
+            <HeaderComponent>
+              <TitleComponent>SNAP-IV 兒童ADHD評估結果</TitleComponent>
+              <DescriptionComponent>
+                您孩子的ADHD症狀評估結果
+              </DescriptionComponent>
+            </HeaderComponent>
+            
+            <div className="py-4">
+              <div className="space-y-4">
+                <div className="grid grid-cols-1 gap-4">
+                  <div className="p-4 bg-blue-50 rounded-lg">
+                    <div className="text-center">
+                      <div className="text-lg font-bold text-blue-600 mb-1">
+                        注意力不足：{inattentionScores} / 27
+                      </div>
+                      <div className="text-sm font-semibold text-gray-800">
+                        {inattentionResult}
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="p-4 bg-green-50 rounded-lg">
+                    <div className="text-center">
+                      <div className="text-lg font-bold text-green-600 mb-1">
+                        過動/衝動：{hyperactivityImpulsivityScores} / 27
+                      </div>
+                      <div className="text-sm font-semibold text-gray-800">
+                        {hyperactivityImpulsivityResult}
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="p-4 bg-orange-50 rounded-lg">
+                    <div className="text-center">
+                      <div className="text-lg font-bold text-orange-600 mb-1">
+                        對立反抗：{oppositionalDefiantScores} / 24
+                      </div>
+                      <div className="text-sm font-semibold text-gray-800">
+                        {oppositionalDefiantResult}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="bg-gray-50 p-4 rounded-lg">
+                  <h4 className="font-semibold mb-2">結果解釋：</h4>
+                  <p className="text-sm text-gray-700 leading-relaxed mb-3">
+                    SNAP-IV 量表評估三個主要面向的兒童行為症狀。每個面向的得分反映該領域症狀的嚴重程度。
                   </p>
-                </li>
-                <li>
-                  <p className="text-lg">
-                    過動/衝動部分得分: {hyperactivityImpulsivityScores} -{" "}
-                    {hyperactivityImpulsivityResult}
+                  <p className="text-sm text-gray-700 leading-relaxed">
+                    如果您的孩子在任一面向顯示中度或重度症狀，建議尋求兒童精神科或行為發展專業醫師進一步評估。
                   </p>
-                </li>
-                <li>
-                  <p className="text-lg">
-                    對立反抗的症狀部分得分: {oppositionalDefiantScores} -{" "}
-                    {oppositionalDefiantResult}
-                  </p>
-                </li>
-              </ul>
-              <FooterComponent>
-                <p>
-                  如果您對結果有疑問或孩子的症狀在中度到重度範圍內，建議尋求專業醫生進一步評估。
-                </p>
-                <ShareButton
-                  title="SNAP-IV 兒童ADHD自我評估問卷"
-                  text={`我剛剛做了SNAP-IV 兒童ADHD自我評估問卷，結果是: 
-                    注意力不足部分得分: ${inattentionScores} - ${inattentionResult}
-                    過動/衝動部分得分:  ${hyperactivityImpulsivityScores} -  ${hyperactivityImpulsivityResult}
-                    對立反抗的症狀部分得分: ${oppositionalDefiantScores} - ${oppositionalDefiantResult}
-                    `}
-                />
-              </FooterComponent>
+                </div>
+
+                <div className="bg-yellow-50 p-4 rounded-lg border border-yellow-200">
+                  <h4 className="font-semibold text-yellow-800 mb-2">評分標準：</h4>
+                  <div className="text-sm text-yellow-700 space-y-2">
+                    <div>
+                      <strong>注意力不足 & 過動/衝動：</strong>
+                      <ul className="ml-4 mt-1 space-y-1">
+                        <li>• &lt; 13分：症狀不具臨床意義</li>
+                        <li>• 13-17分：輕度症狀</li>
+                        <li>• 18-22分：中度症狀</li>
+                        <li>• ≥ 23分：重度症狀</li>
+                      </ul>
+                    </div>
+                    <div>
+                      <strong>對立反抗：</strong>
+                      <ul className="ml-4 mt-1 space-y-1">
+                        <li>• &lt; 8分：症狀不具臨床意義</li>
+                        <li>• 8-13分：輕度症狀</li>
+                        <li>• 14-18分：中度症狀</li>
+                        <li>• ≥ 19分：重度症狀</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="pt-4">
+                  <ShareButton 
+                    title="SNAP-IV 兒童ADHD評估問卷"
+                    text={`孩子的SNAP-IV評估結果：注意力不足 ${inattentionScores}分 (${inattentionResult})、過動/衝動 ${hyperactivityImpulsivityScores}分 (${hyperactivityImpulsivityResult})、對立反抗 ${oppositionalDefiantScores}分 (${oppositionalDefiantResult})`}
+                    url={typeof window !== 'undefined' ? window.location.href : ''}
+                  />
+                </div>
+              </div>
             </div>
+
+            <FooterComponent>
+              <CloseComponent className="w-full bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium py-2 px-4 rounded">
+                關閉
+              </CloseComponent>
+            </FooterComponent>
           </ContentComponent>
         </Content>
-      </form>
-      <Card className="border border-gray-500 w-2/3 mx-auto">
-        <CardContent>
-          <CardDescription className="text-sm text-gray-500 ">
-            The SNAP-IV 26-item scale is an abbreviated version of the Swanson,
-            Nolan, and Pelham(SNAP) Questionnaire (Swanson, 1992; Swanson et
-            al., 1983).
-          </CardDescription>
-        </CardContent>
-      </Card>
+        {/* Copyright and Citation Section */}
+        <div className="mt-12 pt-8 border-t border-gray-200">
+          <div className="bg-gray-50 p-6 rounded-lg">
+            <h3 className="text-lg font-semibold mb-4">量表來源與版權</h3>
+            <div className="space-y-3 text-sm text-gray-700">
+              <p>
+                <strong>原始開發者：</strong>James M. Swanson, Ph.D.
+              </p>
+              <p>
+                <strong>中文翻譯：</strong>高淑芬醫師
+              </p>
+              <p>
+                <strong>量表說明：</strong>SNAP-IV 26題版本是史瓦森、諾蘭與佩勒姆量表(SNAP)的簡化版本
+              </p>
+              <p>
+                <strong>引用格式 (APA)：</strong>
+              </p>
+              <div className="bg-white p-4 rounded border-l-4 border-orange-500 font-mono text-xs leading-relaxed">
+                Swanson, J. M. (1992). 
+                School-based assessments and interventions for ADD students. 
+                <em>KC Publishing</em>. 
+                <br/>Swanson, J. M., Sandman, C. A., Deutsch, C., & Baren, M. (1983). 
+                Methylphenidate hydrochloride given with or before breakfast: I. Behavioral, cognitive, and electrophysiologic effects. 
+                <em>Pediatrics</em>, <em>72</em>(1), 49-55.
+              </div>
+              <p className="text-xs text-gray-500 mt-3">
+                * SNAP-IV 已獲得廣泛驗證，是評估兒童ADHD症狀的標準化工具。
+                適用於6-18歲兒童青少年，由家長或教師填寫評估。
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

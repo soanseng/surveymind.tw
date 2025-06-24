@@ -47,10 +47,12 @@ const PSQIndex: React.FC = () => {
     handleSubmit,
     nextPage,
     prevPage,
-    validationMessage,
+    validationMessage: hookValidationMessage,
     formSubmitted,
     setFormSubmitted,
-  } = useQuestionnaireForm<string>(questions.length, questionsPerPage); 
+  } = useQuestionnaireForm<string>(questions.length, questionsPerPage);
+
+  const [customValidationMessage, setCustomValidationMessage] = useState(''); 
 
   const allQuestionsAnswered = () => {
     return questions.every((question, index) => {
@@ -79,8 +81,41 @@ const PSQIndex: React.FC = () => {
     return answers[questionIndex] !== null && answers[questionIndex] !== '';
   });
 
-  const canGoForward = currentPage < totalPages - 1 && currentPageQuestionsAnswered
+  const canGoForward = currentPage < totalPages - 1;
   const canGoBack = currentPage > 0;
+
+  const getUnansweredQuestionsOnCurrentPage = () => {
+    const unanswered: number[] = [];
+    questionsToShow.forEach((question, index) => {
+      if (question.id === 5) return; // Skip the section title
+      const questionIndex = firstQuestionIndex + index;
+      if (answers[questionIndex] === null || answers[questionIndex] === '') {
+        unanswered.push(questionIndex + 1);
+      }
+    });
+    return unanswered;
+  };
+
+  const handleNextPage = () => {
+    const unansweredQuestions = getUnansweredQuestionsOnCurrentPage();
+    
+    if (unansweredQuestions.length > 0) {
+      if (unansweredQuestions.length > 5) {
+        setCustomValidationMessage(`本頁還有 ${unansweredQuestions.length} 題尚未作答，請完成本頁所有題目後再繼續。`);
+      } else {
+        setCustomValidationMessage(`請完成未作答的題目後再繼續下一頁。`);
+      }
+      return;
+    }
+    
+    setCustomValidationMessage('');
+    nextPage();
+  };
+
+  const handleAnswerChange = (index: number, value: string) => {
+    handleSelectChange(index, value);
+    setCustomValidationMessage('');
+  };
 
   interface ScoreResults {
     component1Score: number;
@@ -189,233 +224,354 @@ const calculateSleepEfficiency = (q1Answer: string, q3Answer: string, q4Answer: 
 // Modify handleSubmit to use calculateScores
 const customHandleSubmit = (e: React.FormEvent) => {
   e.preventDefault();
+  const unansweredQuestions = getUnansweredQuestionsOnCurrentPage();
+  
+  if (unansweredQuestions.length > 0) {
+    if (unansweredQuestions.length > 5) {
+      setCustomValidationMessage(`本頁還有 ${unansweredQuestions.length} 題尚未作答，請完成本頁所有題目後再提交。`);
+    } else {
+      setCustomValidationMessage(`請完成未作答的題目後再提交。`);
+    }
+    return;
+  }
+  
   if (allQuestionsAnswered()) {
     const scores = calculateScores(); // Use the new function to calculate scores
     console.log("Total score:", scores);
-    setFormSubmitted(true)
-    setScores(scores)
+    setCustomValidationMessage('');
+    setFormSubmitted(true);
+    setScores(scores);
     setOpen(true);
   } else {
-    console.log("please answer all questions");
+    setCustomValidationMessage('請完成所有題目後再提交。');
   }
-  setFormSubmitted(true);
 };
 
 
+  const validationMessage = customValidationMessage || hookValidationMessage;
+
+  // Overall progress calculation
+  const totalAnswered = answers.filter((answer, index) => {
+    const question = questions[index];
+    if (question && question.id === 5) return true; // Skip section titles
+    return answer !== null && answer !== '';
+  }).length;
+  const totalRealQuestions = questions.filter(q => q.id !== 5).length;
+  const overallProgress = (totalAnswered / totalRealQuestions) * 100;
+
   return (
     <div className="container mx-auto px-4">
-      <h1 className="text-2xl font-bold text-center my-8">
-        PSQI 匹茲堡睡眠品質量表
-      </h1>
-      <p className="text-center mb-4">
-        下列問題是要調查您過去這一個月來的睡眠習慣，請您以平均狀況回答。
-      </p>
-      {validationMessage && (
-        <p className="text-red-500 text-center">{validationMessage}</p>
-      )}
-      <form
-        onSubmit={customHandleSubmit}
-        className="bg-white p-6 rounded shadow"
-      >
-        {questionsToShow.map((question, index) => {
-          const isUnanswered =
-            answers[firstQuestionIndex + index] === null ||
-            answers[firstQuestionIndex + index] === "";
+      <Head>
+        <title>PSQI 匹茲堡睡眠品質量表 - 文心樂丞診所</title>
+        <meta name="description" content="PSQI匹茲堡睡眠品質量表，用於評估睡眠品質和睡眠障礙" />
+      </Head>
+      
+      <div className="max-w-4xl mx-auto py-8">
+        <h1 className="text-3xl font-bold text-center mb-6">PSQI 匹茲堡睡眠品質量表</h1>
+        
+        <div className="bg-purple-50 p-6 rounded-lg mb-8">
+          <h2 className="text-lg font-semibold mb-4">使用說明</h2>
+          <p className="mb-3">
+            <strong>調查期間：</strong>下列問題是要調查您過去這一個月來的睡眠習慣。
+          </p>
+          <p className="mb-3">
+            <strong>回答方式：</strong>請您以平均狀況回答，每個問題都請仔細作答。
+          </p>
+          <p className="mb-3">
+            PSQI 是國際廣泛使用的睡眠品質評估工具，包含七個面向的睡眠評估。
+          </p>
+          <p className="text-sm text-gray-600">
+            <strong>重要提醒：</strong>本量表僅供篩檢參考，不能取代專業診斷。如有睡眠問題請諮詢睡眠專科醫師。
+          </p>
+        </div>
 
-          const isTitle = question.id === 5 || question.id === 11;
+        {/* Overall Progress Indicator */}
+        <div className="mb-6">
+          <div className="flex justify-between items-center mb-2">
+            <span className="text-sm font-medium text-gray-700">完成進度</span>
+            <span className="text-sm text-gray-600">
+              {totalAnswered} / {totalRealQuestions} 題
+            </span>
+          </div>
+          <div className="w-full bg-gray-200 rounded-full h-2 mb-2">
+            <div 
+              className="bg-purple-600 h-2 rounded-full transition-all duration-300" 
+              style={{ width: `${overallProgress}%` }}
+            ></div>
+          </div>
+          <div className="text-center text-sm text-gray-600">
+            第 {currentPage + 1} 頁，共 {totalPages} 頁
+          </div>
+        </div>
 
-          let selectionType;
-          if (
-            (typeof question.id === "number" && question.id === 1) ||
-            question.id === 3
-          ) {
-            selectionType = "time";
-          } else if (question.id === 2) {
-            selectionType = "selection2";
-          } else if (question.id === 4) {
-            selectionType = "selection4";
-          } else if (
-            (question.id >= "5a" && question.id <= "5j") ||
-            question.id === 6 ||
-            question.id === 7 ||
-            (question.id >= "11a" && question.id <= "11e")
-          ) {
-            selectionType = "selectionA";
-          } else if (question.id === 8) {
-            selectionType = "selection8";
-          } else if (question.id === 9) {
-            selectionType = "selection9";
-          }
-          // Render title without selection options for questions 5 and 11
-          if (isTitle) {
+        <form onSubmit={customHandleSubmit} className="space-y-6">
+          {questionsToShow.map((question, index) => {
+            const questionIndex = firstQuestionIndex + index;
+            const isUnanswered = answers[questionIndex] === null || answers[questionIndex] === '';
+            const isTitle = question.id === 5 || question.id === 11;
+
+            let selectionType;
+            if (
+              (typeof question.id === "number" && question.id === 1) ||
+              question.id === 3
+            ) {
+              selectionType = "time";
+            } else if (question.id === 2) {
+              selectionType = "selection2";
+            } else if (question.id === 4) {
+              selectionType = "selection4";
+            } else if (
+              (question.id >= "5a" && question.id <= "5j") ||
+              question.id === 6 ||
+              question.id === 7 ||
+              (question.id >= "11a" && question.id <= "11e")
+            ) {
+              selectionType = "selectionA";
+            } else if (question.id === 8) {
+              selectionType = "selection8";
+            } else if (question.id === 9) {
+              selectionType = "selection9";
+            }
+
+            // Render title without selection options for questions 5 and 11
+            if (isTitle) {
+              return (
+                <div key={index} className="mb-6">
+                  <h3 className="text-xl font-bold text-purple-800 bg-purple-100 p-4 rounded-lg">
+                    {question.id}. {question.question}
+                  </h3>
+                </div>
+              );
+            }
+
             return (
-              <div className="mb-4" key={index}>
-                <label className="block mb-2 text-lg font-bold">
+              <div 
+                key={index} 
+                className={`bg-white p-4 rounded-lg shadow-sm border-2 transition-colors ${
+                  isUnanswered && validationMessage 
+                    ? 'border-red-300 bg-red-50' 
+                    : 'border-gray-200'
+                }`}
+              >
+                <h3 className={`text-base font-medium mb-3 ${
+                  isUnanswered && validationMessage ? 'text-red-800' : 'text-gray-900'
+                }`}>
                   {question.id}. {question.question}
-                </label>
+                  {isUnanswered && validationMessage && (
+                    <span className="ml-2 text-red-600 text-sm">*未作答</span>
+                  )}
+                </h3>
+                
+                {selectionType === "time" ? (
+                  <Input
+                    type="time"
+                    name={`question-${question.id}`}
+                    value={answers[questionIndex] || ""}
+                    onChange={(e) => handleAnswerChange(questionIndex, e.target.value)}
+                    className="max-w-xs"
+                  />
+                ) : (
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
+                    {(selectionType === "selectionA"
+                      ? selectionA
+                      : selectionType === "selection8"
+                      ? selection8
+                      : selectionType === "selection9"
+                      ? selection9
+                      : selectionType === "selection4"
+                      ? selection4
+                      : selectionType === "selection2"
+                      ? selection2
+                      : []
+                    ).map((option: { value: any; description: string }) => (
+                      <label
+                        key={option.value}
+                        className="flex items-center cursor-pointer p-2 rounded hover:bg-purple-50"
+                      >
+                        <input
+                          type="radio"
+                          name={`question-${question.id}`}
+                          value={option.value.toString()}
+                          checked={answers[questionIndex] === option.value.toString()}
+                          onChange={(e) => handleAnswerChange(questionIndex, e.target.value)}
+                          className="mr-2 h-4 w-4 text-purple-600"
+                        />
+                        <span className="text-sm">{option.description}</span>
+                      </label>
+                    ))}
+                  </div>
+                )}
               </div>
             );
-          }
+          })}
 
-          return (
-            <div className="mb-4" key={index}>
-              <label className="block mb-2 text-lg">
-                {isUnanswered && <span className="text-red-500">*</span>}
-                {question.id}. {question.question}:
-              </label>
-              {selectionType === "time" ? (
-                <Input
-                  type="time"
-                  name={`question-${question.id}`}
-                  value={answers[firstQuestionIndex + index] || ""}
-                  onChange={(e) =>
-                    handleSelectChange(
-                      firstQuestionIndex + index,
-                      e.target.value
-                    )
-                  }
-                  style={{ maxWidth: "300px" }}
-                  required={selectionType === "time"}
-                />
-              ) : (
-                <div className="flex space-x-2">
-                  {(selectionType === "selectionA"
-                    ? selectionA
-                    : selectionType === "selection8"
-                    ? selection8
-                    : selectionType === "selection9"
-                    ? selection9
-                    : selectionType === "selection4"
-                    ? selection4
-                    : selectionType === "selection2"
-                    ? selection2
-                    : []
-                  ).map((option: { value: any; description: string }) => (
-                    <label
-                      key={option.value}
-                      className="inline-flex items-center"
-                    >
-                      <input
-                        type="radio"
-                        name={`question-${question.id}`}
-                        value={option.value.toString()}
-                        checked={
-                          answers[firstQuestionIndex + index] ===
-                          option.value.toString()
-                        }
-                        onChange={(e) =>
-                          handleSelectChange(
-                            firstQuestionIndex + index,
-                            e.target.value
-                          )
-                        }
-                        className="form-radio text-blue-600"
-                      />
-                      <span className="ml-2">{option.description}</span>
-                    </label>
-                  ))}
-                </div>
-              )}
+          {validationMessage && (
+            <div className="bg-red-50 border-2 border-red-300 text-red-800 px-6 py-4 rounded-lg shadow-sm">
+              <div className="flex items-center">
+                <span className="text-red-600 mr-2 text-lg">⚠️</span>
+                <span className="font-medium">{validationMessage}</span>
+              </div>
             </div>
-          );
-        })}
-        <Pagination
-          canGoBack={canGoBack}
-          canGoForward={canGoForward}
-          onBack={prevPage}
-          onForward={nextPage}
-        />
-
-
-      <Content open={open} onOpenChange={setOpen}>
-        <TriggerComponent asChild>
-        {currentPage === totalPages - 1 && allQuestionsAnswered() && (
-          <div className="text-center">
+          )}
+          {/* Enhanced Pagination */}
+          <div className="flex justify-between items-center">
             <button
-              type="submit"
-              className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700"
+              type="button"
+              onClick={prevPage}
+              disabled={!canGoBack}
+              className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                canGoBack 
+                  ? 'bg-gray-200 hover:bg-gray-300 text-gray-700' 
+                  : 'bg-gray-100 text-gray-400 cursor-not-allowed'
+              }`}
             >
-              開始測量
+              上一頁
             </button>
-          </div>
-        )}
-        </TriggerComponent>
 
-      <ContentComponent>
-      {formSubmitted && (
-        <div>
-
-        <HeaderComponent className="text-2xl font-bold">
-                      您的睡眠品質分數是:
-        </HeaderComponent>
-
-          <div className="text-center">
-            <p>
-              主觀睡眠品質: {scores.component1Score}{" "}
-              <span>(分數越低代表睡眠品質越好)</span>
-            </p>
-            <p>
-              入睡時間（睡眠潛伏期）: {scores.component2Score}{" "}
-              <span>(分數越低代表入睡時間越短)</span>
-            </p>
-            <p>
-              睡眠持續時間: {scores.component3Score}{" "}
-              <span>(分數越低代表睡眠時間越長)</span>
-            </p>
-            <p>
-              睡眠效率: {scores.component4Score}{" "}
-              <span>(分數越低代表睡眠效率越高)</span>
-            </p>
-            <p>
-              睡眠障礙: {scores.component5Score}{" "}
-              <span>(分數越低代表睡眠障礙越少)</span>
-            </p>
-            <p>
-              使用睡眠藥物: {scores.component6Score}{" "}
-              <span>(分數越低代表較少依賴睡眠藥物)</span>
-            </p>
-            <p>
-              日間功能障礙: {scores.component7Score}{" "}
-              <span>(分數越低代表日間功能障礙越少)</span>
-            </p>
-          </div>
-          <div className="text-center mt-4 border-4 border-blue-500 p-4 rounded-lg">
-            <h3 className="text-lg font-semibold mb-2">
-              總分數: {scores.globalScore}
-            </h3>
-            <FooterComponent>
-            {scores.globalScore <= 5 && (
-              <p>
-                您的睡眠品質很好。這表示您的睡眠狀況在過去一個月內是相當良好的。
-              </p>
+            {canGoForward ? (
+              <button
+                type="button"
+                onClick={handleNextPage}
+                className="bg-purple-600 hover:bg-purple-700 text-white font-medium py-2 px-6 rounded-lg transition-colors"
+              >
+                下一頁
+              </button>
+            ) : (
+              allQuestionsAnswered() && (
+                <button
+                  type="submit"
+                  className="bg-green-600 hover:bg-green-700 text-white font-medium py-3 px-8 rounded-lg transition-colors"
+                >
+                  完成評估
+                </button>
+              )
             )}
-            {scores.globalScore > 5 && scores.globalScore <= 10 && (
-              <p>
-                您的睡眠品質一般。這表示您的睡眠狀況在過去一個月內是普通，可能有改善的空間。
-              </p>
-            )}
-            {scores.globalScore > 10 && (
-              <p>
-                您可能需要改善睡眠品質。這表示您的睡眠狀況在過去一個月內可能不是很理想，建議尋求專業建議。
-              </p>
-            )}
-            <ShareButton
-            title='PSQI 匹茲堡睡眠品質量表'
-            text={`我的睡眠品質分數是: ${scores.globalScore}，你可以在 https://surveymind.tw/psqi 進行篩檢`}
-            />
-            </FooterComponent>
           </div>
-
-        </div>
-      )}
-</ContentComponent>
-    </Content>
         </form>
-      <p className="text-center mt-8 text-sm">
-        Buysse, DJ, Reynolds CF, Monk TH, Berman SR, Kupfer DJ: The Pittsburgh
-        Sleep Quality Index (PSQI): A new instrument for psychiatric research
-        and practice. Psychiatry Research 28:193-213, 1989{" "}
-      </p>
+
+
+        <Content open={open} onOpenChange={setOpen}>
+          <ContentComponent className="sm:max-w-[600px]">
+            <HeaderComponent>
+              <TitleComponent>PSQI 睡眠品質評估結果</TitleComponent>
+              <DescriptionComponent>
+                您的睡眠品質評估結果
+              </DescriptionComponent>
+            </HeaderComponent>
+            
+            {formSubmitted && (
+              <div className="py-4">
+                <div className="space-y-4">
+                  <div className="text-center p-4 bg-purple-50 rounded-lg border">
+                    <div className="text-3xl font-bold text-purple-600 mb-2">
+                      總分：{scores.globalScore} / 21
+                    </div>
+                    <div className="text-lg font-semibold text-gray-800">
+                      {scores.globalScore <= 5 && '睡眠品質很好'}
+                      {scores.globalScore > 5 && scores.globalScore <= 10 && '睡眠品質一般'}
+                      {scores.globalScore > 10 && '需要改善睡眠品質'}
+                    </div>
+                  </div>
+                  
+                  <div className="bg-gray-50 p-4 rounded-lg">
+                    <h4 className="font-semibold mb-3">各面向詳細分數：</h4>
+                    <div className="grid grid-cols-1 gap-2 text-sm">
+                      <div className="flex justify-between">
+                        <span>主觀睡眠品質:</span>
+                        <span className="font-medium">{scores.component1Score}/3</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>入睡時間:</span>
+                        <span className="font-medium">{scores.component2Score}/3</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>睡眠持續時間:</span>
+                        <span className="font-medium">{scores.component3Score}/3</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>睡眠效率:</span>
+                        <span className="font-medium">{scores.component4Score}/3</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>睡眠障礙:</span>
+                        <span className="font-medium">{scores.component5Score}/3</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>使用睡眠藥物:</span>
+                        <span className="font-medium">{scores.component6Score}/3</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>日間功能障礙:</span>
+                        <span className="font-medium">{scores.component7Score}/3</span>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="bg-gray-50 p-4 rounded-lg">
+                    <h4 className="font-semibold mb-2">結果解釋：</h4>
+                    <p className="text-sm text-gray-700 leading-relaxed">
+                      {scores.globalScore <= 5 && '您的睡眠品質很好。這表示您的睡眠狀況在過去一個月內是相當良好的。請繼續保持良好的睡眠習慣。'}
+                      {scores.globalScore > 5 && scores.globalScore <= 10 && '您的睡眠品質一般。這表示您的睡眠狀況在過去一個月內是普通，可能有改善的空間。建議關注睡眠衛生和放鬆技巧。'}
+                      {scores.globalScore > 10 && '您可能需要改善睡眠品質。這表示您的睡眠狀況在過去一個月內可能不是很理想，建議尋求睡眠專科醫師的專業建議。'}
+                    </p>
+                  </div>
+
+                  <div className="bg-yellow-50 p-4 rounded-lg border border-yellow-200">
+                    <h4 className="font-semibold text-yellow-800 mb-2">評分標準：</h4>
+                    <ul className="text-sm text-yellow-700 space-y-1">
+                      <li>• 0-5分：睡眠品質很好</li>
+                      <li>• 6-10分：睡眠品質一般</li>
+                      <li>• 11-21分：睡眠品質差，建議尋求專業協助</li>
+                      <li>• 分數越低表示睡眠品質越好</li>
+                    </ul>
+                  </div>
+
+                  <div className="pt-4">
+                    <ShareButton 
+                      title="PSQI 匹茲堡睡眠品質量表"
+                      text={`我的睡眠品質分數是 ${scores.globalScore}分，結果為：${scores.globalScore <= 5 ? '睡眠品質很好' : scores.globalScore <= 10 ? '睡眠品質一般' : '需要改善睡眠品質'}`}
+                      url={typeof window !== 'undefined' ? window.location.href : ''}
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
+
+            <FooterComponent>
+              <CloseComponent className="w-full bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium py-2 px-4 rounded">
+                關閉
+              </CloseComponent>
+            </FooterComponent>
+          </ContentComponent>
+        </Content>
+        {/* Copyright and Citation Section */}
+        <div className="mt-12 pt-8 border-t border-gray-200">
+          <div className="bg-gray-50 p-6 rounded-lg">
+            <h3 className="text-lg font-semibold mb-4">量表來源與版權</h3>
+            <div className="space-y-3 text-sm text-gray-700">
+              <p>
+                <strong>原始開發者：</strong>Daniel J. Buysse, MD, Charles F. Reynolds III, MD, Timothy H. Monk, PhD 等學者
+              </p>
+              <p>
+                <strong>開發單位：</strong>匹茲堡大學醫學院精神科
+              </p>
+              <p>
+                <strong>引用格式 (APA)：</strong>
+              </p>
+              <div className="bg-white p-4 rounded border-l-4 border-purple-500 font-mono text-xs leading-relaxed">
+                Buysse, D. J., Reynolds III, C. F., Monk, T. H., Berman, S. R., & Kupfer, D. J. (1989). 
+                The Pittsburgh Sleep Quality Index: a new instrument for psychiatric practice and research. 
+                <em>Psychiatry Research</em>, <em>28</em>(2), 193-213. 
+                https://doi.org/10.1016/0165-1781(89)90047-4
+              </div>
+              <p className="text-xs text-gray-500 mt-3">
+                * PSQI 是國際廣泛使用的睡眠品質評估工具，具有良好的信效度。
+                量表範圍0-21分，分數越高表示睡眠品質越差。臨床上以&gt;5分作為睡眠品質差的切點。
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
