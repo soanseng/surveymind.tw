@@ -483,6 +483,54 @@ export const questionnaireSEO: Record<string, SEOConfig> = {
       duration: "2-3分鐘",
       difficulty: "簡單"
     }
+  },
+
+  // EDE-Q - Eating Disorder Examination Questionnaire 6.0
+  "ede-q": {
+    title: "飲食障礙檢查問卷 EDE-Q | 飲食障礙評估 | 追蹤工具 - 文心樂丞診所",
+    description: "EDE-Q飲食障礙檢查問卷6.0版，28題全面評估飲食障礙相關思想、感受與行為。黃金標準評估工具，適合追蹤病情變化，由牛津大學開發。",
+    keywords: [
+      "EDE-Q", "飲食障礙檢查問卷", "飲食障礙評估", "飲食障礙追蹤", "EDE-Q 6.0",
+      "飲食障礙量表", "體型擔憂評估", "體重擔憂評估", "飲食限制評估",
+      "暴食評估", "飲食障礙黃金標準", "飲食行為評估", "免費飲食障礙評估"
+    ],
+    openGraph: {
+      title: "EDE-Q 飲食障礙檢查問卷 - 飲食障礙評估黃金標準工具",
+      description: "牛津大學開發的飲食障礙評估工具，28題全面評估，適合追蹤病情變化。",
+      type: "website",
+      locale: "zh_TW"
+    },
+    structuredData: {
+      name: "EDE-Q 飲食障礙檢查問卷",
+      description: "全面評估飲食障礙相關症狀的詳細工具",
+      category: "飲食健康評估",
+      duration: "15-20分鐘",
+      difficulty: "詳細"
+    }
+  },
+
+  // BES - Binge Eating Scale
+  bes: {
+    title: "暴食量表 BES | 暴食症評估 | 嗜食症篩檢 - 文心樂丞診所",
+    description: "BES暴食量表，16題專門評估暴食行為相關症狀嚴重程度。評估暴食的行為、情緒與認知層面，適用於有暴食困擾的個體評估。",
+    keywords: [
+      "BES", "暴食量表", "暴食症評估", "嗜食症篩檢", "暴食行為評估",
+      "暴食症測試", "暴食困擾評估", "暴食嚴重程度", "暴食症量表",
+      "飲食失控評估", "暴食心理評估", "免費暴食測試", "暴食症篩檢工具"
+    ],
+    openGraph: {
+      title: "BES 暴食量表 - 專業暴食症評估工具",
+      description: "專門評估暴食相關症狀的量表，16題深入評估暴食行為、情緒與認知。",
+      type: "website",
+      locale: "zh_TW"
+    },
+    structuredData: {
+      name: "BES 暴食量表",
+      description: "評估暴食相關症狀嚴重程度的專業工具",
+      category: "飲食健康評估",
+      duration: "10-15分鐘",
+      difficulty: "中等"
+    }
   }
 };
 

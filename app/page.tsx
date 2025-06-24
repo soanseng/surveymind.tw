@@ -109,6 +109,8 @@ const questionnaires = {
   ],
   eating: [
     { name: "SCOFF 飲食障礙篩檢問卷", link: "/scoff", time: "2-3分鐘", difficulty: "簡單" },
+    { name: "飲食障礙檢查問卷", link: "/ede-q", time: "15-20分鐘", difficulty: "詳細" },
+    { name: "暴食量表", link: "/bes", time: "10-15分鐘", difficulty: "中等" },
   ],
 };
 

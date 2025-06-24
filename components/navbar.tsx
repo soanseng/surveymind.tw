@@ -38,7 +38,7 @@ const Navbar = () => {
     ] },
     { name: '人格', questionnaire: [ {name: '大五人格量表', link: '/big-5'}, {name: '麥克連邊緣性人格障礙篩查量表', link: '/msi-bpd'} ] },
     { name: '創傷評估', questionnaire: [ {name: '創傷後壓力症候群檢核表', link: '/pcl-5'}, {name: '初級照護PTSD篩檢量表', link: '/pc-ptsd-5'} ] },
-    { name: '飲食評估', questionnaire: [ {name: 'SCOFF 飲食障礙篩檢問卷', link: '/scoff'} ] },
+    { name: '飲食評估', questionnaire: [ {name: 'SCOFF 飲食障礙篩檢問卷', link: '/scoff'}, {name: '飲食障礙檢查問卷', link: '/ede-q'}, {name: '暴食量表', link: '/bes'} ] },
   ];
 
   return (
