@@ -1,6 +1,7 @@
 "use client"
 import { useEffect, useState } from 'react';
-import Head from 'next/head';
+import SEOHead from '@/components/SEOHead';
+import { questionnaireSEO } from '@/lib/seo-config';
 import useQuestionnaireForm from '@/hooks/useQuestionnaireForm';
 import Pagination from '@/hooks/Pagination';
 import { ScrollArea } from '@radix-ui/react-scroll-area';
@@ -251,10 +252,7 @@ const Page = () => {
 
   return (
     <div className="container mx-auto px-4">
-      <Head>
-        <title>大五人格量表 (BFI) - 文心樂丞診所</title>
-        <meta name="description" content="大五人格量表，用於評估五大人格特質：外向性、友善性、嚴謹性、神經質、開放性" />
-      </Head>
+      <SEOHead config={questionnaireSEO["big-5"]} path="/big-5" />
       
       <div className="max-w-4xl mx-auto py-8">
         <h1 className="text-3xl font-bold text-center mb-6">大五人格量表 (BFI)</h1>

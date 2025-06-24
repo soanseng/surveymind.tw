@@ -1,10 +1,11 @@
 'use client'
 import React, { useState } from 'react';
-import Head from 'next/head';
 import useQuestionnaireForm from '@/hooks/useQuestionnaireForm';
 import Pagination from '@/hooks/Pagination';
 import { useResponsiveDialog } from '@/hooks/useResponsiveDialog';
 import ShareButton from '@/components/ShareButton';
+import SEOHead from '@/components/SEOHead';
+import { questionnaireSEO } from '@/lib/seo-config';
 
 const questions = [
   "我常常覺得想哭",
@@ -140,10 +141,10 @@ const TdqForm: React.FC = () => {
 
   return (
     <div className="container mx-auto px-4">
-      <Head>
-        <title>TDQ 台灣人憂鬱症量表 - 文心樂丞診所</title>
-        <meta name="description" content="台灣人憂鬱症量表，專為台灣地區設計的憂鬱症篩檢工具" />
-      </Head>
+      <SEOHead 
+        config={questionnaireSEO.tdq} 
+        path="/tdq"
+      />
       
       <div className="max-w-4xl mx-auto py-8">
         <h1 className="text-3xl font-bold text-center mb-6">台灣人憂鬱症量表 (TDQ)</h1>

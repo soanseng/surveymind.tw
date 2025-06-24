@@ -1,6 +1,7 @@
 "use client"
 import React, { useState } from 'react';
-import Head from 'next/head';
+import SEOHead from '@/components/SEOHead';
+import { questionnaireSEO } from '@/lib/seo-config';
 import useQuestionnaireForm from '@/hooks/useQuestionnaireForm';
 import Pagination from '@/hooks/Pagination';
 import { Input } from '@/components/ui/input';
@@ -261,10 +262,7 @@ const customHandleSubmit = (e: React.FormEvent) => {
 
   return (
     <div className="container mx-auto px-4">
-      <Head>
-        <title>PSQI 匹茲堡睡眠品質量表 - 文心樂丞診所</title>
-        <meta name="description" content="PSQI匹茲堡睡眠品質量表，用於評估睡眠品質和睡眠障礙" />
-      </Head>
+      <SEOHead config={questionnaireSEO.psqi} path="/psqi" />
       
       <div className="max-w-4xl mx-auto py-8">
         <h1 className="text-3xl font-bold text-center mb-6">PSQI 匹茲堡睡眠品質量表</h1>

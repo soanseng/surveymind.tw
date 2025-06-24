@@ -1,6 +1,7 @@
 "use client"
 import React, { useState } from 'react';
-import Head from 'next/head';
+import SEOHead from '@/components/SEOHead';
+import { questionnaireSEO } from '@/lib/seo-config';
 import useQuestionnaireForm from '@/hooks/useQuestionnaireForm';
 import Pagination from '@/hooks/Pagination';
 import { useResponsiveDialog } from '@/hooks/useResponsiveDialog';
@@ -139,10 +140,7 @@ const ASRSForm: React.FC = () => {
 
   return (
     <div className="container mx-auto px-4">
-      <Head>
-        <title>ASRS 成人ADHD自我評估問卷 - 文心樂丞診所</title>
-        <meta name="description" content="ASRS成人ADHD自我報告量表，用於評估成人注意力不足過動症症狀" />
-      </Head>
+      <SEOHead config={questionnaireSEO.asrs} path="/asrs" />
       
       <div className="max-w-4xl mx-auto py-8">
         <h1 className="text-3xl font-bold text-center mb-6">ASRS 成人ADHD自我評估問卷</h1>

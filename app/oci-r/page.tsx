@@ -1,6 +1,7 @@
 "use client"
 import React, { useState } from 'react';
-import Head from 'next/head';
+import SEOHead from '@/components/SEOHead';
+import { questionnaireSEO } from '@/lib/seo-config';
 import useQuestionnaireForm from '@/hooks/useQuestionnaireForm';
 import { useResponsiveDialog } from '@/hooks/useResponsiveDialog';
 import ShareButton from '@/components/ShareButton';
@@ -138,10 +139,7 @@ const Page = () => {
 
   return (
     <div className="container mx-auto px-4">
-      <Head>
-        <title>OCI-R 強迫症狀量表修訂版 - 文心樂丞診所</title>
-        <meta name="description" content="OCI-R強迫症狀量表修訂版，用於評估強迫症狀的困擾程度和嚴重性" />
-      </Head>
+      <SEOHead config={questionnaireSEO["oci-r"]} path="/oci-r" />
       
       <div className="max-w-4xl mx-auto py-8">
         <h1 className="text-3xl font-bold text-center mb-6">OCI-R 強迫症狀量表修訂版</h1>

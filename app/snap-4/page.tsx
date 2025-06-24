@@ -1,6 +1,7 @@
 "use client"
 import React, { useState } from 'react';
-import Head from 'next/head';
+import SEOHead from '@/components/SEOHead';
+import { questionnaireSEO } from '@/lib/seo-config';
 import useQuestionnaireForm from '@/hooks/useQuestionnaireForm';
 import Pagination from '@/hooks/Pagination';
 import { useResponsiveDialog } from '@/hooks/useResponsiveDialog';
@@ -171,10 +172,7 @@ const SNAP4Form: React.FC = () => {
 
   return (
     <div className="container mx-auto px-4">
-      <Head>
-        <title>SNAP-IV 兒童ADHD評估問卷 - 文心樂丞診所</title>
-        <meta name="description" content="SNAP-IV兒童ADHD評估問卷，用於評估兒童注意力不足過動症症狀" />
-      </Head>
+      <SEOHead config={questionnaireSEO["snap-4"]} path="/snap-4" />
       
       <div className="max-w-4xl mx-auto py-8">
         <h1 className="text-3xl font-bold text-center mb-6">SNAP-IV 兒童ADHD評估問卷</h1>

@@ -1,6 +1,7 @@
 "use client"
 import { useEffect, useState } from 'react';
-import Head from 'next/head';
+import SEOHead from '@/components/SEOHead';
+import { questionnaireSEO } from '@/lib/seo-config';
 import useQuestionnaireForm from '@/hooks/useQuestionnaireForm';
 import { useResponsiveDialog } from '@/hooks/useResponsiveDialog';
 import ShareButton from '@/components/ShareButton';
@@ -103,10 +104,7 @@ const Page = () => {
   };
   return (
     <div className="container mx-auto px-4">
-      <Head>
-        <title>輕躁症自我評估量表 (HCL-32) - 文心樂丞診所</title>
-        <meta name="description" content="輕躁症自我評估量表，幫助篩檢可能的雙極性情感障礙" />
-      </Head>
+      <SEOHead config={questionnaireSEO["hcl-32"]} path="/hcl-32" />
       
       <div className="max-w-4xl mx-auto py-8">
         <h1 className="text-3xl font-bold text-center mb-6">輕躁症自我評估量表 (HCL-32)</h1>

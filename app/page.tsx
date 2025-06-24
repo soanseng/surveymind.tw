@@ -20,6 +20,60 @@ import {
   Clock,
   Award
 } from "lucide-react";
+import { Metadata } from 'next';
+import { landingPageSEO, baseSEO, organizationStructuredData } from '@/lib/seo-config';
+
+export const metadata: Metadata = {
+  metadataBase: new URL(baseSEO.siteUrl),
+  title: landingPageSEO.title,
+  description: landingPageSEO.description,
+  keywords: landingPageSEO.keywords.join(', '),
+  authors: [{ name: '陳璿丞醫師', url: 'https://anxiety.com.tw' }],
+  creator: '文心樂丞診所',
+  publisher: '文心樂丞診所',
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+  openGraph: {
+    title: landingPageSEO.openGraph.title,
+    description: landingPageSEO.openGraph.description,
+    url: baseSEO.siteUrl,
+    siteName: baseSEO.siteName,
+    locale: landingPageSEO.openGraph.locale,
+    type: 'website',
+    images: [
+      {
+        url: `${baseSEO.siteUrl}${baseSEO.defaultImage}`,
+        width: 1200,
+        height: 630,
+        alt: landingPageSEO.title,
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: landingPageSEO.openGraph.title,
+    description: landingPageSEO.openGraph.description,
+    images: [`${baseSEO.siteUrl}${baseSEO.defaultImage}`],
+    creator: '@anxiety_tw',
+  },
+  alternates: {
+    canonical: baseSEO.siteUrl,
+    languages: {
+      'zh-TW': baseSEO.siteUrl,
+    },
+  },
+  category: 'Medical',
+  classification: 'Mental Health',
+};
 
 const questionnaires = {
   emotion: [
@@ -294,6 +348,52 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* Structured Data */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(organizationStructuredData)
+        }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "WebSite",
+            "name": baseSEO.siteName,
+            "url": baseSEO.siteUrl,
+            "description": landingPageSEO.description,
+            "inLanguage": "zh-TW",
+            "potentialAction": {
+              "@type": "SearchAction",
+              "target": `${baseSEO.siteUrl}/search?q={search_term_string}`,
+              "query-input": "required name=search_term_string"
+            },
+            "publisher": organizationStructuredData
+          })
+        }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "ItemList",
+            "name": "心理健康評估量表",
+            "description": "專業心理健康自我評估工具列表",
+            "numberOfItems": Object.values(questionnaires).flat().length,
+            "itemListElement": Object.values(questionnaires).flat().map((item, index) => ({
+              "@type": "ListItem",
+              "position": index + 1,
+              "name": item.name,
+              "url": `${baseSEO.siteUrl}${item.link}`,
+              "description": `${item.name} - 評估時間: ${item.time}, 難度: ${item.difficulty}`
+            }))
+          })
+        }}
+      />
     </main>
   );
 }

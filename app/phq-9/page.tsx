@@ -1,9 +1,10 @@
 "use client"
 import { useEffect, useState } from 'react';
-import Head from 'next/head';
 import useQuestionnaireForm from '@/hooks/useQuestionnaireForm';
 import { useResponsiveDialog } from '@/hooks/useResponsiveDialog';
 import ShareButton from '@/components/ShareButton';
+import SEOHead from '@/components/SEOHead';
+import { questionnaireSEO } from '@/lib/seo-config';
 
 const questions = [
   "做事時提不起勁或沒有樂趣",
@@ -93,10 +94,10 @@ const Page = () => {
 
   return (
     <div className="container mx-auto px-4">
-      <Head>
-        <title>PHQ-9 憂鬱症篩檢問卷 - 文心樂丞診所</title>
-        <meta name="description" content="PHQ-9患者健康問卷，用於憂鬱症狀篩檢評估" />
-      </Head>
+      <SEOHead 
+        config={questionnaireSEO["phq-9"]} 
+        path="/phq-9"
+      />
       
       <div className="max-w-4xl mx-auto py-8">
         <h1 className="text-3xl font-bold text-center mb-6">PHQ-9 憂鬱症篩檢問卷</h1>

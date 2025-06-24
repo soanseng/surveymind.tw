@@ -1,6 +1,7 @@
 "use client"
 import { useEffect, useState } from 'react';
-import Head from 'next/head';
+import SEOHead from '@/components/SEOHead';
+import { questionnaireSEO } from '@/lib/seo-config';
 import useQuestionnaireForm from '@/hooks/useQuestionnaireForm';
 import { useResponsiveDialog } from '@/hooks/useResponsiveDialog';
 import {
@@ -90,10 +91,7 @@ const Page = () => {
 
   return (
     <div className="container mx-auto px-4">
-      <Head>
-        <title>AD-8 極早期失智症篩檢量表 - 文心樂丞診所</title>
-        <meta name="description" content="AD-8極早期失智症篩檢量表，用於評估認知功能變化" />
-      </Head>
+      <SEOHead config={questionnaireSEO["ad-8"]} path="/ad-8" />
       
       <div className="max-w-4xl mx-auto py-8">
         <h1 className="text-3xl font-bold text-center mb-6">AD-8 極早期失智症篩檢量表</h1>

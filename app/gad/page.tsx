@@ -1,6 +1,7 @@
 "use client"
 import React, { useState } from 'react';
-import Head from 'next/head';
+import SEOHead from '@/components/SEOHead';
+import { questionnaireSEO } from '@/lib/seo-config';
 import useQuestionnaireForm from '@/hooks/useQuestionnaireForm';
 import { useResponsiveDialog } from '@/hooks/useResponsiveDialog';
 import ShareButton from '@/components/ShareButton';
@@ -87,10 +88,7 @@ const Page = () => {
 
   return (
     <div className="container mx-auto px-4">
-      <Head>
-        <title>GAD-7 廣泛性焦慮量表 - 文心樂丞診所</title>
-        <meta name="description" content="GAD-7廣泛性焦慮障礙量表，用於焦慮症狀篩檢評估" />
-      </Head>
+      <SEOHead config={questionnaireSEO.gad} path="/gad" />
       
       <div className="max-w-4xl mx-auto py-8">
         <h1 className="text-3xl font-bold text-center mb-6">GAD-7 廣泛性焦慮量表</h1>
