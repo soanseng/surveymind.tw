@@ -61,25 +61,55 @@ const Page = () => {
         handleSelectChange,
         handleSubmit,
         score,
-        validationMessage,
+        validationMessage: hookValidationMessage,
     } = useQuestionnaireForm(questions.length);
 
+  const [customValidationMessage, setCustomValidationMessage] = useState('');
   const { open, setOpen, TriggerComponent, Content, ContentComponent, HeaderComponent, TitleComponent, DescriptionComponent, FooterComponent, CloseComponent } = useResponsiveDialog();
+
+  const getUnansweredQuestions = () => {
+    const unanswered: number[] = [];
+    answers.forEach((answer, index) => {
+      if (answer === null || answer === '') {
+        unanswered.push(index + 1);
+      }
+    });
+    return unanswered;
+  };
 
   const customHandleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    const unansweredQuestions = getUnansweredQuestions();
+    
+    if (unansweredQuestions.length > 0) {
+      if (unansweredQuestions.length > 5) {
+        setCustomValidationMessage(`還有 ${unansweredQuestions.length} 題尚未作答，請完成所有題目後再提交。`);
+      } else {
+        setCustomValidationMessage(`請回答第 ${unansweredQuestions.join('、')} 題後再提交。`);
+      }
+      return;
+    }
+    
+    setCustomValidationMessage('');
     handleSubmit(e);
     setOpen(true);
   }
+
+  const validationMessage = customValidationMessage || hookValidationMessage;
+
+  const handleAnswerChange = (index: number, value: string) => {
+    handleSelectChange(index, value);
+    setCustomValidationMessage(''); // Clear validation message when user answers
+  };
   return (
     <div className="container mx-auto px-4">
       <Head>
-        <title>輕燥症自我評估量表 (HCL-32) - 文心樂丞診所</title>
-        <meta name="description" content="輕燥症自我評估量表，幫助篩檢可能的雙極性情感障礙" />
+        <title>輕躁症自我評估量表 (HCL-32) - 文心樂丞診所</title>
+        <meta name="description" content="輕躁症自我評估量表，幫助篩檢可能的雙極性情感障礙" />
       </Head>
       
       <div className="max-w-4xl mx-auto py-8">
-        <h1 className="text-3xl font-bold text-center mb-6">輕燥症自我評估量表 (HCL-32)</h1>
+        <h1 className="text-3xl font-bold text-center mb-6">輕躁症自我評估量表 (HCL-32)</h1>
         
         <div className="bg-blue-50 p-6 rounded-lg mb-8">
           <h2 className="text-lg font-semibold mb-4">使用說明</h2>
@@ -96,40 +126,76 @@ const Page = () => {
           </p>
         </div>
 
+        {/* Progress Indicator */}
+        <div className="mb-6">
+          <div className="flex justify-between items-center mb-2">
+            <span className="text-sm font-medium text-gray-700">完成進度</span>
+            <span className="text-sm text-gray-600">
+              {answers.filter(answer => answer !== null && answer !== '').length} / {questions.length}
+            </span>
+          </div>
+          <div className="w-full bg-gray-200 rounded-full h-2">
+            <div 
+              className="bg-blue-600 h-2 rounded-full transition-all duration-300" 
+              style={{ 
+                width: `${(answers.filter(answer => answer !== null && answer !== '').length / questions.length) * 100}%` 
+              }}
+            ></div>
+          </div>
+        </div>
+
         <form onSubmit={customHandleSubmit} className="space-y-6">
-          {questions.map((question, index) => (
-            <div key={index} className="bg-white p-4 rounded-lg shadow-sm border">
-              <h3 className="text-base font-medium mb-3">
-                {index + 1}. {question}
-              </h3>
-              <div className="flex space-x-6">
-                <label className="flex items-center cursor-pointer">
-                  <input
-                    type="radio"
-                    name={`question-${index}`}
-                    value="1"
-                    onChange={(e) => handleSelectChange(index, e.target.value)}
-                    className="mr-2 h-4 w-4 text-blue-600"
-                  />
-                  <span className="text-sm">是</span>
-                </label>
-                <label className="flex items-center cursor-pointer">
-                  <input
-                    type="radio"
-                    name={`question-${index}`}
-                    value="0"
-                    onChange={(e) => handleSelectChange(index, e.target.value)}
-                    className="mr-2 h-4 w-4 text-blue-600"
-                  />
-                  <span className="text-sm">否</span>
-                </label>
+          {questions.map((question, index) => {
+            const isUnanswered = answers[index] === null || answers[index] === '';
+            return (
+              <div 
+                key={index} 
+                className={`bg-white p-4 rounded-lg shadow-sm border-2 transition-colors ${
+                  isUnanswered && validationMessage 
+                    ? 'border-red-300 bg-red-50' 
+                    : 'border-gray-200'
+                }`}
+              >
+                <h3 className={`text-base font-medium mb-3 ${
+                  isUnanswered && validationMessage ? 'text-red-800' : 'text-gray-900'
+                }`}>
+                  {index + 1}. {question}
+                  {isUnanswered && validationMessage && (
+                    <span className="ml-2 text-red-600 text-sm">*未作答</span>
+                  )}
+                </h3>
+                <div className="flex space-x-6">
+                  <label className="flex items-center cursor-pointer">
+                    <input
+                      type="radio"
+                      name={`question-${index}`}
+                      value="1"
+                      onChange={(e) => handleAnswerChange(index, e.target.value)}
+                      className="mr-2 h-4 w-4 text-blue-600"
+                    />
+                    <span className="text-sm">是</span>
+                  </label>
+                  <label className="flex items-center cursor-pointer">
+                    <input
+                      type="radio"
+                      name={`question-${index}`}
+                      value="0"
+                      onChange={(e) => handleAnswerChange(index, e.target.value)}
+                      className="mr-2 h-4 w-4 text-blue-600"
+                    />
+                    <span className="text-sm">否</span>
+                  </label>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
 
           {validationMessage && (
-            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
-              {validationMessage}
+            <div className="bg-red-50 border-2 border-red-300 text-red-800 px-6 py-4 rounded-lg shadow-sm">
+              <div className="flex items-center">
+                <span className="text-red-600 mr-2 text-lg">⚠️</span>
+                <span className="font-medium">{validationMessage}</span>
+              </div>
             </div>
           )}
 
@@ -182,7 +248,7 @@ const Page = () => {
 
                 <div className="pt-4">
                   <ShareButton 
-                    title="輕燥症自我評估量表 (HCL-32)"
+                    title="輕躁症自我評估量表 (HCL-32)"
                     text={`我的得分是${score}分，結果為：${getSeverity(score)}`}
                     url={typeof window !== 'undefined' ? window.location.href : ''}
                   />
@@ -197,6 +263,31 @@ const Page = () => {
             </FooterComponent>
           </ContentComponent>
         </Content>
+
+        {/* Copyright and Citation Section */}
+        <div className="mt-12 pt-8 border-t border-gray-200">
+          <div className="bg-gray-50 p-6 rounded-lg">
+            <h3 className="text-lg font-semibold mb-4">量表來源與版權</h3>
+            <div className="space-y-3 text-sm text-gray-700">
+              <p>
+                <strong>原始版權：</strong>瑞士蘇黎世大學精神病院 Jules Angst 教授開發
+              </p>
+              <p>
+                <strong>引用格式 (APA)：</strong>
+              </p>
+              <div className="bg-white p-4 rounded border-l-4 border-blue-500 font-mono text-xs leading-relaxed">
+                Angst, J., Adolfsson, R., Benazzi, F., Gamma, A., Hantouche, E., Meyer, T. D., ... & Scott, J. (2005). 
+                The HCL-32: Towards a self-assessment tool for hypomanic symptoms in outpatients. 
+                <em>Journal of Affective Disorders</em>, <em>88</em>(2), 217-233. 
+                https://doi.org/10.1016/j.jad.2005.05.011
+              </div>
+              <p className="text-xs text-gray-500 mt-3">
+                * 本量表經原作者授權供臨床與研究使用，翻譯版本已通過台灣地區信效度驗證研究。
+                根據台灣驗證研究，篩檢臨界值為14分，敏感度82%，特異度67%。
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
