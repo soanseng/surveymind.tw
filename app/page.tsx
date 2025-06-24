@@ -19,7 +19,8 @@ import {
   Shield,
   Clock,
   Award,
-  Utensils
+  Utensils,
+  AlertTriangle
 } from "lucide-react";
 import { Metadata } from 'next';
 import { landingPageSEO, baseSEO, organizationStructuredData } from '@/lib/seo-config';
@@ -112,6 +113,13 @@ const questionnaires = {
     { name: "飲食障礙檢查問卷", link: "/ede-q", time: "15-20分鐘", difficulty: "詳細" },
     { name: "暴食量表", link: "/bes", time: "10-15分鐘", difficulty: "中等" },
   ],
+  addiction: [
+    { name: "AUDIT 酒精使用疾患識別測驗", link: "/audit", time: "5-8分鐘", difficulty: "中等" },
+    { name: "FTND 尼古丁依賴量表", link: "/ftnd", time: "3-5分鐘", difficulty: "簡單" },
+    { name: "PGSI 問題賭博嚴重程度指數", link: "/pgsi", time: "5-8分鐘", difficulty: "中等" },
+    { name: "IGDS9-SF 網路遊戲障礙量表", link: "/igds9-sf", time: "8-10分鐘", difficulty: "中等" },
+    { name: "SAST 性成癮篩查測驗", link: "/sast", time: "10-15分鐘", difficulty: "中等" },
+  ],
 };
 
 const categories = [
@@ -170,6 +178,14 @@ const categories = [
     description: "篩檢飲食障礙與飲食行為問題",
     color: "bg-pink-100 text-pink-600",
     questionnaires: questionnaires.eating,
+  },
+  {
+    id: "addiction",
+    name: "成癮評估",
+    icon: AlertTriangle,
+    description: "評估酒精、菸草、賭博、遊戲與性成癮風險",
+    color: "bg-yellow-100 text-yellow-600",
+    questionnaires: questionnaires.addiction,
   },
 ];
 

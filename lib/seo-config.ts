@@ -531,6 +531,126 @@ export const questionnaireSEO: Record<string, SEOConfig> = {
       duration: "10-15分鐘",
       difficulty: "中等"
     }
+  },
+
+  // AUDIT - Alcohol Use Disorders Identification Test
+  audit: {
+    title: "AUDIT 酒精使用疾患識別測驗 | 酒精依賴篩檢 | 飲酒問題評估 - 文心樂丞診所",
+    description: "WHO開發的AUDIT酒精使用疾患識別測驗，10題評估過去一年飲酒模式與相關問題。全球標準酒精篩檢工具，識別高風險飲酒、有害性飲酒及早期酒精依賴。",
+    keywords: [
+      "AUDIT", "酒精使用疾患", "酒精依賴篩檢", "飲酒問題評估", "酒精成癮測試",
+      "WHO酒精篩檢", "酒精使用障礙", "飲酒風險評估", "酒精依賴量表",
+      "酒精問題篩檢", "飲酒習慣評估", "免費酒精測試", "酒精使用評估工具"
+    ],
+    openGraph: {
+      title: "AUDIT 酒精使用疾患識別測驗 - WHO標準酒精篩檢工具",
+      description: "世界衛生組織開發的酒精使用評估工具，10題快速識別飲酒相關問題。",
+      type: "website",
+      locale: "zh_TW"
+    },
+    structuredData: {
+      name: "AUDIT 酒精使用疾患識別測驗",
+      description: "WHO開發的全球標準酒精使用評估工具",
+      category: "成癮行為評估",
+      duration: "5-8分鐘",
+      difficulty: "中等"
+    }
+  },
+
+  // FTND - Fagerström Test for Nicotine Dependence
+  ftnd: {
+    title: "FTND 尼古丁依賴量表 | 法格史壯量表 | 菸癮評估 | 戒菸評估 - 文心樂丞診所",
+    description: "FTND法格史壯尼古丁依賴量表，6題評估尼古丁生理依賴程度。國際標準戒菸評估工具，預測戒斷症狀嚴重程度，指導尼古丁替代療法選擇。",
+    keywords: [
+      "FTND", "尼古丁依賴量表", "法格史壯量表", "菸癮評估", "戒菸評估",
+      "尼古丁依賴測試", "吸菸依賴程度", "戒菸前評估", "菸癮程度測試",
+      "尼古丁成癮評估", "戒菸準備評估", "免費菸癮測試", "戒菸難度評估"
+    ],
+    openGraph: {
+      title: "FTND 尼古丁依賴量表 - 國際標準菸癮評估工具",
+      description: "評估尼古丁生理依賴程度的專業工具，6題快速了解戒菸難度與所需支持。",
+      type: "website",
+      locale: "zh_TW"
+    },
+    structuredData: {
+      name: "FTND 法格史壯尼古丁依賴量表",
+      description: "評估尼古丁生理依賴程度的國際標準工具",
+      category: "成癮行為評估",
+      duration: "3-5分鐘",
+      difficulty: "簡單"
+    }
+  },
+
+  // PGSI - Problem Gambling Severity Index
+  pgsi: {
+    title: "PGSI 問題賭博嚴重程度指數 | 賭博成癮評估 | 病態賭博篩檢 - 文心樂丞診所",
+    description: "PGSI問題賭博嚴重程度指數，9題評估過去12個月賭博行為與相關後果。專為一般群體設計的賭博問題篩檢工具，識別從低風險到問題賭博的完整光譜。",
+    keywords: [
+      "PGSI", "問題賭博", "賭博成癮評估", "病態賭博篩檢", "賭博依賴測試",
+      "賭博問題評估", "賭博風險篩檢", "賭博障礙評估", "賭博行為評估",
+      "賭博成癮測試", "賭博習慣評估", "免費賭博篩檢", "賭博問題量表"
+    ],
+    openGraph: {
+      title: "PGSI 問題賭博嚴重程度指數 - 專業賭博成癮篩檢工具",
+      description: "加拿大開發的賭博問題評估工具，9題評估賭博風險等級與相關後果。",
+      type: "website",
+      locale: "zh_TW"
+    },
+    structuredData: {
+      name: "PGSI 問題賭博嚴重程度指數",
+      description: "評估賭博問題嚴重程度的專業篩檢工具",
+      category: "成癮行為評估",
+      duration: "5-8分鐘",
+      difficulty: "中等"
+    }
+  },
+
+  // IGDS9-SF - Internet Gaming Disorder Scale Short Form
+  "igds9-sf": {
+    title: "IGDS9-SF 網路遊戲障礙量表 | 遊戲成癮評估 | 網路成癮篩檢 - 文心樂丞診所",
+    description: "IGDS9-SF網路遊戲障礙量表簡式版，9題直接對應DSM-5診斷標準。雙重評分系統評估網路遊戲成癮風險，適合追蹤治療進展與跨文化比較。",
+    keywords: [
+      "IGDS9-SF", "網路遊戲障礙", "遊戲成癮評估", "網路成癮篩檢", "DSM-5遊戲障礙",
+      "線上遊戲成癮", "手機遊戲成癮", "電玩成癮評估", "遊戲依賴測試",
+      "網路遊戲依賴", "遊戲障礙篩檢", "免費遊戲成癮測試", "遊戲成癮量表"
+    ],
+    openGraph: {
+      title: "IGDS9-SF 網路遊戲障礙量表 - DSM-5標準遊戲成癮評估",
+      description: "對應DSM-5診斷標準的遊戲障礙評估工具，9題雙重評分系統。",
+      type: "website",
+      locale: "zh_TW"
+    },
+    structuredData: {
+      name: "IGDS9-SF 網路遊戲障礙量表簡式版",
+      description: "對應DSM-5標準的網路遊戲障礙評估工具",
+      category: "成癮行為評估",
+      duration: "8-10分鐘",
+      difficulty: "中等"
+    }
+  },
+
+  // SAST - Sexual Addiction Screening Test
+  sast: {
+    title: "SAST 性成癮篩查測驗 | 強迫性性行為評估 | 性成癮篩檢 - 文心樂丞診所",
+    description: "SAST性成癮篩查測驗，20題評估強迫性性行為模式。專業篩檢工具識別可能需要協助的性行為模式，引發自我覺察與專業諮詢。",
+    keywords: [
+      "SAST", "性成癮篩查", "強迫性性行為", "性成癮評估", "性依賴測試",
+      "性行為評估", "性成癮篩檢", "強迫性性行為障礙", "性衝動控制",
+      "性成癮量表", "性行為問題篩檢", "性成癮自我評估", "性健康評估"
+    ],
+    openGraph: {
+      title: "SAST 性成癮篩查測驗 - 強迫性性行為專業篩檢工具",
+      description: "評估強迫性性行為模式的專業篩檢工具，幫助識別需要專業協助的行為模式。",
+      type: "website",
+      locale: "zh_TW"
+    },
+    structuredData: {
+      name: "SAST 性成癮篩查測驗",
+      description: "評估強迫性性行為模式的專業篩檢工具",
+      category: "成癮行為評估",
+      duration: "10-15分鐘",
+      difficulty: "中等"
+    }
   }
 };
 
