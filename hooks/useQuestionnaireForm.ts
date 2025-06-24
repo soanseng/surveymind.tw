@@ -31,8 +31,20 @@ function useQuestionnaireForm<TScoreType = DefaultScoreType>(questionsLength: nu
 
   const allQuestionsAnswered = () => answers.every(answer => answer !== null && answer !== '');
 
-  const nextPage = () => setCurrentPage(current => current + 1);
-  const prevPage = () => setCurrentPage(current => current - 1);
+  const nextPage = () => {
+    setCurrentPage(current => current + 1);
+    // Scroll to top of page smoothly (check for browser environment)
+    if (typeof window !== 'undefined') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
+  const prevPage = () => {
+    setCurrentPage(current => current - 1);
+    // Scroll to top of page smoothly (check for browser environment)
+    if (typeof window !== 'undefined') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
 
   return {
     answers,

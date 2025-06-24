@@ -6,6 +6,7 @@ import useQuestionnaireForm from '@/hooks/useQuestionnaireForm';
 import Pagination from '@/hooks/Pagination';
 import { ScrollArea } from '@radix-ui/react-scroll-area';
 import ShareButton from '@/components/ShareButton';
+import { useResponsiveDialog } from '@/hooks/useResponsiveDialog';
 
 const questions = [
   "健談的",
@@ -113,7 +114,7 @@ const Page = () => {
   } = useQuestionnaireForm<ScoreType>(questions.length, questionsPerPage);
 
   const [customValidationMessage, setCustomValidationMessage] = useState('');
-  const [open, setOpen] = useState(false);
+  const { open, setOpen, TriggerComponent, Content, ContentComponent, HeaderComponent, TitleComponent, DescriptionComponent, FooterComponent, CloseComponent } = useResponsiveDialog();
 
 
     const dimensions = {
@@ -391,81 +392,80 @@ const Page = () => {
             )}
           </div>
         </form>
-        {/* Results Modal */}
-        {open && score && formSubmitted && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-            <div className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
-              <div className="p-6">
-                <div className="flex justify-between items-center mb-4">
-                  <h3 className="text-2xl font-bold text-indigo-800">大五人格評估結果</h3>
-                  <button
-                    onClick={() => setOpen(false)}
-                    className="text-gray-400 hover:text-gray-600 text-2xl"
-                  >
-                    ×
-                  </button>
-                </div>
-                
-                <div className="space-y-6">
-                  <div className="bg-indigo-50 p-4 rounded-lg">
-                    <p className="text-gray-700 leading-relaxed">
-                      在我們的旅程中，每個人都展現出獨特的性格特質，這些特質塑造了我們與世界互動的方式。讓我們一起探索您的五大人格特質：
-                    </p>
-                  </div>
+        {/* Results Responsive Dialog */}
+        <Content open={open} onOpenChange={setOpen}>
+          <ContentComponent className="sm:max-w-[90vw] max-h-[90vh]">
+            <HeaderComponent>
+              <TitleComponent>大五人格評估結果</TitleComponent>
+              <DescriptionComponent>
+                探索您的五大人格特質
+              </DescriptionComponent>
+            </HeaderComponent>
+            
+            <div className="py-4 px-4 space-y-6 overflow-y-auto max-h-[60vh]">
+              <div className="bg-indigo-50 p-4 rounded-lg">
+                <p className="text-gray-700 leading-relaxed text-sm">
+                  在我們的旅程中，每個人都展現出獨特的性格特質，這些特質塑造了我們與世界互動的方式。讓我們一起探索您的五大人格特質：
+                </p>
+              </div>
+              
+              <div className="space-y-4">
+                {score && Object.entries(score).map(([dimension, scoreValue]) => {
+                  const dimensionIndexes = dimensions[dimension as keyof typeof dimensions];
+                  const maxScore = dimensionIndexes.length * 5;
+                  const isHigher = scoreValue > maxScore / 2;
+                  const description = dimensionDescriptions[dimension as keyof typeof dimensionDescriptions];
+                  const splitDescriptions = description.trim().split('\n- ');
+                  const resultDescription = isHigher ? splitDescriptions[0] : splitDescriptions[1];
                   
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {Object.entries(score).map(([dimension, scoreValue]) => {
-                      const dimensionIndexes = dimensions[dimension as keyof typeof dimensions];
-                      const maxScore = dimensionIndexes.length * 5;
-                      const isHigher = scoreValue > maxScore / 2;
-                      const description = dimensionDescriptions[dimension as keyof typeof dimensionDescriptions];
-                      const splitDescriptions = description.trim().split('\n- ');
-                      const resultDescription = isHigher ? splitDescriptions[0] : splitDescriptions[1];
-                      
-                      return (
-                        <div key={dimension} className="bg-white p-4 rounded-lg border-2 border-gray-200">
-                          <h4 className="text-lg font-semibold mb-2 text-indigo-700">
-                            {dimensionNames[dimension as keyof typeof dimensionNames]}
-                          </h4>
-                          <div className="mb-3">
-                            <div className="flex justify-between text-sm text-gray-600 mb-1">
-                              <span>得分：{scoreValue}</span>
-                              <span>最高：{maxScore}</span>
-                            </div>
-                            <div className="w-full bg-gray-200 rounded-full h-2">
-                              <div 
-                                className="bg-indigo-600 h-2 rounded-full" 
-                                style={{ width: `${(scoreValue / maxScore) * 100}%` }}
-                              ></div>
-                            </div>
-                          </div>
-                          <p className="text-sm text-gray-700 leading-relaxed">
-                            {resultDescription.trim()}
-                          </p>
+                  return (
+                    <div key={dimension} className="bg-white p-3 rounded-lg border border-gray-200">
+                      <h4 className="text-base font-semibold mb-2 text-indigo-700">
+                        {dimensionNames[dimension as keyof typeof dimensionNames]}
+                      </h4>
+                      <div className="mb-3">
+                        <div className="flex justify-between text-xs text-gray-600 mb-1">
+                          <span>得分：{scoreValue}</span>
+                          <span>最高：{maxScore}</span>
                         </div>
-                      );
-                    })}
-                  </div>
-                  
-                  <div className="bg-yellow-50 p-4 rounded-lg border border-yellow-200">
-                    <h4 className="font-semibold text-yellow-800 mb-2">重要提醒：</h4>
-                    <p className="text-sm text-yellow-700">
-                      每一種特質都有其獨特之處，無論您在哪一端，都代表著您獨特的個性和看待世界的方式。擁抱您的特質，讓它們引領您走向充滿豐富多彩經歷的人生旅程。🌈
-                    </p>
-                  </div>
-                  
-                  <div className="pt-4">
-                    <ShareButton 
-                      title="大五人格測驗"
-                      text={`我的大五人格結果：外向性 ${score.extraversion}、友善性 ${score.agreeableness}、嚴謹性 ${score.conscientiousness}、神經質 ${score.neuroticism}、開放性 ${score.openness}`}
-                      url={typeof window !== 'undefined' ? window.location.href : ''}
-                    />
-                  </div>
-                </div>
+                        <div className="w-full bg-gray-200 rounded-full h-2">
+                          <div 
+                            className="bg-indigo-600 h-2 rounded-full" 
+                            style={{ width: `${(scoreValue / maxScore) * 100}%` }}
+                          ></div>
+                        </div>
+                      </div>
+                      <p className="text-xs text-gray-700 leading-relaxed">
+                        {resultDescription.trim()}
+                      </p>
+                    </div>
+                  );
+                })}
+              </div>
+              
+              <div className="bg-yellow-50 p-4 rounded-lg border border-yellow-200">
+                <h4 className="font-semibold text-yellow-800 mb-2 text-sm">重要提醒：</h4>
+                <p className="text-xs text-yellow-700">
+                  每一種特質都有其獨特之處，無論您在哪一端，都代表著您獨特的個性和看待世界的方式。擁抱您的特質，讓它們引領您走向充滿豐富多彩經歷的人生旅程。🌈
+                </p>
+              </div>
+              
+              <div className="pt-2">
+                <ShareButton 
+                  title="大五人格測驗"
+                  text={score ? `我的大五人格結果：外向性 ${score.extraversion}、友善性 ${score.agreeableness}、嚴謹性 ${score.conscientiousness}、神經質 ${score.neuroticism}、開放性 ${score.openness}` : ''}
+                  url={typeof window !== 'undefined' ? window.location.href : ''}
+                />
               </div>
             </div>
-          </div>
-        )}
+
+            <FooterComponent>
+              <CloseComponent className="w-full bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium py-2 px-4 rounded">
+                關閉
+              </CloseComponent>
+            </FooterComponent>
+          </ContentComponent>
+        </Content>
 
         {/* Copyright and Citation Section */}
         <div className="mt-12 pt-8 border-t border-gray-200">

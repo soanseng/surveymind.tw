@@ -260,17 +260,15 @@ export default function Home() {
                   <CardContent>
                     <div className="space-y-3">
                       {category.questionnaires.map((q, idx) => (
-                        <div
+                        <Link
                           key={idx}
-                          className="flex items-center justify-between p-3 rounded-lg bg-muted/50 hover:bg-muted transition-colors"
+                          href={q.link}
+                          className="flex items-center justify-between p-3 rounded-lg bg-muted/50 hover:bg-muted transition-colors cursor-pointer group"
                         >
                           <div className="flex-1">
-                            <Link
-                              href={q.link}
-                              className="font-medium text-sm hover:warm-text-primary transition-colors"
-                            >
+                            <div className="font-medium text-sm group-hover:warm-text-primary transition-colors">
                               {q.name}
-                            </Link>
+                            </div>
                             <div className="flex items-center space-x-2 mt-1">
                               <span className="text-xs text-muted-foreground flex items-center">
                                 <Clock className="h-3 w-3 mr-1" />
@@ -282,7 +280,7 @@ export default function Home() {
                             </div>
                           </div>
                           <ArrowRight className="h-4 w-4 text-muted-foreground group-hover:warm-text-primary transition-colors" />
-                        </div>
+                        </Link>
                       ))}
                     </div>
                   </CardContent>

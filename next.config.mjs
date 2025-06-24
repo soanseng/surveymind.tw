@@ -2,8 +2,12 @@ import JavaScriptObfuscator from 'webpack-obfuscator';
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    // Static export for Cloudflare Pages
-    output: 'export',
+    // Static export for Cloudflare Pages (disabled for development)
+    ...(process.env.NODE_ENV === 'production' && {
+        output: 'export',
+        distDir: 'out',
+        trailingSlash: true,
+    }),
     
     // Disable image optimization for static export
     images: { 
@@ -11,23 +15,6 @@ const nextConfig = {
         // Remove domains restriction for static export
         remotePatterns: []
     },
-    
-    // Cloudflare Pages specific configurations
-    trailingSlash: true,
-    
-    // Ensure static export works properly
-    distDir: 'out',
-    
-    // Disable server-side features not supported by static export
-    experimental: {
-        // Disable features that require server runtime
-    },
-    
-    // Asset prefix for CDN (optional, can be set in Cloudflare)
-    // assetPrefix: '',
-    
-    // Base path (useful if deploying to subdirectory)
-    // basePath: '',
     
     webpack: (config, { buildId, dev, isServer, defaultLoaders, webpack }) => {
         // Only run obfuscation on the client-side code in production builds
