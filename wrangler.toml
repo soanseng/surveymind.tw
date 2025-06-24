@@ -1,0 +1,85 @@
+# Cloudflare Pages configuration for mental health questionnaire platform
+name = "mental-health-questionnaire"
+compatibility_date = "2024-01-01"
+
+# Pages project configuration
+[env.production]
+name = "mental-health-questionnaire"
+
+[env.preview]
+name = "mental-health-questionnaire-preview"
+
+# Build configuration
+[build]
+command = "npm run build"
+cwd = "."
+watch_dir = "."
+
+# Static asset handling
+[[rules]]
+type = "Text"
+globs = ["**/*.html", "**/*.txt", "**/*.xml"]
+compress = true
+
+[[rules]]
+type = "Data" 
+globs = ["**/*.woff", "**/*.woff2", "**/*.ttf", "**/*.otf"]
+compress = false
+
+# Cache control for static assets
+[[headers]]
+for = "*.js"
+[headers.values]
+Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+for = "*.css"
+[headers.values]
+Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+for = "*.png"
+[headers.values]
+Cache-Control = "public, max-age=31536000"
+
+[[headers]]
+for = "*.jpg"
+[headers.values]
+Cache-Control = "public, max-age=31536000"
+
+[[headers]]
+for = "*.svg"
+[headers.values]
+Cache-Control = "public, max-age=31536000"
+
+# Security headers
+[[headers]]
+for = "/*"
+[headers.values]
+X-Frame-Options = "DENY"
+X-Content-Type-Options = "nosniff"
+Referrer-Policy = "strict-origin-when-cross-origin"
+Permissions-Policy = "camera=(), microphone=(), geolocation=()"
+
+# Content Security Policy for medical application
+[[headers]]
+for = "/*"
+[headers.values]
+Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self'"
+
+# Redirect rules for SEO (if needed)
+[[redirects]]
+from = "/index.html"
+to = "/"
+status = 301
+
+# Error pages
+[[redirects]]
+from = "/404"
+to = "/404.html"
+status = 404
+
+# Environment variables (set these in Cloudflare dashboard)
+[vars]
+NODE_ENV = "production"
+NEXT_PUBLIC_SITE_URL = "https://your-domain.pages.dev"

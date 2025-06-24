@@ -5,8 +5,12 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "build:cloudflare": "next build && npx @cloudflare/next-on-pages",
+    "preview": "npx @cloudflare/next-on-pages && wrangler pages dev",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "export": "next build",
+    "serve": "npx serve out"
   },
   "dependencies": {
     "@radix-ui/react-alert-dialog": "^1.0.5",

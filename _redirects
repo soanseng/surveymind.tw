@@ -1,0 +1,55 @@
+# Cloudflare Pages Redirects Configuration
+
+# Remove .html extension from URLs
+/*.html  /:splat  301
+
+# Redirect index.html to root
+/index.html  /  301
+
+# Redirect common misspellings and alternative URLs
+/questionnaire  /  301
+/questionnaires  /  301
+/survey  /  301
+/surveys  /  301
+/test  /  301
+/tests  /  301
+/assessment  /  301
+/assessments  /  301
+
+# Medical questionnaire redirects for SEO
+/depression  /tdq  301
+/anxiety  /gad  301
+/adhd  /asrs  301
+/sleep  /psqi  301
+/personality  /big-5  301
+/dementia  /ad-8  301
+/ocd  /oci-r  301
+/bipolar  /hcl-32  301
+
+# Traditional Chinese alternatives
+/憂鬱症  /tdq  301
+/焦慮症  /gad  301
+/睡眠  /psqi  301
+/人格  /big-5  301
+/失智  /ad-8  301
+/強迫症  /oci-r  301
+
+# Handle trailing slashes consistently
+/tdq  /tdq/  301
+/phq-9  /phq-9/  301
+/gad  /gad/  301
+/hcl-32  /hcl-32/  301
+/oci-r  /oci-r/  301
+/asrs  /asrs/  301
+/snap-4  /snap-4/  301
+/psqi  /psqi/  301
+/ad-8  /ad-8/  301
+/big-5  /big-5/  301
+
+# Legacy URL support (if migrating from another platform)
+/forms/tdq  /tdq/  301
+/forms/phq9  /phq-9/  301
+/forms/gad7  /gad/  301
+
+# 404 fallback - any unmatched route goes to 404 page
+/*  /404.html  404

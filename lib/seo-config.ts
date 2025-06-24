@@ -23,7 +23,7 @@ export interface SEOConfig {
 
 export const baseSEO = {
   siteName: "文心樂丞診所 - 心理健康評估平台",
-  siteUrl: "https://questionnaire.anxiety.com.tw", // Update with actual domain
+  siteUrl: process.env.NEXT_PUBLIC_SITE_URL || "https://questionnaire.anxiety.com.tw",
   locale: "zh_TW",
   defaultImage: "/og-image.jpg", // Add default OG image
 };
