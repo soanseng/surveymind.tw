@@ -581,6 +581,30 @@ export const questionnaireSEO: Record<string, SEOConfig> = {
     }
   },
 
+  // SAS - Zung Self-Rating Anxiety Scale
+  sas: {
+    title: "Zung氏自我評估焦慮量表 SAS | 經典焦慮症篩檢 | 焦慮症狀評估 - 文心樂丞診所",
+    description: "Zung氏自我評估焦慮量表(SAS)，經典20題焦慮症篩檢工具。評估情感與身體症狀，包含反向計分題目，提供焦慮程度的全面評估。",
+    keywords: [
+      "SAS焦慮量表", "Zung氏焦慮量表", "Zung Self-Rating Anxiety Scale", "焦慮症篩檢",
+      "焦慮症評估", "焦慮症測試", "焦慮症狀評估", "經典焦慮量表",
+      "心理健康評估", "精神健康篩檢", "免費焦慮測試", "焦慮程度評估"
+    ],
+    openGraph: {
+      title: "Zung氏自我評估焦慮量表 - 經典焦慮症篩檢工具",
+      description: "20題評估焦慮症狀的經典量表，涵蓋情感與身體症狀的全面評估。",
+      type: "website",
+      locale: "zh_TW"
+    },
+    structuredData: {
+      name: "Zung氏自我評估焦慮量表 (SAS)",
+      description: "評估焦慮症狀的經典量表，包含情感與身體症狀",
+      category: "心理健康評估",
+      duration: "8-10分鐘",
+      difficulty: "中等"
+    }
+  },
+
   // PGSI - Problem Gambling Severity Index
   pgsi: {
     title: "PGSI 問題賭博嚴重程度指數 | 賭博成癮評估 | 病態賭博篩檢 - 文心樂丞診所",

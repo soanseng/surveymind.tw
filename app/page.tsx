@@ -80,6 +80,7 @@ export const metadata: Metadata = {
 const questionnaires = {
   emotion: [
     { name: "廣泛性焦慮量表", link: "/gad", time: "3-5分鐘", difficulty: "簡單" },
+    { name: "Zung氏自我評估焦慮量表", link: "/sas", time: "8-10分鐘", difficulty: "中等" },
     { name: "PHQ-9 憂鬱症篩檢問卷", link: "/phq-9", time: "5-8分鐘", difficulty: "簡單" },
     { name: "台灣人憂鬱症量表", link: "/tdq", time: "8-10分鐘", difficulty: "中等" },
     { name: "輕躁症自我評估量表 (Hypomania)", link: "/hcl-32", time: "10-15分鐘", difficulty: "中等" },
