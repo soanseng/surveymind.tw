@@ -25,6 +25,9 @@ export default function RootLayout({
       <head>
         <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
         <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+        {/* Cloudflare Web Analytics */}
+        <script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "51979ef5cfae49b4afac7518f3e38c73"}'></script>
+        {/* End Cloudflare Web Analytics */}
       </head>
       <body 
         className={cn(

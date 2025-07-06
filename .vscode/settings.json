@@ -1,0 +1,6 @@
+{
+    "debug.javascript.defaultRuntimeExecutable": {
+        "pwa-node": "/home/scipio/.local/share/mise/shims/node"
+    },
+    "python.defaultInterpreterPath": "/home/scipio/.local/share/mise/installs/python/3.12.10/bin/python"
+}
