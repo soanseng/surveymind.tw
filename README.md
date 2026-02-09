@@ -70,5 +70,13 @@
 - 行動應用程式版本
 - 與電子病歷系統整合
 
+## 授權條款
+
+本專案採用 **MIT License with Attribution Clause** 授權。
+
+您可以自由使用、修改及散佈本軟體，但任何公開使用或衍生作品**必須附上連回 [surveymind.tw](https://surveymind.tw) 的明顯連結**。
+
+詳見 [LICENSE](LICENSE) 檔案。
+
 ## 貢獻
 歡迎精神科專業人士提供建議，幫助我們改進系統和新增更多有價值的評估工具。
