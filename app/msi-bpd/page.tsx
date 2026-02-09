@@ -26,12 +26,12 @@ const getSeverity = (score: number) => {
 
 const getInterpretation = (score: number) => {
   if (score >= 7) {
-    return "您的得分達到臨床切分點（≥7分），這表示您報告的症狀模式與邊緣性人格障礙高度一致。研究顯示此切分點具有81%的敏感度和89%的特異度。強烈建議您尋求專業的精神科醫師或臨床心理師進行全面評估。";
+    return "您的得分達到臨床切分點（≥7分），這表示您報告的症狀模式與邊緣性人格障礙症高度一致。研究顯示此切分點具有81%的敏感度和89%的特異度。強烈建議您尋求專業的精神科醫師或臨床心理師進行全面評估。";
   }
   if (score >= 5) {
     return "您的得分處於高敏感篩檢範圍（5-6分），這個分數範圍被設計用來提高篩檢的敏感度（90%）。雖然您可能未達到典型的臨床切分點，但仍建議進行進一步的專業評估，以釐清您的症狀和需求。";
   }
-  return "您的得分低於篩檢標準（0-4分），表示您目前報告的症狀與邊緣性人格障礙的典型表現不一致。然而，如果您仍有情緒困擾或人際關係問題，建議諮詢專業人士以了解其他可能的原因。";
+  return "您的得分低於篩檢標準（0-4分），表示您目前報告的症狀與邊緣性人格障礙症的典型表現不一致。然而，如果您仍有情緒困擾或人際關係問題，建議諮詢專業人士以了解其他可能的原因。";
 };
 
 const Page = () => {
@@ -86,12 +86,12 @@ const Page = () => {
       <SEOHead config={questionnaireSEO["msi-bpd"]} path="/msi-bpd" />
       
       <div className="max-w-4xl mx-auto py-8">
-        <h1 className="text-3xl font-bold text-center mb-6">麥克連邊緣性人格障礙篩查量表 (MSI-BPD)</h1>
+        <h1 className="text-3xl font-bold text-center mb-6">麥克連邊緣性人格障礙症篩檢量表 (MSI-BPD)</h1>
         
         <div className="bg-blue-50 p-6 rounded-lg mb-8">
           <h2 className="text-lg font-semibold mb-4">使用說明</h2>
           <p className="mb-3">
-            這是一個包含10個問題的簡短篩檢工具，用於評估邊緣性人格障礙的可能性。
+            這是一個包含10個問題的簡短篩檢工具，用於評估邊緣性人格障礙症的可能性。
             請根據您<strong>平時的感受和行為模式</strong>來回答，而非僅考慮當前的狀態。
           </p>
           <p className="mb-3">
@@ -189,7 +189,7 @@ const Page = () => {
             <HeaderComponent>
               <TitleComponent>MSI-BPD 評估結果</TitleComponent>
               <DescriptionComponent>
-                您的邊緣性人格障礙篩檢結果
+                您的邊緣性人格障礙症篩檢結果
               </DescriptionComponent>
             </HeaderComponent>
             
@@ -244,7 +244,7 @@ const Page = () => {
 
                 <div className="pt-4">
                   <ShareButton 
-                    title="麥克連邊緣性人格障礙篩查量表 (MSI-BPD)"
+                    title="麥克連邊緣性人格障礙症篩檢量表 (MSI-BPD)"
                     text={`我的得分是${score}分，結果為：${getSeverity(score || 0)}`}
                     url={typeof window !== 'undefined' ? window.location.href : ''}
                   />

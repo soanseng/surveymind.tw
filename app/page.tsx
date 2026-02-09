@@ -103,7 +103,7 @@ const questionnaires = {
   ],
   personality: [
     { name: "大五人格量表", link: "/big-5", time: "15-20分鐘", difficulty: "詳細" },
-    { name: "麥克連邊緣性人格障礙篩查量表", link: "/msi-bpd", time: "3-5分鐘", difficulty: "簡單" },
+    { name: "麥克連邊緣性人格障礙症篩檢量表", link: "/msi-bpd", time: "3-5分鐘", difficulty: "簡單" },
   ],
   trauma: [
     { name: "創傷後壓力症候群檢核表", link: "/pcl-5", time: "10-15分鐘", difficulty: "中等" },
@@ -119,7 +119,7 @@ const questionnaires = {
     { name: "FTND 尼古丁依賴量表", link: "/ftnd", time: "3-5分鐘", difficulty: "簡單" },
     { name: "PGSI 問題賭博嚴重程度指數", link: "/pgsi", time: "5-8分鐘", difficulty: "中等" },
     { name: "IGDS9-SF 網路遊戲障礙量表", link: "/igds9-sf", time: "8-10分鐘", difficulty: "中等" },
-    { name: "SAST 性成癮篩查測驗", link: "/sast", time: "10-15分鐘", difficulty: "中等" },
+    { name: "SAST 性成癮篩檢測驗", link: "/sast", time: "10-15分鐘", difficulty: "中等" },
   ],
 };
 

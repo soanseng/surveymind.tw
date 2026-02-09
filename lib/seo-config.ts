@@ -103,15 +103,15 @@ export const questionnaireSEO: Record<string, SEOConfig> = {
 
   // HCL-32 - Hypomania Checklist
   "hcl-32": {
-    title: "輕躁症量表 HCL-32 | 躁鬱症篩檢 | 雙極性疾患評估 - 文心樂丞診所",
-    description: "HCL-32輕躁症自我評估量表，專業躁鬱症篩檢工具。評估雙極性疾患風險，了解輕躁症症狀，由精神科醫師提供的標準化評估工具。",
+    title: "輕躁症量表 HCL-32 | 躁鬱症篩檢 | 雙相性情緒障礙症評估 - 文心樂丞診所",
+    description: "HCL-32輕躁症自我評估量表，專業躁鬱症篩檢工具。評估雙相性情緒障礙症風險，了解輕躁症症狀，由精神科醫師提供的標準化評估工具。",
     keywords: [
-      "輕躁症量表", "HCL-32", "躁鬱症篩檢", "雙極性疾患", "躁鬱症測試",
+      "輕躁症量表", "HCL-32", "躁鬱症篩檢", "雙相性情緒障礙症", "躁鬱症測試",
       "輕躁症評估", "bipolar disorder", "躁鬱症診斷", "情緒障礙評估",
       "心理健康評估", "精神健康篩檢", "躁鬱症問卷", "躁鬱症檢測"
     ],
     openGraph: {
-      title: "HCL-32 輕躁症量表 - 躁鬱症與雙極性疾患篩檢工具",
+      title: "HCL-32 輕躁症量表 - 躁鬱症與雙相性情緒障礙症篩檢工具",
       description: "專業的輕躁症評估量表，幫助篩檢躁鬱症風險，了解情緒變化模式。",
       type: "website",
       locale: "zh_TW"
@@ -439,22 +439,22 @@ export const questionnaireSEO: Record<string, SEOConfig> = {
 
   // MSI-BPD - McLean Screening Instrument for Borderline Personality Disorder
   "msi-bpd": {
-    title: "邊緣性人格障礙篩檢量表 MSI-BPD | BPD測試 | 人格障礙評估 - 文心樂丞診所",
-    description: "MSI-BPD麥克連邊緣性人格障礙篩查量表，專業BPD篩檢工具。10題快速評估邊緣性人格障礙風險，由哈佛醫學院專家開發的標準化篩檢量表。",
+    title: "邊緣性人格障礙症篩檢量表 MSI-BPD | BPD測試 | 人格障礙症評估 - 文心樂丞診所",
+    description: "MSI-BPD麥克連邊緣性人格障礙症篩檢量表，專業BPD篩檢工具。10題快速評估邊緣性人格障礙症風險，由哈佛醫學院專家開發的標準化篩檢量表。",
     keywords: [
-      "MSI-BPD", "邊緣性人格障礙", "BPD篩檢", "人格障礙測試", "邊緣性人格測試",
-      "人格障礙評估", "邊緣性人格篩檢", "BPD評估", "人格障礙診斷",
-      "邊緣性人格障礙量表", "人格障礙篩檢", "麥克連量表", "BPD自我評估"
+      "MSI-BPD", "邊緣性人格障礙症", "BPD篩檢", "人格障礙症測試", "邊緣性人格測試",
+      "人格障礙症評估", "邊緣性人格篩檢", "BPD評估", "人格障礙症診斷",
+      "邊緣性人格障礙症量表", "人格障礙症篩檢", "麥克連量表", "BPD自我評估"
     ],
     openGraph: {
-      title: "MSI-BPD 邊緣性人格障礙篩檢量表 - 專業BPD評估工具",
-      description: "哈佛醫學院開發的邊緣性人格障礙篩檢工具，10題快速評估BPD風險。",
+      title: "MSI-BPD 邊緣性人格障礙症篩檢量表 - 專業BPD評估工具",
+      description: "哈佛醫學院開發的邊緣性人格障礙症篩檢工具，10題快速評估BPD風險。",
       type: "website",
       locale: "zh_TW"
     },
     structuredData: {
-      name: "MSI-BPD 麥克連邊緣性人格障礙篩查量表",
-      description: "篩檢邊緣性人格障礙的專業工具",
+      name: "MSI-BPD 麥克連邊緣性人格障礙症篩檢量表",
+      description: "篩檢邊緣性人格障礙症的專業工具",
       category: "人格特質評估",
       duration: "3-5分鐘",
       difficulty: "簡單"
@@ -468,7 +468,7 @@ export const questionnaireSEO: Record<string, SEOConfig> = {
     keywords: [
       "SCOFF", "飲食障礙篩檢", "厭食症篩檢", "暴食症篩檢", "飲食障礙測試",
       "飲食障礙評估", "厭食症測試", "暴食症測試", "飲食行為評估",
-      "飲食問題篩檢", "進食障礙篩檢", "飲食障礙量表", "免費飲食障礙測試"
+      "飲食問題篩檢", "飲食障礙篩檢", "飲食障礙量表", "免費飲食障礙測試"
     ],
     openGraph: {
       title: "SCOFF 飲食障礙篩檢問卷 - 專業厭食症暴食症篩檢工具",
@@ -655,21 +655,21 @@ export const questionnaireSEO: Record<string, SEOConfig> = {
 
   // SAST - Sexual Addiction Screening Test
   sast: {
-    title: "SAST 性成癮篩查測驗 | 強迫性性行為評估 | 性成癮篩檢 - 文心樂丞診所",
-    description: "SAST性成癮篩查測驗，20題評估強迫性性行為模式。專業篩檢工具識別可能需要協助的性行為模式，引發自我覺察與專業諮詢。",
+    title: "SAST 性成癮篩檢測驗 | 強迫性性行為評估 | 性成癮篩檢 - 文心樂丞診所",
+    description: "SAST性成癮篩檢測驗，20題評估強迫性性行為模式。專業篩檢工具識別可能需要協助的性行為模式，引發自我覺察與專業諮詢。",
     keywords: [
-      "SAST", "性成癮篩查", "強迫性性行為", "性成癮評估", "性依賴測試",
-      "性行為評估", "性成癮篩檢", "強迫性性行為障礙", "性衝動控制",
+      "SAST", "性成癮篩檢", "強迫性性行為", "性成癮評估", "性依賴測試",
+      "性行為評估", "性成癮篩檢", "強迫性性行為疾患", "性衝動控制",
       "性成癮量表", "性行為問題篩檢", "性成癮自我評估", "性健康評估"
     ],
     openGraph: {
-      title: "SAST 性成癮篩查測驗 - 強迫性性行為專業篩檢工具",
+      title: "SAST 性成癮篩檢測驗 - 強迫性性行為專業篩檢工具",
       description: "評估強迫性性行為模式的專業篩檢工具，幫助識別需要專業協助的行為模式。",
       type: "website",
       locale: "zh_TW"
     },
     structuredData: {
-      name: "SAST 性成癮篩查測驗",
+      name: "SAST 性成癮篩檢測驗",
       description: "評估強迫性性行為模式的專業篩檢工具",
       category: "成癮行為評估",
       duration: "10-15分鐘",

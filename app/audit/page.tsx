@@ -116,7 +116,7 @@ const questions = [
   {
     id: 10,
     english: "Has a relative or friend or a doctor or another health worker been concerned about your drinking or suggested you cut down?",
-    chinese: "曾否有親戚、朋友、醫生或其他醫護人員，關注你飲酒的情況或建議你減少飲酒？",
+    chinese: "曾否有親戚、朋友、醫師或其他醫護人員，關注你飲酒的情況或建議你減少飲酒？",
     options: [
       { value: 0, chinese: "沒有" },
       { value: 2, chinese: "有，但不是在過去一年" },

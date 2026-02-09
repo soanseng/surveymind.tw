@@ -118,7 +118,7 @@ const getRiskLevel = (score: number) => {
 
 const getInterpretation = (score: number) => {
   if (score >= 13) {
-    return "您的得分顯示高風險（13分或以上），強烈暗示可能存在強迫性性行為問題。這個分數表明您的性行為模式可能已對自己或他人造成困擾或傷害，並且已失去適當的控制。強烈建議尋求專業協助，如諮詢專精於性健康、親密關係或衝動控制議題的心理師或醫師。請記住，強迫性性行為障礙是一種可治療的狀況。";
+    return "您的得分顯示高風險（13分或以上），強烈暗示可能存在強迫性性行為問題。這個分數表明您的性行為模式可能已對自己或他人造成困擾或傷害，並且已失去適當的控制。強烈建議尋求專業協助，如諮詢專精於性健康、親密關係或衝動控制議題的心理師或醫師。請記住，強迫性性行為疾患是一種可治療的狀況。";
   } else if (score >= 6) {
     return "您的得分顯示中等風險（6-12分），表明您的性行為模式可能存在一些令人擔憂的特徵。這並不意味著您一定有問題，但建議您仔細檢視自己的性行為模式，並考慮尋求專業諮詢以進行更深入的評估。專業人士能幫助您判斷這些行為是否對您的生活造成負面影響。";
   } else if (score >= 1) {
@@ -180,7 +180,7 @@ const Page = () => {
       <SEOHead config={questionnaireSEO["sast"]} path="/sast" />
       
       <div className="max-w-4xl mx-auto py-8">
-        <h1 className="text-3xl font-bold text-center mb-6">性成癮篩查測驗 (SAST)</h1>
+        <h1 className="text-3xl font-bold text-center mb-6">性成癮篩檢測驗 (SAST)</h1>
         
         <div className="bg-blue-50 p-6 rounded-lg mb-8">
           <h2 className="text-lg font-semibold mb-4">使用說明</h2>
@@ -291,7 +291,7 @@ const Page = () => {
             <HeaderComponent>
               <TitleComponent>SAST 評估結果</TitleComponent>
               <DescriptionComponent>
-                您的性成癮篩查測驗結果
+                您的性成癮篩檢測驗結果
               </DescriptionComponent>
             </HeaderComponent>
             
@@ -349,8 +349,8 @@ const Page = () => {
 
                 <div className="pt-4">
                   <ShareButton 
-                    title="性成癮篩查測驗 (SAST)"
-                    text={score !== null ? `我完成了性成癮篩查評估，評估為：${getRiskLevel(score)}` : ''}
+                    title="性成癮篩檢測驗 (SAST)"
+                    text={score !== null ? `我完成了性成癮篩檢評估，評估為：${getRiskLevel(score)}` : ''}
                     url={typeof window !== 'undefined' ? window.location.href : ''}
                   />
                 </div>

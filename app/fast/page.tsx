@@ -139,7 +139,7 @@ const Page = () => {
         <div className="bg-blue-50 p-6 rounded-lg mb-8">
           <h2 className="text-lg font-semibold mb-4">使用說明</h2>
           <p className="mb-3">
-            FAST量表評估阿茲海默症患者的功能退化程度，從正常到重度失智共分為7個階段。
+            FAST量表評估阿茲海默症個案的功能退化程度，從正常到重度失智共分為7個階段。
             請選擇最符合個案目前功能狀態的階段。
           </p>
           <p className="text-sm text-gray-600">
