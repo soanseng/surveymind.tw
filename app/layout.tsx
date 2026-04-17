@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter as FontSans } from "next/font/google";
+import Link from "next/link";
 import Navbar from "../components/navbar";
 import { cn } from "@/lib/utils";
 
@@ -39,14 +40,18 @@ export default function RootLayout({
           <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
             <div className="container mx-auto px-4 py-2 md:py-4">
               <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-2 min-w-0">
+                <Link
+                  href="/"
+                  aria-label="回到首頁"
+                  className="flex items-center space-x-2 min-w-0 hover:opacity-80 transition-opacity"
+                >
                   <h1 className="text-base sm:text-lg md:text-xl font-semibold warm-text-primary truncate">
                     台中文心樂丞、理解身心診所
                   </h1>
                   <span className="text-sm text-muted-foreground hidden lg:inline whitespace-nowrap">
                     心理健康評估平台
                   </span>
-                </div>
+                </Link>
                 <Navbar />
               </div>
             </div>
