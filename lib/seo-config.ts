@@ -22,16 +22,19 @@ export interface SEOConfig {
 }
 
 export const baseSEO = {
-  siteName: "文心樂丞診所 - 心理健康評估平台",
-  siteUrl: process.env.NEXT_PUBLIC_SITE_URL || "https://questionnaire.anxiety.com.tw",
+  siteName: "台中文心樂丞、理解身心診所 - 心理健康評估平台",
+  siteUrl: process.env.NEXT_PUBLIC_SITE_URL || "https://surveymind.tw",
+  clinicUrl: "https://anxiety.com.tw",
+  creatorUrl: "https://anatomind.com",
+  creatorName: "陳璿丞醫師",
   locale: "zh_TW",
-  defaultImage: "/og-image.jpg", // Add default OG image
+  defaultImage: "/og-image.jpg",
 };
 
 export const questionnaireSEO: Record<string, SEOConfig> = {
   // TDQ - Taiwan Depression Questionnaire
   tdq: {
-    title: "憂鬱症量表 TDQ | 台灣人憂鬱症篩檢 | 免費線上憂鬱症測試 - 文心樂丞診所",
+    title: "憂鬱症量表 TDQ | 台灣人憂鬱症篩檢 | 免費線上憂鬱症測試 - 台中文心樂丞、理解身心診所",
     description: "專為台灣人設計的憂鬱症量表(TDQ)，免費線上憂鬱症篩檢工具。3分鐘快速評估憂鬱症狀，由專業精神科醫師提供，適合台灣文化背景的憂鬱症自我評估。",
     keywords: [
       "憂鬱症量表", "TDQ", "台灣憂鬱症篩檢", "憂鬱症測試", "憂鬱症自我評估",
@@ -55,7 +58,7 @@ export const questionnaireSEO: Record<string, SEOConfig> = {
 
   // PHQ-9 - Patient Health Questionnaire
   "phq-9": {
-    title: "PHQ-9 憂鬱症篩檢問卷 | 國際標準憂鬱症量表 | 免費線上測試 - 文心樂丞診所",
+    title: "PHQ-9 憂鬱症篩檢問卷 | 國際標準憂鬱症量表 | 免費線上測試 - 台中文心樂丞、理解身心診所",
     description: "PHQ-9憂鬱症篩檢問卷，國際廣泛使用的憂鬱症評估工具。5分鐘快速檢測憂鬱症狀嚴重程度，由專業精神科醫師提供的標準化憂鬱症量表。",
     keywords: [
       "PHQ-9", "憂鬱症篩檢", "憂鬱症問卷", "Patient Health Questionnaire",
@@ -79,7 +82,7 @@ export const questionnaireSEO: Record<string, SEOConfig> = {
 
   // GAD-7 - Generalized Anxiety Disorder
   gad: {
-    title: "焦慮症量表 GAD-7 | 廣泛性焦慮症篩檢 | 免費焦慮症測試 - 文心樂丞診所",
+    title: "焦慮症量表 GAD-7 | 廣泛性焦慮症篩檢 | 免費焦慮症測試 - 台中文心樂丞、理解身心診所",
     description: "GAD-7廣泛性焦慮症量表，專業焦慮症篩檢工具。3分鐘快速評估焦慮症狀，了解焦慮程度，由精神科醫師提供的標準化焦慮症評估。",
     keywords: [
       "焦慮症量表", "GAD-7", "廣泛性焦慮症", "焦慮症篩檢", "焦慮症測試",
@@ -103,7 +106,7 @@ export const questionnaireSEO: Record<string, SEOConfig> = {
 
   // HCL-32 - Hypomania Checklist
   "hcl-32": {
-    title: "輕躁症量表 HCL-32 | 躁鬱症篩檢 | 雙相性情緒障礙症評估 - 文心樂丞診所",
+    title: "輕躁症量表 HCL-32 | 躁鬱症篩檢 | 雙相性情緒障礙症評估 - 台中文心樂丞、理解身心診所",
     description: "HCL-32輕躁症自我評估量表，專業躁鬱症篩檢工具。評估雙相性情緒障礙症風險，了解輕躁症症狀，由精神科醫師提供的標準化評估工具。",
     keywords: [
       "輕躁症量表", "HCL-32", "躁鬱症篩檢", "雙相性情緒障礙症", "躁鬱症測試",
@@ -127,7 +130,7 @@ export const questionnaireSEO: Record<string, SEOConfig> = {
 
   // OCI-R - Obsessive Compulsive Inventory Revised
   "oci-r": {
-    title: "強迫症量表 OCI-R | 強迫症篩檢 | OCD自我評估測試 - 文心樂丞診所",
+    title: "強迫症量表 OCI-R | 強迫症篩檢 | OCD自我評估測試 - 台中文心樂丞、理解身心診所",
     description: "OCI-R強迫症狀量表修訂版，專業強迫症篩檢工具。評估強迫思考與強迫行為，了解OCD症狀嚴重程度，由精神科醫師提供的標準化評估。",
     keywords: [
       "強迫症量表", "OCI-R", "強迫症篩檢", "OCD測試", "強迫症評估",
@@ -151,7 +154,7 @@ export const questionnaireSEO: Record<string, SEOConfig> = {
 
   // ASRS - Adult ADHD Self-Report Scale
   asrs: {
-    title: "ADHD量表 ASRS | 成人注意力不足測試 | 過動症篩檢 - 文心樂丞診所",
+    title: "ADHD量表 ASRS | 成人注意力不足測試 | 過動症篩檢 - 台中文心樂丞、理解身心診所",
     description: "ASRS成人ADHD自我評估量表，專業注意力不足過動症篩檢工具。評估成人ADHD症狀，了解注意力不集中與過動傾向，標準化ADHD評估。",
     keywords: [
       "ADHD量表", "ASRS", "成人ADHD", "注意力不足", "過動症篩檢",
@@ -175,7 +178,7 @@ export const questionnaireSEO: Record<string, SEOConfig> = {
 
   // SNAP-4 - Children ADHD Assessment
   "snap-4": {
-    title: "兒童ADHD量表 SNAP-4 | 過動兒評估 | 兒童注意力篩檢 - 文心樂丞診所",
+    title: "兒童ADHD量表 SNAP-4 | 過動兒評估 | 兒童注意力篩檢 - 台中文心樂丞、理解身心診所",
     description: "SNAP-4兒童ADHD評估問卷，專業過動兒篩檢工具。評估兒童注意力不足、過動衝動症狀，家長填寫的標準化兒童行為評估量表。",
     keywords: [
       "兒童ADHD", "SNAP-4", "過動兒評估", "兒童注意力評估", "兒童過動症",
@@ -199,7 +202,7 @@ export const questionnaireSEO: Record<string, SEOConfig> = {
 
   // PSQI - Pittsburgh Sleep Quality Index
   psqi: {
-    title: "睡眠品質量表 PSQI | 睡眠障礙評估 | 失眠檢測 - 文心樂丞診所",
+    title: "睡眠品質量表 PSQI | 睡眠障礙評估 | 失眠檢測 - 台中文心樂丞、理解身心診所",
     description: "PSQI匹茲堡睡眠品質量表，專業睡眠障礙評估工具。評估睡眠品質、入睡困難、睡眠效率，了解睡眠健康狀況的標準化量表。",
     keywords: [
       "睡眠品質量表", "PSQI", "睡眠障礙評估", "失眠測試", "睡眠品質評估",
@@ -223,7 +226,7 @@ export const questionnaireSEO: Record<string, SEOConfig> = {
 
   // ISI - Insomnia Severity Index
   isi: {
-    title: "失眠嚴重度量表 ISI | 失眠症評估 | 睡眠困難檢測 - 文心樂丞診所",
+    title: "失眠嚴重度量表 ISI | 失眠症評估 | 睡眠困難檢測 - 台中文心樂丞、理解身心診所",
     description: "ISI失眠嚴重度量表，專業失眠症篩檢工具。快速評估失眠嚴重程度、睡眠困擾對日常生活的影響，由精神科醫師提供的標準化失眠評估。",
     keywords: [
       "失眠嚴重度量表", "ISI", "失眠症評估", "失眠測試", "失眠篩檢",
@@ -247,7 +250,7 @@ export const questionnaireSEO: Record<string, SEOConfig> = {
 
   // AD-8 - Dementia Screening
   "ad-8": {
-    title: "失智症篩檢表 AD-8 | 早期失智評估 | 認知功能檢測 - 文心樂丞診所",
+    title: "失智症篩檢表 AD-8 | 早期失智評估 | 認知功能檢測 - 台中文心樂丞、理解身心診所",
     description: "AD-8早期失智篩檢表，專業失智症評估工具。快速檢測認知功能變化，早期發現失智症風險，由專業醫師提供的標準化失智症篩檢。",
     keywords: [
       "失智症篩檢", "AD-8", "早期失智評估", "失智症測試", "認知功能評估",
@@ -271,7 +274,7 @@ export const questionnaireSEO: Record<string, SEOConfig> = {
 
   // Big-5 - Personality Assessment
   "big-5": {
-    title: "人格測試 Big-5 | 五大人格量表 | 性格分析測驗 - 文心樂丞診所",
+    title: "人格測試 Big-5 | 五大人格量表 | 性格分析測驗 - 台中文心樂丞、理解身心診所",
     description: "Big-5大五人格量表，專業人格特質評估工具。分析五大人格面向：外向性、親和性、責任感、神經質、開放性，了解個人性格特徵。",
     keywords: [
       "人格測試", "Big-5", "五大人格", "人格量表", "性格測試",
@@ -295,7 +298,7 @@ export const questionnaireSEO: Record<string, SEOConfig> = {
 
   // SPMSQ - Simple Portable Mental Status Questionnaire
   spmsq: {
-    title: "簡易認知功能評估表 SPMSQ | 失智症篩檢 | 認知功能測試 - 文心樂丞診所",
+    title: "簡易認知功能評估表 SPMSQ | 失智症篩檢 | 認知功能測試 - 台中文心樂丞、理解身心診所",
     description: "SPMSQ簡易認知功能評估表，專業失智症篩檢工具。快速評估基本心智狀態、定向感和記憶力，10題認知功能檢測，適合社區篩檢使用。",
     keywords: [
       "SPMSQ", "簡易認知功能評估", "失智症篩檢", "認知功能測試", "心智狀態評估",
@@ -319,7 +322,7 @@ export const questionnaireSEO: Record<string, SEOConfig> = {
 
   // SLUMS - Saint Louis University Mental Status
   slums: {
-    title: "聖路易大學心智狀態測驗 SLUMS | 輕度認知障礙篩檢 | MCI檢測 - 文心樂丞診所",
+    title: "聖路易大學心智狀態測驗 SLUMS | 輕度認知障礙篩檢 | MCI檢測 - 台中文心樂丞、理解身心診所",
     description: "SLUMS聖路易大學心智狀態測驗，免費認知功能評估工具。對輕度認知障礙(MCI)具高敏感度，30分量表評估記憶、注意力、執行功能等認知領域。",
     keywords: [
       "SLUMS", "聖路易大學心智狀態測驗", "輕度認知障礙", "MCI篩檢", "認知功能評估",
@@ -343,7 +346,7 @@ export const questionnaireSEO: Record<string, SEOConfig> = {
 
   // CDR - Clinical Dementia Rating
   cdr: {
-    title: "臨床失智症評估量表 CDR | 失智症分期 | 長照資源申請評估 - 文心樂丞診所",
+    title: "臨床失智症評估量表 CDR | 失智症分期 | 長照資源申請評估 - 台中文心樂丞、理解身心診所",
     description: "CDR臨床失智症評估量表，失智症分期黃金標準工具。評估六大功能領域，台灣申請失智共照中心和外籍看護的重要依據，專業失智症嚴重度評估。",
     keywords: [
       "CDR", "臨床失智症評估量表", "失智症分期", "失智症評估", "長照資源申請",
@@ -367,7 +370,7 @@ export const questionnaireSEO: Record<string, SEOConfig> = {
 
   // FAST - Functional Assessment Staging Tool
   fast: {
-    title: "功能性評估分級量表 FAST | 失智症功能分期 | 照護需求評估 - 文心樂丞診所",
+    title: "功能性評估分級量表 FAST | 失智症功能分期 | 照護需求評估 - 台中文心樂丞、理解身心診所",
     description: "FAST功能性評估分級量表，阿茲海默症功能退化評估工具。7個階段功能分期，幫助了解照護需求、預期病程變化，制定適當的照護計畫。",
     keywords: [
       "FAST", "功能性評估分級量表", "失智症分期", "阿茲海默症分期", "功能評估",
@@ -391,7 +394,7 @@ export const questionnaireSEO: Record<string, SEOConfig> = {
 
   // PCL-5 - PTSD Checklist for DSM-5
   "pcl-5": {
-    title: "創傷後壓力症候群檢核表 PCL-5 | PTSD評估 | 創傷症狀篩檢 - 文心樂丞診所",
+    title: "創傷後壓力症候群檢核表 PCL-5 | PTSD評估 | 創傷症狀篩檢 - 台中文心樂丞、理解身心診所",
     description: "PCL-5創傷後壓力症候群檢核表，DSM-5標準PTSD評估工具。20題全面評估創傷症狀，包含闖入、逃避、認知情緒、警覺反應四大症狀群集。",
     keywords: [
       "PCL-5", "創傷後壓力症候群", "PTSD評估", "創傷症狀篩檢", "創傷量表",
@@ -415,7 +418,7 @@ export const questionnaireSEO: Record<string, SEOConfig> = {
 
   // PC-PTSD-5 - Primary Care PTSD Screen for DSM-5
   "pc-ptsd-5": {
-    title: "初級照護PTSD篩檢量表 PC-PTSD-5 | 快速創傷篩檢 | PTSD初篩 - 文心樂丞診所",
+    title: "初級照護PTSD篩檢量表 PC-PTSD-5 | 快速創傷篩檢 | PTSD初篩 - 台中文心樂丞、理解身心診所",
     description: "PC-PTSD-5初級照護PTSD篩檢量表，快速創傷後壓力症候群篩檢工具。兩階段評估：創傷史確認及5題症狀篩檢，適合初步評估使用。",
     keywords: [
       "PC-PTSD-5", "初級照護PTSD篩檢", "快速創傷篩檢", "PTSD初篩", "創傷篩檢",
@@ -439,7 +442,7 @@ export const questionnaireSEO: Record<string, SEOConfig> = {
 
   // MSI-BPD - McLean Screening Instrument for Borderline Personality Disorder
   "msi-bpd": {
-    title: "邊緣性人格障礙症篩檢量表 MSI-BPD | BPD測試 | 人格障礙症評估 - 文心樂丞診所",
+    title: "邊緣性人格障礙症篩檢量表 MSI-BPD | BPD測試 | 人格障礙症評估 - 台中文心樂丞、理解身心診所",
     description: "MSI-BPD麥克連邊緣性人格障礙症篩檢量表，專業BPD篩檢工具。10題快速評估邊緣性人格障礙症風險，由哈佛醫學院專家開發的標準化篩檢量表。",
     keywords: [
       "MSI-BPD", "邊緣性人格障礙症", "BPD篩檢", "人格障礙症測試", "邊緣性人格測試",
@@ -463,7 +466,7 @@ export const questionnaireSEO: Record<string, SEOConfig> = {
 
   // SCOFF - Eating Disorder Screening Questionnaire
   scoff: {
-    title: "SCOFF 飲食障礙篩檢問卷 | 厭食症暴食症篩檢 | 飲食障礙測試 - 文心樂丞診所",
+    title: "SCOFF 飲食障礙篩檢問卷 | 厭食症暴食症篩檢 | 飲食障礙測試 - 台中文心樂丞、理解身心診所",
     description: "SCOFF飲食障礙篩檢問卷，簡易5題快速篩檢厭食症和暴食症風險。由英國聖喬治醫院開發，具100%敏感度的標準化飲食障礙篩檢工具。",
     keywords: [
       "SCOFF", "飲食障礙篩檢", "厭食症篩檢", "暴食症篩檢", "飲食障礙測試",
@@ -487,7 +490,7 @@ export const questionnaireSEO: Record<string, SEOConfig> = {
 
   // EDE-Q - Eating Disorder Examination Questionnaire 6.0
   "ede-q": {
-    title: "飲食障礙檢查問卷 EDE-Q | 飲食障礙評估 | 追蹤工具 - 文心樂丞診所",
+    title: "飲食障礙檢查問卷 EDE-Q | 飲食障礙評估 | 追蹤工具 - 台中文心樂丞、理解身心診所",
     description: "EDE-Q飲食障礙檢查問卷6.0版，28題全面評估飲食障礙相關思想、感受與行為。黃金標準評估工具，適合追蹤病情變化，由牛津大學開發。",
     keywords: [
       "EDE-Q", "飲食障礙檢查問卷", "飲食障礙評估", "飲食障礙追蹤", "EDE-Q 6.0",
@@ -511,7 +514,7 @@ export const questionnaireSEO: Record<string, SEOConfig> = {
 
   // BES - Binge Eating Scale
   bes: {
-    title: "暴食量表 BES | 暴食症評估 | 嗜食症篩檢 - 文心樂丞診所",
+    title: "暴食量表 BES | 暴食症評估 | 嗜食症篩檢 - 台中文心樂丞、理解身心診所",
     description: "BES暴食量表，16題專門評估暴食行為相關症狀嚴重程度。評估暴食的行為、情緒與認知層面，適用於有暴食困擾的個體評估。",
     keywords: [
       "BES", "暴食量表", "暴食症評估", "嗜食症篩檢", "暴食行為評估",
@@ -535,7 +538,7 @@ export const questionnaireSEO: Record<string, SEOConfig> = {
 
   // AUDIT - Alcohol Use Disorders Identification Test
   audit: {
-    title: "AUDIT 酒精使用疾患識別測驗 | 酒精依賴篩檢 | 飲酒問題評估 - 文心樂丞診所",
+    title: "AUDIT 酒精使用疾患識別測驗 | 酒精依賴篩檢 | 飲酒問題評估 - 台中文心樂丞、理解身心診所",
     description: "WHO開發的AUDIT酒精使用疾患識別測驗，10題評估過去一年飲酒模式與相關問題。全球標準酒精篩檢工具，識別高風險飲酒、有害性飲酒及早期酒精依賴。",
     keywords: [
       "AUDIT", "酒精使用疾患", "酒精依賴篩檢", "飲酒問題評估", "酒精成癮測試",
@@ -559,7 +562,7 @@ export const questionnaireSEO: Record<string, SEOConfig> = {
 
   // FTND - Fagerström Test for Nicotine Dependence
   ftnd: {
-    title: "FTND 尼古丁依賴量表 | 法格史壯量表 | 菸癮評估 | 戒菸評估 - 文心樂丞診所",
+    title: "FTND 尼古丁依賴量表 | 法格史壯量表 | 菸癮評估 | 戒菸評估 - 台中文心樂丞、理解身心診所",
     description: "FTND法格史壯尼古丁依賴量表，6題評估尼古丁生理依賴程度。國際標準戒菸評估工具，預測戒斷症狀嚴重程度，指導尼古丁替代療法選擇。",
     keywords: [
       "FTND", "尼古丁依賴量表", "法格史壯量表", "菸癮評估", "戒菸評估",
@@ -583,7 +586,7 @@ export const questionnaireSEO: Record<string, SEOConfig> = {
 
   // SAS - Zung Self-Rating Anxiety Scale
   sas: {
-    title: "Zung氏自我評估焦慮量表 SAS | 經典焦慮症篩檢 | 焦慮症狀評估 - 文心樂丞診所",
+    title: "Zung氏自我評估焦慮量表 SAS | 經典焦慮症篩檢 | 焦慮症狀評估 - 台中文心樂丞、理解身心診所",
     description: "Zung氏自我評估焦慮量表(SAS)，經典20題焦慮症篩檢工具。評估情感與身體症狀，包含反向計分題目，提供焦慮程度的全面評估。",
     keywords: [
       "SAS焦慮量表", "Zung氏焦慮量表", "Zung Self-Rating Anxiety Scale", "焦慮症篩檢",
@@ -607,7 +610,7 @@ export const questionnaireSEO: Record<string, SEOConfig> = {
 
   // PGSI - Problem Gambling Severity Index
   pgsi: {
-    title: "PGSI 問題賭博嚴重程度指數 | 賭博成癮評估 | 病態賭博篩檢 - 文心樂丞診所",
+    title: "PGSI 問題賭博嚴重程度指數 | 賭博成癮評估 | 病態賭博篩檢 - 台中文心樂丞、理解身心診所",
     description: "PGSI問題賭博嚴重程度指數，9題評估過去12個月賭博行為與相關後果。專為一般群體設計的賭博問題篩檢工具，識別從低風險到問題賭博的完整光譜。",
     keywords: [
       "PGSI", "問題賭博", "賭博成癮評估", "病態賭博篩檢", "賭博依賴測試",
@@ -631,7 +634,7 @@ export const questionnaireSEO: Record<string, SEOConfig> = {
 
   // IGDS9-SF - Internet Gaming Disorder Scale Short Form
   "igds9-sf": {
-    title: "IGDS9-SF 網路遊戲障礙量表 | 遊戲成癮評估 | 網路成癮篩檢 - 文心樂丞診所",
+    title: "IGDS9-SF 網路遊戲障礙量表 | 遊戲成癮評估 | 網路成癮篩檢 - 台中文心樂丞、理解身心診所",
     description: "IGDS9-SF網路遊戲障礙量表簡式版，9題直接對應DSM-5診斷標準。雙重評分系統評估網路遊戲成癮風險，適合追蹤治療進展與跨文化比較。",
     keywords: [
       "IGDS9-SF", "網路遊戲障礙", "遊戲成癮評估", "網路成癮篩檢", "DSM-5遊戲障礙",
@@ -655,7 +658,7 @@ export const questionnaireSEO: Record<string, SEOConfig> = {
 
   // SAST - Sexual Addiction Screening Test
   sast: {
-    title: "SAST 性成癮篩檢測驗 | 強迫性性行為評估 | 性成癮篩檢 - 文心樂丞診所",
+    title: "SAST 性成癮篩檢測驗 | 強迫性性行為評估 | 性成癮篩檢 - 台中文心樂丞、理解身心診所",
     description: "SAST性成癮篩檢測驗，20題評估強迫性性行為模式。專業篩檢工具識別可能需要協助的性行為模式，引發自我覺察與專業諮詢。",
     keywords: [
       "SAST", "性成癮篩檢", "強迫性性行為", "性成癮評估", "性依賴測試",
@@ -680,17 +683,18 @@ export const questionnaireSEO: Record<string, SEOConfig> = {
 
 // Landing page SEO
 export const landingPageSEO: SEOConfig = {
-  title: "心理健康評估平台 | 免費線上憂鬱症焦慮症測試 | 文心樂丞診所",
-  description: "專業心理健康自我評估平台，提供憂鬱症、焦慮症、ADHD、失智症等免費線上篩檢工具。由精神科醫師陳璿丞提供，包含PHQ-9、GAD-7、TDQ等國際標準量表。",
+  title: "台中文心樂丞、理解身心診所｜心理健康量表平台 | 免費線上憂鬱症焦慮症測試",
+  description: "台中文心樂丞、理解身心診所陳璿丞醫師提供的心理健康量表平台，涵蓋憂鬱症、焦慮症、ADHD、失智症、睡眠、創傷、飲食與成癮等免費線上篩檢。包含PHQ-9、GAD-7、TDQ、HCL-32、PSQI、PCL-5 等國際標準量表。",
   keywords: [
+    "台中精神科", "台中心理諮商", "文心樂丞診所", "理解身心診所",
     "心理健康評估", "憂鬱症測試", "焦慮症篩檢", "精神健康檢測",
     "心理測驗", "憂鬱症量表", "焦慮症量表", "ADHD測試",
     "失智症篩檢", "睡眠品質評估", "人格測試", "心理健康篩檢",
     "免費心理測驗", "線上心理評估", "精神科", "陳璿丞醫師"
   ],
   openGraph: {
-    title: "心理健康評估平台 - 專業免費線上心理測驗",
-    description: "由精神科醫師提供的專業心理健康評估平台，包含憂鬱症、焦慮症、ADHD等多種免費篩檢工具。",
+    title: "台中文心樂丞、理解身心診所｜心理健康量表平台",
+    description: "由陳璿丞醫師提供的心理健康量表平台，涵蓋憂鬱、焦慮、ADHD、失智、睡眠、創傷、飲食、成癮等多種免費線上篩檢工具。",
     type: "website",
     locale: "zh_TW"
   }
@@ -699,20 +703,29 @@ export const landingPageSEO: SEOConfig = {
 // Common structured data for the site
 export const organizationStructuredData = {
   "@context": "https://schema.org",
-  "@type": "MedicalOrganization",
-  "name": "文心樂丞診所",
-  "url": baseSEO.siteUrl,
+  "@type": "MedicalClinic",
+  "name": "台中文心樂丞、理解身心診所",
+  "alternateName": ["文心樂丞診所", "理解身心診所"],
+  "url": baseSEO.clinicUrl,
+  "sameAs": [baseSEO.siteUrl, baseSEO.clinicUrl, baseSEO.creatorUrl],
   "logo": `${baseSEO.siteUrl}/logo.png`,
-  "description": "提供專業心理健康評估和精神科醫療服務",
-  "medicalSpecialty": ["Psychiatry", "Mental Health"],
+  "description": "台中在地的精神科診所，提供心理健康評估、精神科醫療與心理諮商服務。",
+  "medicalSpecialty": ["Psychiatry", "Mental Health", "Psychotherapy"],
   "address": {
     "@type": "PostalAddress",
     "addressCountry": "TW",
-    "addressRegion": "台灣"
+    "addressRegion": "台中市",
+    "addressLocality": "台中市"
+  },
+  "areaServed": { "@type": "Place", "name": "台灣" },
+  "founder": {
+    "@type": "Person",
+    "name": baseSEO.creatorName,
+    "url": baseSEO.creatorUrl
   },
   "contactPoint": {
     "@type": "ContactPoint",
     "contactType": "customer service",
-    "url": "https://anxiety.com.tw"
+    "url": baseSEO.clinicUrl
   }
 };

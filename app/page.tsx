@@ -30,9 +30,9 @@ export const metadata: Metadata = {
   title: landingPageSEO.title,
   description: landingPageSEO.description,
   keywords: landingPageSEO.keywords.join(', '),
-  authors: [{ name: '陳璿丞醫師', url: 'https://anxiety.com.tw' }],
-  creator: '文心樂丞診所',
-  publisher: '文心樂丞診所',
+  authors: [{ name: '陳璿丞醫師', url: baseSEO.creatorUrl }],
+  creator: '台中文心樂丞、理解身心診所',
+  publisher: '台中文心樂丞、理解身心診所',
   robots: {
     index: true,
     follow: true,
@@ -222,7 +222,7 @@ export default function Home() {
                 <span className="warm-text-primary"> 心理健康 </span>
                 評估之旅
               </h1>
-              <p className="mx-auto max-w-2xl text-lg text-muted-foreground md:text-xl lg:text-2xl">
+              <p className="mx-auto max-w-2xl text-base sm:text-lg text-muted-foreground md:text-xl lg:text-2xl">
                 由
                 <Link
                   href="https://anxiety.com.tw"
@@ -230,7 +230,7 @@ export default function Home() {
                   rel="noopener noreferrer"
                   className="warm-text-secondary font-semibold hover:underline"
                 >
-                  文心樂丞診所
+                  台中文心樂丞、理解身心診所
                 </Link>
                 陳璿丞醫師提供的專業心理健康自我評估平台，幫助您更好地了解自己的心理狀態
               </p>
@@ -349,13 +349,27 @@ export default function Home() {
             <Card className="text-left p-8 glass-effect">
               <div className="space-y-6">
                 <div className="flex items-start space-x-4">
-                  <div className="rounded-full warm-bg-primary p-3">
+                  <div className="rounded-full warm-bg-primary p-3 shrink-0">
                     <Heart className="h-6 w-6 text-white" />
                   </div>
                   <div>
                     <h3 className="text-xl font-semibold mb-2">專業醫師團隊</h3>
                     <p className="text-muted-foreground leading-relaxed">
-                      我是陳璿丞醫師，希望透過這個簡單的網站，讓更多人能夠快速地進行心理健康自我評估。
+                      我是
+                      <a
+                        href="https://anatomind.com"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="warm-text-secondary font-semibold hover:underline"
+                      >陳璿丞醫師</a>
+                      ，於
+                      <a
+                        href="https://anxiety.com.tw"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="warm-text-secondary font-semibold hover:underline"
+                      >台中文心樂丞、理解身心診所</a>
+                      執業。希望透過這個平台，讓更多人能夠快速地進行心理健康自我評估。
                       每個量表都經過嚴格的醫學驗證，確保評估結果的準確性與可靠性。
                     </p>
                   </div>
@@ -438,6 +452,49 @@ export default function Home() {
               "url": `${baseSEO.siteUrl}${item.link}`,
               "description": `${item.name} - 評估時間: ${item.time}, 難度: ${item.difficulty}`
             }))
+          })
+        }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            "mainEntity": [
+              {
+                "@type": "Question",
+                "name": "這些量表都是免費的嗎？",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "是的，本平台所有心理健康量表皆免費提供，不需註冊或登入，資料也不會儲存於伺服器。"
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "量表的結果可以當作正式診斷嗎？",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "不行。本平台提供的量表為自我篩檢工具，結果僅供參考，無法取代精神科醫師或臨床心理師的專業診斷。"
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "誰可以使用這些量表？",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "適合一般民眾、醫療從業人員、諮商師、研究者作為自評或臨床參考使用；部分量表（例如兒童 ADHD、失智症評估）建議由家屬或臨床人員協助填寫。"
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "量表平台由誰提供？",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "本平台由台中文心樂丞、理解身心診所陳璿丞醫師設計與維護，診所官網為 https://anxiety.com.tw ，陳璿丞醫師個人網站為 https://anatomind.com 。"
+                }
+              }
+            ]
           })
         }}
       />

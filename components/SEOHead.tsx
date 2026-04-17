@@ -100,7 +100,7 @@ const SEOHead: React.FC<SEOHeadProps> = ({
       <meta name="twitter:site" content="@anxiety_tw" />
       
       {/* Additional Meta Tags */}
-      <meta name="author" content="陳璿丞醫師 - 文心樂丞診所" />
+      <meta name="author" content="陳璿丞醫師 - 台中文心樂丞、理解身心診所" />
       <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
       <meta name="googlebot" content="index, follow" />
       

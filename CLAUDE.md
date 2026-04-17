@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Mental health questionnaire platform for 文心樂丞診所 (Wenxin Lecheng Clinic). Next.js 14 app with static export to Cloudflare Pages. All UI is in Traditional Chinese (zh-TW). Provides psychological assessment questionnaires with automatic scoring and result interpretation.
+Mental health questionnaire platform for 台中文心樂丞、理解身心診所 (Taichung Wenxin Lecheng / Liaojie Shenxin Clinic, https://anxiety.com.tw). Next.js 14 app with static export to Cloudflare Pages. All UI is in Traditional Chinese (zh-TW). Provides psychological assessment questionnaires with automatic scoring and result interpretation. Platform designed and maintained by 陳璿丞醫師 (https://anatomind.com).
 
 ## Commands
 
