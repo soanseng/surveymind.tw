@@ -4,6 +4,7 @@ import SEOHead from '@/components/SEOHead';
 import { questionnaireSEO } from '@/lib/seo-config';
 import { useResponsiveDialog } from '@/hooks/useResponsiveDialog';
 import ShareButton from '@/components/ShareButton';
+import AnswerDetailList, { AnswerDetailItem } from '@/components/AnswerDetailList';
 
 const questions = [
   {
@@ -355,7 +356,7 @@ const Page = () => {
         </form>
 
         <Content open={open} onOpenChange={setOpen}>
-          <ContentComponent className="sm:max-w-[500px]">
+          <ContentComponent className="sm:max-w-[640px] max-h-[90vh] overflow-y-auto">
             <HeaderComponent>
               <TitleComponent>SLUMS 評估結果</TitleComponent>
               <DescriptionComponent>
@@ -380,6 +381,35 @@ const Page = () => {
                     {totalScore !== null && hasHighSchool !== null && getInterpretation(totalScore, hasHighSchool)}
                   </p>
                 </div>
+
+                <AnswerDetailList
+                  items={questions.reduce<AnswerDetailItem[]>((acc, q) => {
+                    if (q.type === 'fluency') {
+                      const picked = q.items.findIndex((_, idx) => scores[`${q.id}-${idx}`] !== undefined && scores[`${q.id}-${idx}`] > 0);
+                      const selected = picked >= 0 ? q.items[picked] : null;
+                      acc.push({
+                        question: `${q.id}. ${q.question}`,
+                        answerLabel: selected ? selected.question : '未作答',
+                        score: selected ? selected.points : 0,
+                      });
+                    } else {
+                      let gained = 0;
+                      let total = 0;
+                      q.items.forEach((item, idx) => {
+                        total += item.points;
+                        const s = scores[`${q.id}-${idx}`];
+                        if (s !== undefined) gained += s;
+                      });
+                      acc.push({
+                        question: `${q.id}. ${q.question}`,
+                        answerLabel: `${gained} / ${total}`,
+                        score: gained,
+                      });
+                    }
+                    return acc;
+                  }, [])}
+                  totalLabel={`總分 ${totalScore ?? 0} / 30`}
+                />
 
                 <div className="bg-yellow-50 p-4 rounded-lg border border-yellow-200">
                   <h4 className="font-semibold text-yellow-800 mb-2">評分標準（依教育程度）：</h4>

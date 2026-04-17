@@ -4,6 +4,7 @@ import SEOHead from '@/components/SEOHead';
 import { questionnaireSEO } from '@/lib/seo-config';
 import { useResponsiveDialog } from '@/hooks/useResponsiveDialog';
 import ShareButton from '@/components/ShareButton';
+import AnswerDetailList, { AnswerDetailItem } from '@/components/AnswerDetailList';
 
 const questions = [
   {
@@ -263,7 +264,7 @@ const Page = () => {
         </form>
 
         <Content open={open} onOpenChange={setOpen}>
-          <ContentComponent className="sm:max-w-[425px]">
+          <ContentComponent className="sm:max-w-[640px] max-h-[90vh] overflow-y-auto">
             <HeaderComponent>
               <TitleComponent>SPMSQ 評估結果</TitleComponent>
               <DescriptionComponent>
@@ -288,6 +289,20 @@ const Page = () => {
                     {errorCount !== null && getInterpretation(errorCount)}
                   </p>
                 </div>
+
+                <AnswerDetailList
+                  items={questions.map<AnswerDetailItem>((q, i) => {
+                    const c = correctness[i];
+                    const resp = answers[i];
+                    return {
+                      question: q.question,
+                      answerLabel: c === true ? '✓ 正確' : c === false ? '✗ 錯誤' : '未評分',
+                      score: c === null ? '' : (c ? '正確' : '錯誤'),
+                      note: resp ? `回答：${resp}` : undefined,
+                    };
+                  })}
+                  totalLabel={`錯誤 ${errorCount ?? 0} 題 / 10`}
+                />
 
                 <div className="bg-yellow-50 p-4 rounded-lg border border-yellow-200">
                   <h4 className="font-semibold text-yellow-800 mb-2">評分標準：</h4>

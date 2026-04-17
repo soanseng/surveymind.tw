@@ -4,6 +4,7 @@ import SEOHead from '@/components/SEOHead';
 import { questionnaireSEO } from '@/lib/seo-config';
 import { useResponsiveDialog } from '@/hooks/useResponsiveDialog';
 import ShareButton from '@/components/ShareButton';
+import AnswerDetailList, { AnswerDetailItem } from '@/components/AnswerDetailList';
 
 // EDE-Q Questions with their types and Chinese translations
 const questions = [
@@ -304,7 +305,7 @@ const Page = () => {
         </form>
 
         <Content open={open} onOpenChange={setOpen}>
-          <ContentComponent className="sm:max-w-[600px]">
+          <ContentComponent className="sm:max-w-[640px] max-h-[90vh] overflow-y-auto">
             <HeaderComponent>
               <TitleComponent>EDE-Q 評估結果</TitleComponent>
               <DescriptionComponent>
@@ -312,7 +313,7 @@ const Page = () => {
               </DescriptionComponent>
             </HeaderComponent>
             
-            <div className="py-4 max-h-96 overflow-y-auto">
+            <div className="py-4">
               <div className="space-y-4">
                 <div className="text-center">
                   <div className="text-2xl font-bold text-blue-600 mb-2">
@@ -353,8 +354,29 @@ const Page = () => {
                   </p>
                 </div>
 
+                <AnswerDetailList
+                  items={questions.map<AnswerDetailItem>((q) => {
+                    const v = answers[q.id];
+                    let label = '未作答';
+                    if (v !== undefined) {
+                      if (q.type === 'number') {
+                        label = `${v} 次/天`;
+                      } else {
+                        const opt = getScaleOptions(q.type).find(o => o.value === v);
+                        label = opt ? opt.label : String(v);
+                      }
+                    }
+                    return {
+                      question: q.chinese,
+                      answerLabel: label,
+                      score: v ?? 0,
+                    };
+                  })}
+                  totalLabel={`總分 ${scores?.globalScore?.toFixed(2) ?? '0.00'} / 6.0`}
+                />
+
                 <div className="pt-4">
-                  <ShareButton 
+                  <ShareButton
                     title="飲食障礙檢查問卷 (EDE-Q 6.0)"
                     text={scores ? `我的總分是${scores.globalScore.toFixed(2)}分，評估為：${getSeverityCategory(scores.globalScore)}` : ''}
                     url={typeof window !== 'undefined' ? window.location.href : ''}

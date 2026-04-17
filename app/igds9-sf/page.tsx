@@ -4,6 +4,7 @@ import SEOHead from '@/components/SEOHead';
 import { questionnaireSEO } from '@/lib/seo-config';
 import { useResponsiveDialog } from '@/hooks/useResponsiveDialog';
 import ShareButton from '@/components/ShareButton';
+import AnswerDetailList, { AnswerDetailItem } from '@/components/AnswerDetailList';
 
 // IGDS9-SF Questions based on the research paper
 const questions = [
@@ -265,7 +266,7 @@ const Page = () => {
         </form>
 
         <Content open={open} onOpenChange={setOpen}>
-          <ContentComponent className="sm:max-w-[600px]">
+          <ContentComponent className="sm:max-w-[640px] max-h-[90vh] overflow-y-auto">
             <HeaderComponent>
               <TitleComponent>IGDS9-SF 評估結果</TitleComponent>
               <DescriptionComponent>
@@ -273,7 +274,7 @@ const Page = () => {
               </DescriptionComponent>
             </HeaderComponent>
             
-            <div className="py-4 max-h-96 overflow-y-auto">
+            <div className="py-4">
               <div className="space-y-4">
                 <div className="text-center">
                   <div className="text-2xl font-bold text-blue-600 mb-2">
@@ -306,6 +307,20 @@ const Page = () => {
                     {scores && getInterpretation(scores.dimensional, scores.categorical)}
                   </p>
                 </div>
+
+                <AnswerDetailList
+                  items={questions.map<AnswerDetailItem>((q) => {
+                    const v = answers[q.id];
+                    const opt = v !== undefined ? options.find(o => o.value === v) : undefined;
+                    return {
+                      question: q.chinese,
+                      answerLabel: opt ? opt.chinese : '未作答',
+                      score: v ?? 0,
+                      note: `DSM-5：${q.dsm5Criterion}`,
+                    };
+                  })}
+                  totalLabel={`總分 ${scores?.dimensional ?? 0} / 45`}
+                />
 
                 <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
                   <h4 className="font-semibold text-blue-800 mb-2">評分標準說明：</h4>

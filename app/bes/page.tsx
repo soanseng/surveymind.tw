@@ -4,6 +4,7 @@ import SEOHead from '@/components/SEOHead';
 import { questionnaireSEO } from '@/lib/seo-config';
 import { useResponsiveDialog } from '@/hooks/useResponsiveDialog';
 import ShareButton from '@/components/ShareButton';
+import AnswerDetailList, { AnswerDetailItem } from '@/components/AnswerDetailList';
 
 // BES Questions with weighted options
 const questions = [
@@ -352,7 +353,7 @@ const Page = () => {
         </form>
 
         <Content open={open} onOpenChange={setOpen}>
-          <ContentComponent className="sm:max-w-[500px]">
+          <ContentComponent className="sm:max-w-[640px] max-h-[90vh] overflow-y-auto">
             <HeaderComponent>
               <TitleComponent>BES 評估結果</TitleComponent>
               <DescriptionComponent>
@@ -377,6 +378,19 @@ const Page = () => {
                     {getInterpretation(score || 0)}
                   </p>
                 </div>
+
+                <AnswerDetailList
+                  items={questions.map<AnswerDetailItem>((q) => {
+                    const v = answers[q.id];
+                    const opt = v !== undefined ? q.options.find(o => o.value === v) : undefined;
+                    return {
+                      question: q.chinese,
+                      answerLabel: opt ? opt.chinese : '未作答',
+                      score: v ?? 0,
+                    };
+                  })}
+                  totalLabel={`總分 ${score ?? 0} / 46`}
+                />
 
                 <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
                   <h4 className="font-semibold text-blue-800 mb-2">BES評分標準：</h4>

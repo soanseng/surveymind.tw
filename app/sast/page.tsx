@@ -4,6 +4,7 @@ import SEOHead from '@/components/SEOHead';
 import { questionnaireSEO } from '@/lib/seo-config';
 import { useResponsiveDialog } from '@/hooks/useResponsiveDialog';
 import ShareButton from '@/components/ShareButton';
+import AnswerDetailList, { AnswerDetailItem } from '@/components/AnswerDetailList';
 
 // SAST Questions based on the research paper
 const questions = [
@@ -287,7 +288,7 @@ const Page = () => {
         </form>
 
         <Content open={open} onOpenChange={setOpen}>
-          <ContentComponent className="sm:max-w-[600px]">
+          <ContentComponent className="sm:max-w-[640px] max-h-[90vh] overflow-y-auto">
             <HeaderComponent>
               <TitleComponent>SAST 評估結果</TitleComponent>
               <DescriptionComponent>
@@ -312,6 +313,18 @@ const Page = () => {
                     {score !== null && getInterpretation(score)}
                   </p>
                 </div>
+
+                <AnswerDetailList
+                  items={questions.map<AnswerDetailItem>((q) => {
+                    const v = answers[q.id];
+                    return {
+                      question: q.chinese,
+                      answerLabel: v === true ? '是' : v === false ? '否' : '未作答',
+                      score: v === true ? 1 : 0,
+                    };
+                  })}
+                  totalLabel={`總分 ${score ?? 0} / 20`}
+                />
 
                 <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
                   <h4 className="font-semibold text-blue-800 mb-2">SAST評分參考：</h4>

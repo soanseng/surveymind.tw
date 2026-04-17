@@ -5,6 +5,14 @@ import { questionnaireSEO } from '@/lib/seo-config';
 import useQuestionnaireForm from '@/hooks/useQuestionnaireForm';
 import { useResponsiveDialog } from '@/hooks/useResponsiveDialog';
 import ShareButton from '@/components/ShareButton';
+import AnswerDetailList, { AnswerDetailItem } from '@/components/AnswerDetailList';
+
+const optionLabels: Record<string, string> = {
+  "1": "沒有或很少時間",
+  "2": "有時",
+  "3": "經常",
+  "4": "持續/總是",
+};
 
 const questions = [
   "我覺得比平常容易緊張和著急。",
@@ -250,7 +258,7 @@ const Page = () => {
         </form>
 
         <Content open={open} onOpenChange={setOpen}>
-          <ContentComponent className="sm:max-w-[425px]">
+          <ContentComponent className="sm:max-w-[640px] max-h-[90vh] overflow-y-auto">
             <HeaderComponent>
               <TitleComponent>焦慮自我評估結果</TitleComponent>
               <DescriptionComponent>
@@ -275,6 +283,22 @@ const Page = () => {
                     {getInterpretation(calculatedScore)}
                   </p>
                 </div>
+
+                <AnswerDetailList
+                  items={questions.map<AnswerDetailItem>((q, i) => {
+                    const v = answers[i];
+                    const n = v !== null && v !== '' ? parseInt(v, 10) : null;
+                    const isReverse = reverseItems.includes(i);
+                    const itemScore = n === null ? 0 : isReverse ? 5 - n : n;
+                    return {
+                      question: q,
+                      answerLabel: n !== null ? optionLabels[String(n)] : '未作答',
+                      score: itemScore,
+                      note: isReverse ? '反向計分' : undefined,
+                    };
+                  })}
+                  totalLabel={`總分 ${calculatedScore ?? 0} / 80`}
+                />
 
                 <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
                   <h4 className="font-semibold text-blue-800 mb-2">SAS評分標準：</h4>

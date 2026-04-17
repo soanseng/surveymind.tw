@@ -14,6 +14,13 @@ import {
 } from "@/components/ui/card"
 import ShareButton from '@/components/ShareButton';
 import { Button } from '@/components/ui/button';
+import AnswerDetailList, { AnswerDetailItem } from '@/components/AnswerDetailList';
+
+const answerLabels: Record<string, string> = {
+  "1": "是，有改變",
+  "0": "否，無改變",
+  "nil": "不知道",
+};
 
 const questions = [
   "判斷力上的困難：例如落入圈套或騙局、財務上不好的決定、買了對受禮者不合宜的禮物。",
@@ -192,7 +199,7 @@ const Page = () => {
         </form>
 
         <Content open={open} onOpenChange={setOpen}>
-          <ContentComponent className="sm:max-w-[425px]">
+          <ContentComponent className="sm:max-w-[640px] max-h-[90vh] overflow-y-auto">
             <HeaderComponent>
               <TitleComponent>AD-8 認知功能篩檢結果</TitleComponent>
               <DescriptionComponent>
@@ -217,6 +224,18 @@ const Page = () => {
                     {getInterpretation(score)}
                   </p>
                 </div>
+
+                <AnswerDetailList
+                  items={questions.map<AnswerDetailItem>((q, i) => {
+                    const v = answers[i];
+                    return {
+                      question: q,
+                      answerLabel: v !== null && v !== '' ? answerLabels[v] : '未作答',
+                      score: v === '1' ? 1 : 0,
+                    };
+                  })}
+                  totalLabel={`總分 ${score ?? 0} / 8`}
+                />
 
                 <div className="bg-yellow-50 p-4 rounded-lg border border-yellow-200">
                   <h4 className="font-semibold text-yellow-800 mb-2">重要說明：</h4>

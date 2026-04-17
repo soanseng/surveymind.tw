@@ -5,6 +5,9 @@ import { questionnaireSEO } from '@/lib/seo-config';
 import useQuestionnaireForm from '@/hooks/useQuestionnaireForm';
 import { useResponsiveDialog } from '@/hooks/useResponsiveDialog';
 import ShareButton from '@/components/ShareButton';
+import AnswerDetailList, { AnswerDetailItem } from '@/components/AnswerDetailList';
+
+const optionLabels = ["完全沒有", "有一點", "中度", "相當", "極度"];
 
 const questions = [
   "我儲存了太多東西，多到妨礙了我的生活空間。",
@@ -196,22 +199,19 @@ const Page = () => {
                   )}
                 </h3>
                 <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
-                  {["0", "1", "2", "3", "4"].map((value) => {
-                    const labels = ["完全沒有", "有一點", "中度", "相當", "極度"];
-                    return (
-                      <label key={value} className="flex items-center cursor-pointer">
-                        <input
-                          type="radio"
-                          name={`question-${index}`}
-                          value={value}
-                          checked={answers[index] === value}
-                          onChange={(e) => handleAnswerChange(index, e.target.value)}
-                          className="mr-2 h-4 w-4 text-purple-600"
-                        />
-                        <span className="text-sm">{labels[parseInt(value)]}</span>
-                      </label>
-                    );
-                  })}
+                  {["0", "1", "2", "3", "4"].map((value) => (
+                    <label key={value} className="flex items-center cursor-pointer">
+                      <input
+                        type="radio"
+                        name={`question-${index}`}
+                        value={value}
+                        checked={answers[index] === value}
+                        onChange={(e) => handleAnswerChange(index, e.target.value)}
+                        className="mr-2 h-4 w-4 text-purple-600"
+                      />
+                      <span className="text-sm">{optionLabels[parseInt(value)]}</span>
+                    </label>
+                  ))}
                 </div>
               </div>
             );
@@ -237,7 +237,7 @@ const Page = () => {
         </form>
 
         <Content open={open} onOpenChange={setOpen}>
-          <ContentComponent className="sm:max-w-[600px]">
+          <ContentComponent className="sm:max-w-[640px] max-h-[90vh] overflow-y-auto">
             <HeaderComponent>
               <TitleComponent>OCI-R 強迫症狀評估結果</TitleComponent>
               <DescriptionComponent>
@@ -274,6 +274,21 @@ const Page = () => {
                     <li>• ≥28分：重度強迫症狀</li>
                   </ul>
                 </div>
+
+                <AnswerDetailList
+                  items={questions.map<AnswerDetailItem>((q, i) => {
+                    const v = answers[i];
+                    const n = v !== null && v !== '' ? parseInt(v, 10) : null;
+                    const dimKey = (Object.entries(dimensions).find(([, idxs]) => idxs.includes(i))?.[0]) as keyof typeof dimensionNames | undefined;
+                    return {
+                      question: q,
+                      answerLabel: n !== null ? optionLabels[n] : '未作答',
+                      score: n ?? 0,
+                      note: dimKey ? `向度：${dimensionNames[dimKey]}` : undefined,
+                    };
+                  })}
+                  totalLabel={`總分 ${score ?? 0} / 72`}
+                />
 
                 {/* Dimension Scores */}
                 <div className="bg-purple-50 p-4 rounded-lg border border-purple-200">

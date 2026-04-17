@@ -7,6 +7,7 @@ import Pagination from '@/hooks/Pagination';
 import { Input } from '@/components/ui/input';
 import { useResponsiveDialog } from '@/hooks/useResponsiveDialog';
 import ShareButton from '@/components/ShareButton';
+import AnswerDetailList, { AnswerDetailItem } from '@/components/AnswerDetailList';
 
 const questions = [
   {id: 1, question: "過去一個月來，您晚上通常幾點上床睡覺？"},
@@ -449,7 +450,7 @@ const customHandleSubmit = (e: React.FormEvent) => {
 
 
         <Content open={open} onOpenChange={setOpen}>
-          <ContentComponent className="sm:max-w-[600px]">
+          <ContentComponent className="sm:max-w-[640px] max-h-[90vh] overflow-y-auto">
             <HeaderComponent>
               <TitleComponent>PSQI 睡眠品質評估結果</TitleComponent>
               <DescriptionComponent>
@@ -505,6 +506,42 @@ const customHandleSubmit = (e: React.FormEvent) => {
                     </div>
                   </div>
                   
+                  <AnswerDetailList
+                    items={questions.reduce<AnswerDetailItem[]>((acc, q, i) => {
+                      if (q.id === 5) return acc;
+                      const v = answers[i];
+                      let label = '未作答';
+                      let scoreVal: number | string = '';
+                      if (v !== null && v !== '') {
+                        if (q.id === 1 || q.id === 3) {
+                          label = v;
+                          scoreVal = '';
+                        } else {
+                          const n = parseInt(v, 10);
+                          const selMap: Record<string, { value: number; description: string }[]> = {
+                            '2': selection2,
+                            '4': selection4,
+                            '8': selection8,
+                            '9': selection9,
+                          };
+                          const sel = typeof q.id === 'number' && selMap[String(q.id)]
+                            ? selMap[String(q.id)]
+                            : selectionA;
+                          const found = sel.find(o => o.value === n);
+                          label = found ? found.description : v;
+                          scoreVal = n;
+                        }
+                      }
+                      acc.push({
+                        question: `${q.id}. ${q.question}`,
+                        answerLabel: label,
+                        score: scoreVal,
+                      });
+                      return acc;
+                    }, [])}
+                    totalLabel={`總分 ${scores.globalScore} / 21`}
+                  />
+
                   <div className="bg-gray-50 p-4 rounded-lg">
                     <h4 className="font-semibold mb-2">結果解釋：</h4>
                     <p className="text-sm text-gray-700 leading-relaxed">

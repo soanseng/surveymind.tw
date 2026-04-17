@@ -4,6 +4,9 @@ import SEOHead from '@/components/SEOHead';
 import { questionnaireSEO } from '@/lib/seo-config';
 import { useResponsiveDialog } from '@/hooks/useResponsiveDialog';
 import ShareButton from '@/components/ShareButton';
+import AnswerDetailList, { AnswerDetailItem } from '@/components/AnswerDetailList';
+
+const optionLabels = ['完全沒有', '有一點', '中等程度', '相當嚴重', '極度嚴重'];
 
 const questions = [
   // B群集：闖入性症狀 (Intrusion Symptoms)
@@ -248,7 +251,7 @@ const Page = () => {
         </form>
 
         <Content open={open} onOpenChange={setOpen}>
-          <ContentComponent className="sm:max-w-[500px]">
+          <ContentComponent className="sm:max-w-[640px] max-h-[90vh] overflow-y-auto">
             <HeaderComponent>
               <TitleComponent>PCL-5 評估結果</TitleComponent>
               <DescriptionComponent>
@@ -273,6 +276,21 @@ const Page = () => {
                     {getInterpretation(score)}
                   </p>
                 </div>
+
+                <AnswerDetailList
+                  items={questions.map<AnswerDetailItem>((q, i) => {
+                    const v = answers[i];
+                    const n = v !== null && v !== '' ? parseInt(v, 10) : null;
+                    const cluster = i <= 4 ? 'B 闖入' : i <= 6 ? 'C 逃避' : i <= 13 ? 'D 認知情緒' : 'E 警覺反應';
+                    return {
+                      question: q,
+                      answerLabel: n !== null ? optionLabels[n] : '未作答',
+                      score: n ?? 0,
+                      note: `群集：${cluster}`,
+                    };
+                  })}
+                  totalLabel={`總分 ${score ?? 0} / 80`}
+                />
 
                 {provisionalDiagnosis && (
                   <div className="bg-blue-50 p-4 rounded-lg">

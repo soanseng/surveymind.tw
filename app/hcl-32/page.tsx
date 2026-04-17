@@ -5,6 +5,7 @@ import { questionnaireSEO } from '@/lib/seo-config';
 import useQuestionnaireForm from '@/hooks/useQuestionnaireForm';
 import { useResponsiveDialog } from '@/hooks/useResponsiveDialog';
 import ShareButton from '@/components/ShareButton';
+import AnswerDetailList, { AnswerDetailItem } from '@/components/AnswerDetailList';
 
 const questions = [
   "我需要的睡眠比平時少。",
@@ -208,7 +209,7 @@ const Page = () => {
         </form>
 
         <Content open={open} onOpenChange={setOpen}>
-          <ContentComponent className="sm:max-w-[425px]">
+          <ContentComponent className="sm:max-w-[640px] max-h-[90vh] overflow-y-auto">
             <HeaderComponent>
               <TitleComponent>輕燥症自我評估結果</TitleComponent>
               <DescriptionComponent>
@@ -233,6 +234,18 @@ const Page = () => {
                     {getInterpretation(score)}
                   </p>
                 </div>
+
+                <AnswerDetailList
+                  items={questions.map<AnswerDetailItem>((q, i) => {
+                    const v = answers[i];
+                    return {
+                      question: q,
+                      answerLabel: v === '1' ? '是' : v === '0' ? '否' : '未作答',
+                      score: v === '1' ? 1 : 0,
+                    };
+                  })}
+                  totalLabel={`總分 ${score ?? 0} / 32`}
+                />
 
                 <div className="bg-yellow-50 p-4 rounded-lg border border-yellow-200">
                   <h4 className="font-semibold text-yellow-800 mb-2">重要說明：</h4>

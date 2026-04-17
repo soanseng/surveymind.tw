@@ -6,6 +6,14 @@ import { useResponsiveDialog } from '@/hooks/useResponsiveDialog';
 import ShareButton from '@/components/ShareButton';
 import SEOHead from '@/components/SEOHead';
 import { questionnaireSEO } from '@/lib/seo-config';
+import AnswerDetailList, { AnswerDetailItem } from '@/components/AnswerDetailList';
+
+const optionLabels = [
+  "沒有或極少(1天以下)",
+  "有時(1-2天)",
+  "時常(3-4天)",
+  "常常或總是(5-7天)"
+];
 
 const questions = [
   "我常常覺得想哭",
@@ -203,27 +211,19 @@ const TdqForm: React.FC = () => {
                   )}
                 </h3>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                  {["0", "1", "2", "3"].map((value) => {
-                    const labels = [
-                      "沒有或極少(1天以下)",
-                      "有時(1-2天)",
-                      "時常(3-4天)",
-                      "常常或總是(5-7天)"
-                    ];
-                    return (
-                      <label key={value} className="flex items-center cursor-pointer">
-                        <input
-                          type="radio"
-                          name={`question-${questionIndex}`}
-                          value={value}
-                          checked={answers[questionIndex] === value}
-                          onChange={(e) => handleAnswerChange(questionIndex, e.target.value)}
-                          className="mr-2 h-4 w-4 text-blue-600"
-                        />
-                        <span className="text-sm">{labels[parseInt(value)]}</span>
-                      </label>
-                    );
-                  })}
+                  {["0", "1", "2", "3"].map((value) => (
+                    <label key={value} className="flex items-center cursor-pointer">
+                      <input
+                        type="radio"
+                        name={`question-${questionIndex}`}
+                        value={value}
+                        checked={answers[questionIndex] === value}
+                        onChange={(e) => handleAnswerChange(questionIndex, e.target.value)}
+                        className="mr-2 h-4 w-4 text-blue-600"
+                      />
+                      <span className="text-sm">{optionLabels[parseInt(value)]}</span>
+                    </label>
+                  ))}
                 </div>
               </div>
             );
@@ -278,7 +278,7 @@ const TdqForm: React.FC = () => {
         </form>
 
         <Content open={open} onOpenChange={setOpen}>
-          <ContentComponent className="sm:max-w-[425px]">
+          <ContentComponent className="sm:max-w-[640px] max-h-[90vh] overflow-y-auto">
             <HeaderComponent>
               <TitleComponent>TDQ 台灣人憂鬱症量表結果</TitleComponent>
               <DescriptionComponent>
@@ -303,6 +303,19 @@ const TdqForm: React.FC = () => {
                     {message}
                   </p>
                 </div>
+
+                <AnswerDetailList
+                  items={questions.map<AnswerDetailItem>((q, i) => {
+                    const v = answers[i];
+                    const n = v !== null && v !== '' ? parseInt(v, 10) : null;
+                    return {
+                      question: q,
+                      answerLabel: n !== null ? optionLabels[n] : '未作答',
+                      score: n ?? 0,
+                    };
+                  })}
+                  totalLabel={`總分 ${totalScores} / 54`}
+                />
 
                 <div className="bg-yellow-50 p-4 rounded-lg border border-yellow-200">
                   <h4 className="font-semibold text-yellow-800 mb-2">分數解釋：</h4>

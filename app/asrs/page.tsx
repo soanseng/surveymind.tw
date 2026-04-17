@@ -6,6 +6,9 @@ import useQuestionnaireForm from '@/hooks/useQuestionnaireForm';
 import Pagination from '@/hooks/Pagination';
 import { useResponsiveDialog } from '@/hooks/useResponsiveDialog';
 import ShareButton from '@/components/ShareButton';
+import AnswerDetailList, { AnswerDetailItem } from '@/components/AnswerDetailList';
+
+const optionLabels = ["從不", "很少", "有時", "常常", "非常頻繁"];
 
 const questions = [
 "當必須進行一件枯燥或困難的計劃時，你會多常粗心犯錯？",
@@ -202,22 +205,19 @@ const ASRSForm: React.FC = () => {
                   )}
                 </h3>
                 <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
-                  {["0", "1", "2", "3", "4"].map((value) => {
-                    const labels = ["從不", "很少", "有時", "常常", "非常頻繁"];
-                    return (
-                      <label key={value} className="flex items-center cursor-pointer">
-                        <input
-                          type="radio"
-                          name={`question-${questionIndex}`}
-                          value={value}
-                          checked={answers[questionIndex] === value}
-                          onChange={(e) => handleAnswerChange(questionIndex, e.target.value)}
-                          className="mr-2 h-4 w-4 text-blue-600"
-                        />
-                        <span className="text-sm">{labels[parseInt(value)]}</span>
-                      </label>
-                    );
-                  })}
+                  {["0", "1", "2", "3", "4"].map((value) => (
+                    <label key={value} className="flex items-center cursor-pointer">
+                      <input
+                        type="radio"
+                        name={`question-${questionIndex}`}
+                        value={value}
+                        checked={answers[questionIndex] === value}
+                        onChange={(e) => handleAnswerChange(questionIndex, e.target.value)}
+                        className="mr-2 h-4 w-4 text-blue-600"
+                      />
+                      <span className="text-sm">{optionLabels[parseInt(value)]}</span>
+                    </label>
+                  ))}
                 </div>
               </div>
             );
@@ -268,7 +268,7 @@ const ASRSForm: React.FC = () => {
         </form>
 
         <Content open={open} onOpenChange={setOpen}>
-          <ContentComponent className="sm:max-w-[500px]">
+          <ContentComponent className="sm:max-w-[640px] max-h-[90vh] overflow-y-auto">
             <HeaderComponent>
               <TitleComponent>ASRS 成人ADHD評估結果</TitleComponent>
               <DescriptionComponent>
@@ -304,6 +304,20 @@ const ASRSForm: React.FC = () => {
                   </div>
                 </div>
                 
+                <AnswerDetailList
+                  items={questions.map<AnswerDetailItem>((q, i) => {
+                    const v = answers[i];
+                    const n = v !== null && v !== '' ? parseInt(v, 10) : null;
+                    return {
+                      question: q,
+                      answerLabel: n !== null ? optionLabels[n] : '未作答',
+                      score: n ?? 0,
+                      note: i < 9 ? 'A部分（不專心）' : 'B部分（過動/衝動）',
+                    };
+                  })}
+                  totalLabel={`A ${partAScores} / 36，B ${partBScores} / 36`}
+                />
+
                 <div className="bg-gray-50 p-4 rounded-lg">
                   <h4 className="font-semibold mb-2">結果解釋：</h4>
                   <p className="text-sm text-gray-700 leading-relaxed mb-3">

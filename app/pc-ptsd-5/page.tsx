@@ -4,6 +4,7 @@ import SEOHead from '@/components/SEOHead';
 import { questionnaireSEO } from '@/lib/seo-config';
 import { useResponsiveDialog } from '@/hooks/useResponsiveDialog';
 import ShareButton from '@/components/ShareButton';
+import AnswerDetailList, { AnswerDetailItem } from '@/components/AnswerDetailList';
 
 const screeningQuestions = [
   "您是否曾做過關於該事件的惡夢，或在不願意的情況下想起該事件？",
@@ -277,7 +278,7 @@ const Page = () => {
         </form>
 
         <Content open={open} onOpenChange={setOpen}>
-          <ContentComponent className="sm:max-w-[425px]">
+          <ContentComponent className="sm:max-w-[640px] max-h-[90vh] overflow-y-auto">
             <HeaderComponent>
               <TitleComponent>PC-PTSD-5 評估結果</TitleComponent>
               <DescriptionComponent>
@@ -302,6 +303,20 @@ const Page = () => {
                     {getInterpretation(score, hasTrauma)}
                   </p>
                 </div>
+
+                {hasTrauma && (
+                  <AnswerDetailList
+                    items={screeningQuestions.map<AnswerDetailItem>((q, i) => {
+                      const v = answers[i];
+                      return {
+                        question: q,
+                        answerLabel: v === 'yes' ? '是' : v === 'no' ? '否' : '未作答',
+                        score: v === 'yes' ? 1 : 0,
+                      };
+                    })}
+                    totalLabel={`總分 ${score ?? 0} / 5`}
+                  />
+                )}
 
                 {hasTrauma && score !== null && score >= 3 && (
                   <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">

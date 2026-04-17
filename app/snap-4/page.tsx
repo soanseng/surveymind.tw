@@ -6,6 +6,9 @@ import useQuestionnaireForm from '@/hooks/useQuestionnaireForm';
 import Pagination from '@/hooks/Pagination';
 import { useResponsiveDialog } from '@/hooks/useResponsiveDialog';
 import ShareButton from '@/components/ShareButton';
+import AnswerDetailList, { AnswerDetailItem } from '@/components/AnswerDetailList';
+
+const optionLabels = ["完全沒有", "有一點點", "還算不少", "非常的多"];
 import {
     Card,
     CardContent,
@@ -237,22 +240,19 @@ const SNAP4Form: React.FC = () => {
                   )}
                 </h3>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                  {["0", "1", "2", "3"].map((value) => {
-                    const labels = ["完全沒有", "有一點點", "還算不少", "非常的多"];
-                    return (
-                      <label key={value} className="flex items-center cursor-pointer">
-                        <input
-                          type="radio"
-                          name={`question-${questionIndex}`}
-                          value={value}
-                          checked={answers[questionIndex] === value}
-                          onChange={(e) => handleAnswerChange(questionIndex, e.target.value)}
-                          className="mr-2 h-4 w-4 text-orange-600"
-                        />
-                        <span className="text-sm">{labels[parseInt(value)]}</span>
-                      </label>
-                    );
-                  })}
+                  {["0", "1", "2", "3"].map((value) => (
+                    <label key={value} className="flex items-center cursor-pointer">
+                      <input
+                        type="radio"
+                        name={`question-${questionIndex}`}
+                        value={value}
+                        checked={answers[questionIndex] === value}
+                        onChange={(e) => handleAnswerChange(questionIndex, e.target.value)}
+                        className="mr-2 h-4 w-4 text-orange-600"
+                      />
+                      <span className="text-sm">{optionLabels[parseInt(value)]}</span>
+                    </label>
+                  ))}
                 </div>
               </div>
             );
@@ -302,7 +302,7 @@ const SNAP4Form: React.FC = () => {
           </div>
         </form>
         <Content open={open} onOpenChange={setOpen}>
-          <ContentComponent className="sm:max-w-[600px]">
+          <ContentComponent className="sm:max-w-[640px] max-h-[90vh] overflow-y-auto">
             <HeaderComponent>
               <TitleComponent>SNAP-IV 兒童ADHD評估結果</TitleComponent>
               <DescriptionComponent>
@@ -347,6 +347,21 @@ const SNAP4Form: React.FC = () => {
                   </div>
                 </div>
                 
+                <AnswerDetailList
+                  items={questions.map<AnswerDetailItem>((q, i) => {
+                    const v = answers[i];
+                    const n = v !== null && v !== '' ? parseInt(v, 10) : null;
+                    const section = i < 9 ? '注意力不足' : i < 18 ? '過動/衝動' : '對立反抗';
+                    return {
+                      question: q,
+                      answerLabel: n !== null ? optionLabels[n] : '未作答',
+                      score: n ?? 0,
+                      note: section,
+                    };
+                  })}
+                  totalLabel={`注意力 ${inattentionScores}，過動 ${hyperactivityImpulsivityScores}，對立 ${oppositionalDefiantScores}`}
+                />
+
                 <div className="bg-gray-50 p-4 rounded-lg">
                   <h4 className="font-semibold mb-2">結果解釋：</h4>
                   <p className="text-sm text-gray-700 leading-relaxed mb-3">
