@@ -333,6 +333,7 @@ function FibroResult(props: FibroResultProps) {
     setOpen,
     score,
     Content,
+    ContentComponent,
     HeaderComponent,
     TitleComponent,
     DescriptionComponent,
@@ -426,7 +427,10 @@ function FibroResult(props: FibroResultProps) {
 
   return (
     <Content open={open} onOpenChange={setOpen}>
-      <div data-print-root>
+      <ContentComponent
+        data-print-root
+        className="sm:max-w-[720px] max-h-[90vh] overflow-y-auto"
+      >
         <HeaderComponent>
           <TitleComponent>纖維肌痛症 (ACR 2016) 結果</TitleComponent>
           <DescriptionComponent>FS = WPI + SSS，範圍 0–31</DescriptionComponent>
@@ -534,7 +538,7 @@ function FibroResult(props: FibroResultProps) {
             本結果僅供臨床參考，不構成診斷。最終診斷請由專科醫師判斷。
           </div>
         </div>
-      </div>
+      </ContentComponent>
     </Content>
   );
 }

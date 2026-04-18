@@ -45,6 +45,7 @@ export default function MidasPage() {
     open,
     setOpen,
     Content,
+    ContentComponent,
     HeaderComponent,
     TitleComponent,
     DescriptionComponent,
@@ -204,7 +205,10 @@ export default function MidasPage() {
 
         {submitted && (
           <Content open={open} onOpenChange={setOpen}>
-            <div data-print-root>
+            <ContentComponent
+              data-print-root
+              className="sm:max-w-[640px] max-h-[90vh] overflow-y-auto"
+            >
               <HeaderComponent>
                 <TitleComponent>MIDAS 偏頭痛失能評估結果</TitleComponent>
                 <DescriptionComponent>
@@ -292,7 +296,7 @@ export default function MidasPage() {
                   本結果僅供臨床參考，不構成診斷。最終診斷請由專科醫師判斷。
                 </div>
               </div>
-            </div>
+            </ContentComponent>
           </Content>
         )}
 
