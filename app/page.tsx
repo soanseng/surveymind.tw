@@ -121,6 +121,10 @@ const questionnaires = {
     { name: "IGDS9-SF 網路遊戲障礙量表", link: "/igds9-sf", time: "8-10分鐘", difficulty: "中等" },
     { name: "SAST 性成癮篩檢測驗", link: "/sast", time: "10-15分鐘", difficulty: "中等" },
   ],
+  pain: [
+    { name: "纖維肌痛症 (ACR 2016)", link: "/fibromyalgia", time: "5 分鐘", difficulty: "中等" },
+    { name: "MIDAS 偏頭痛失能評估", link: "/midas", time: "3 分鐘", difficulty: "簡單" },
+  ],
 };
 
 const categories = [
@@ -187,6 +191,14 @@ const categories = [
     description: "評估酒精、菸草、賭博、遊戲與性成癮風險",
     color: "bg-yellow-100 text-yellow-600",
     questionnaires: questionnaires.addiction,
+  },
+  {
+    id: "pain",
+    name: "疼痛/神經",
+    icon: Brain,
+    description: "慢性疼痛與偏頭痛相關評估",
+    color: "bg-teal-100 text-teal-600",
+    questionnaires: questionnaires.pain,
   },
 ];
 
