@@ -678,7 +678,78 @@ export const questionnaireSEO: Record<string, SEOConfig> = {
       duration: "10-15分鐘",
       difficulty: "中等"
     }
-  }
+  },
+
+  // Fibromyalgia — ACR 2016 WPI + SSS
+  fibromyalgia: {
+    title: "纖維肌痛症量表 ACR 2016 | WPI+SSS 線上評估 | 健保給付參考 - 台中文心樂丞、理解身心診所",
+    description:
+      "ACR 2016 纖維肌痛症診斷準則線上評估工具，計算 WPI 廣泛疼痛指數、SSS 症狀嚴重度、FS 纖維肌痛分數，附 NRS 疼痛強度與健保給付參考。可列印結果交給醫師。",
+    keywords: [
+      "纖維肌痛症",
+      "Fibromyalgia",
+      "ACR 2016",
+      "WPI",
+      "SSS",
+      "FS score",
+      "廣泛疼痛指數",
+      "症狀嚴重度",
+      "健保",
+      "pregabalin",
+      "duloxetine",
+      "慢性疼痛",
+      "台中身心科",
+      "風濕免疫",
+    ],
+    openGraph: {
+      title: "纖維肌痛症線上評估 (ACR 2016 WPI+SSS)",
+      description:
+        "依據 Wolfe 2016 標準計算 WPI + SSS + FS 與健保給付參考，可列印交給醫師。",
+      type: "website",
+      locale: "zh_TW",
+    },
+    structuredData: {
+      name: "纖維肌痛症 ACR 2016 診斷工具",
+      description: "WPI + SSS + FS 計算，含 NRS 疼痛強度與健保給付門檻提示。",
+      category: "MedicalTest",
+      duration: "PT5M",
+      difficulty: "intermediate",
+    },
+  },
+
+  // MIDAS — Migraine Disability Assessment (Taiwan version)
+  midas: {
+    title: "MIDAS 偏頭痛失能評估量表 | Migraine Disability 線上測驗 - 台中文心樂丞、理解身心診所",
+    description:
+      "MIDAS 偏頭痛失能評估量表線上版（Taiwan-validated 中文版），評估過去 3 個月偏頭痛對工作、家事、社交的影響。附頭痛天數與疼痛強度記錄，可列印交給醫師。",
+    keywords: [
+      "MIDAS",
+      "偏頭痛",
+      "migraine",
+      "頭痛失能",
+      "Migraine Disability Assessment",
+      "頭痛門診",
+      "預防性治療",
+      "ICHD-3",
+      "慢性偏頭痛",
+      "台中神經內科",
+      "頭痛量表",
+    ],
+    openGraph: {
+      title: "MIDAS 偏頭痛失能評估量表（中文版）",
+      description:
+        "評估過去 3 個月偏頭痛對生活的影響，分級參考與頭痛門診建議。可列印交給醫師。",
+      type: "website",
+      locale: "zh_TW",
+    },
+    structuredData: {
+      name: "MIDAS 偏頭痛失能評估量表",
+      description: "過去 3 個月偏頭痛失能評估，含頭痛天數與疼痛強度。",
+      category: "MedicalTest",
+      duration: "PT3M",
+      difficulty: "basic",
+    },
+  },
 };
 
 // Landing page SEO
