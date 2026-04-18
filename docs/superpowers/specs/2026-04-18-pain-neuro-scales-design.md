@@ -61,7 +61,9 @@ Score = number of boxes checked (0–19). Stored as `boolean[19]`.
 
 SSS total = 0–12.
 
-**Part 3 — NRS 疼痛強度:** 0–10 radio row, past 1 week average. Not part of FS score but shown alongside and used for 健保 gating.
+**Part 3 — 病程持續時間（ACR 2016 診斷準則要求）:** Single yes/no radio — 「上述症狀是否已持續 3 個月以上且強度相似？」. Stored as `durationMet: boolean`.
+
+**Part 4 — NRS 疼痛強度:** 0–10 radio row, past 1 week average. Not part of FS score but shown alongside and used for 健保 gating.
 
 ### Scoring
 
@@ -69,26 +71,39 @@ SSS total = 0–12.
 
 ```ts
 type FibroScore = {
-  wpi: number;        // 0–19
-  sss: number;        // 0–12
-  fs: number;         // wpi + sss, 0–31
-  nrs: number;        // 0–10
-  meetsDx: boolean;   // ACR 2016 criteria met
-  meetsNhi: boolean;  // meetsDx && nrs >= 6
+  wpi: number;              // 0–19
+  sss: number;              // 0–12
+  fs: number;               // wpi + sss, 0–31
+  nrs: number;              // 0–10
+  regionsWithPain: number;  // 0–5, count of regions with ≥1 part checked
+  durationMet: boolean;     // symptoms ≥3 months at similar level
+  wpiSssMet: boolean;       // WPI/SSS threshold met
+  generalizedPain: boolean; // regionsWithPain ≥ 4
+  meetsDx: boolean;         // all three ACR 2016 criteria met
+  meetsNhi: boolean;        // meetsDx && nrs >= 6
 };
 
-meetsDx = (wpi >= 7 && sss >= 5) || (wpi >= 4 && wpi <= 6 && sss >= 9);
+wpiSssMet = (wpi >= 7 && sss >= 5) || (wpi >= 4 && wpi <= 6 && sss >= 9);
+generalizedPain = regionsWithPain >= 4;
+meetsDx = wpiSssMet && generalizedPain && durationMet;
 meetsNhi = meetsDx && nrs >= 6;
 ```
 
-### Result page
+Regions map (for `regionsWithPain` computation):
+- 左上區 (indices 0–4)、右上區 (5–9)、左下區 (10–12)、右下區 (13–15)、中軸區 (16–18).
+- A region "has pain" if any of its indices are checked.
 
-- Four metric cards: FS (0–31), WPI, SSS, NRS.
-- Diagnostic line: 「符合 / 不符合 ACR 2016 纖維肌痛症診斷準則」.
-- 健保提示 callout: if `meetsNhi` true, note that 量表門檻成立 for pregabalin/duloxetine 給付申請 (仍需醫師臨床判斷); if not, state which threshold is not yet met.
-- Non-diagnostic disclaimer (standard language used on other scales).
-- `AnswerDetailList` with every item's answer + score contribution.
-- `PrintButton` + `ShareButton`.
+### Result page (information hierarchy, mobile-first)
+
+1. **Hero card** — single large stat "FS {fs}/31" with color-coded border (green ≤ 12, amber 13–20, red ≥ 21) and diagnostic line underneath: 「符合 / 不符合 ACR 2016 纖維肌痛症診斷準則」. If not met, show which of the three criteria failed (WPI/SSS, 泛發性疼痛 ≥4 區, 病程 ≥3 個月).
+2. **健保提示 callout** (directly below hero, above the fold on mobile):
+   - If `meetsNhi`: 「本量表結果符合健保 pregabalin / duloxetine 給付申請之量表門檻（診斷準則成立且 NRS ≥ 6）。實際給付仍需醫師臨床判斷。」
+   - If `meetsDx` but `nrs < 6`: 「符合診斷準則，但 NRS ({nrs}) 未達健保給付門檻（需 ≥ 6）。」
+   - If not `meetsDx`: 「未完全符合 ACR 2016 診斷準則，健保量表門檻不成立。」
+3. **Sub-metrics row**: WPI, SSS, NRS, 疼痛區域數 as four small cards.
+4. **Non-diagnostic disclaimer** — standard language used on other scales.
+5. **`AnswerDetailList`** — three separate instances per sub-section (WPI / SSS / NRS), each with its own header. Per Eng Review Issue 3: no changes to AnswerDetailList API; compose multiple instances on the page.
+6. **`PrintButton` + `ShareButton`** row.
 
 ### Citation
 
@@ -170,25 +185,49 @@ Appended to `app/globals.css`:
 
 ```css
 @media print {
-  /* Chrome: hide header, footer, navigation, buttons */
+  /* Chrome: hide app header, footer, navigation, and any .print:hidden element */
   header, footer, nav, .print\:hidden { display: none !important; }
 
-  /* Force dialog/drawer result surfaces to flow inline */
-  [data-print-root] {
+  /* Radix Dialog + vaul Drawer portal the content into document.body.
+     Neutralize their overlay/fixed-positioning so the result content flows
+     as a normal A4 document. */
+  [data-radix-portal],
+  [data-radix-dialog-portal],
+  [vaul-drawer-wrapper] {
+    all: unset !important;
+    display: contents !important;
+  }
+
+  [data-radix-dialog-overlay],
+  [vaul-overlay],
+  [data-vaul-overlay] {
+    display: none !important;
+  }
+
+  /* Force dialog/drawer result surfaces to flow inline on A4 */
+  [data-print-root],
+  [data-radix-dialog-content],
+  [vaul-drawer] {
+    all: unset !important;
     display: block !important;
     position: static !important;
     max-height: none !important;
+    max-width: none !important;
+    width: 100% !important;
+    height: auto !important;
     overflow: visible !important;
     box-shadow: none !important;
     border: none !important;
     background: white !important;
+    transform: none !important;
+    inset: auto !important;
   }
 
   @page { size: A4; margin: 15mm; }
 
   body { background: white !important; color: black !important; font-size: 11pt; }
 
-  /* Each question item stays together */
+  /* Each question item stays together on one page */
   .answer-detail-item { break-inside: avoid; }
 
   /* Print-only header and footer blocks */
@@ -201,8 +240,21 @@ Appended to `app/globals.css`:
     border-top: 1px solid #ccc;
     padding-top: 4mm;
   }
+
+  /* Visual section dividers for doctor parseability */
+  .print-section-label {
+    display: block !important;
+    font-weight: bold;
+    font-size: 10pt;
+    border-bottom: 1px solid #999;
+    margin-top: 8mm;
+    margin-bottom: 3mm;
+    padding-bottom: 1mm;
+  }
 }
 ```
+
+**Portal testing note:** Radix and vaul portal DOM selectors must be verified at implementation time by inspecting the rendered DOM (selectors may differ by library version). Test matrix: Chrome desktop print preview, Firefox desktop print preview, Safari mobile Save-as-PDF, Chrome mobile Save-as-PDF. All four must show the result content with no overlay artifacts.
 
 ## Print Header and Footer Blocks
 
@@ -213,15 +265,23 @@ Added inside the result surface on both new result pages:
   <h1 className="text-lg font-bold">台中文心樂丞、理解身心診所</h1>
   <p className="text-sm">{questionnaireTitle}</p>
   <p className="text-xs text-gray-600">作答日期：{new Date().toLocaleDateString('zh-TW')}</p>
-  <div className="mt-4 text-xs">
+
+  <span className="print-section-label">病患基本資料</span>
+  <div className="text-xs leading-7">
     <p>姓名：_______________ 病歷號：_______________</p>
   </div>
+
+  <span className="print-section-label">量表結果</span>
 </div>
 ```
 
+(A second `<span className="print-section-label">各題作答明細</span>` appears directly above the first `AnswerDetailList` instance on the page.)
+
 ```tsx
 <div className="print-footer hidden print:block">
-  本報告由 surveymind.tw 產生 · 台中文心樂丞、理解身心診所 · 陳璿丞醫師 · anxiety.com.tw
+  <strong>台中文心樂丞、理解身心診所</strong> · 陳璿丞醫師
+  <br />
+  報告由 surveymind.tw 產生 · anatomind.com · anxiety.com.tw
   <br />
   本結果僅供臨床參考，不構成診斷。最終診斷請由專科醫師判斷。
 </div>
@@ -237,7 +297,7 @@ The result container also gets `data-print-root` so the `@media print` rules can
 
 ```ts
 { name: '疼痛/神經', questionnaire: [
-  { name: 'Fibromyalgia 纖維肌痛症 (ACR 2016 WPI+SSS)', link: '/fibromyalgia' },
+  { name: '纖維肌痛症 (ACR 2016)', link: '/fibromyalgia' },
   { name: 'MIDAS 偏頭痛失能評估', link: '/midas' },
 ] },
 ```
