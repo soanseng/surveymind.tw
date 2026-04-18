@@ -23,7 +23,7 @@ Secondary motivations: stack is ~2 years old, dependencies behind by multiple ma
 - **React 19** + **react-dom 19**
 - **react-router-dom 7** (client-side routing + SPA nav after hydration)
 - **vite-react-ssg** (build-time prerendering of each route to static HTML)
-- **react-helmet-async** (meta tag injection that actually ends up in SSG output)
+- **@unhead/react** (meta tag injection that ends up in SSG output; first-class `vite-react-ssg` integration, active maintenance)
 - **Tailwind CSS v4** via `@tailwindcss/vite` (CSS-first config in `globals.css` via `@theme`)
 - **@fontsource-variable/inter** (self-hosted Inter — replaces `next/font/google`)
 - **tw-animate-css** (v4-compatible replacement for `tailwindcss-animate`)
@@ -108,16 +108,22 @@ Each `app/<name>/page.tsx` → `src/pages/<name>.tsx` with three mechanical chan
 
 ## SEOHead rewrite
 
-Replace `next/head` with `react-helmet-async`. Same props, same rendered tags — but Helmet's output is collected by `vite-react-ssg` and injected into the prerendered HTML of every route.
+Replace `next/head` with `@unhead/react`. Same semantic props, but tags are collected by `vite-react-ssg` via Unhead's SSR plugin and injected into the prerendered HTML of every route.
 
 ```tsx
-import { Helmet } from 'react-helmet-async';
+import { useHead } from '@unhead/react';
 export default function SEOHead({ config, path, customTitle, customDescription }) {
-  // identical body, <Head> → <Helmet>
+  useHead({
+    title,
+    meta: [{ name: 'description', content: description }, ...],
+    link: [{ rel: 'canonical', href: url }, ...],
+    script: [{ type: 'application/ld+json', innerHTML: JSON.stringify(webPageStructuredData) }, ...],
+  });
+  return null;
 }
 ```
 
-`App.tsx` wraps the route outlet in `<HelmetProvider>` so SSG captures every page's tags.
+`src/main.tsx` creates the Unhead instance (`createHead()`) and passes it to `ViteReactSSG`. No provider wrapper needed in App — Unhead uses a shared head instance.
 
 ## Layout migration
 
@@ -175,7 +181,15 @@ Removed per scope B. Rationale:
 
 ## Verification strategy
 
-No test framework exists; verification is manual + build-gate.
+Minimal automated smoke tests + manual + build-gate.
+
+**New: Vitest smoke tests** (opportunistic fix per scope B). Scoring bugs would be silent catastrophes.
+
+- Install `vitest` + `@vitest/ui`. Add `test` script.
+- Smoke tests:
+  - `src/pages/fibromyalgia/logic.test.ts` — cover `computeScore` for the documented ACR 2016 threshold cases (positive, negative, boundary WPI=7/SSS=5, WPI=4/SSS=9).
+  - One Pattern A sum-scoring test (PHQ-9) to guard `useQuestionnaireForm` port.
+- Not a coverage goal — a regression tripwire for the port.
 
 1. **Build gate.** `npm run build` must emit 30 HTML files (home + 28 questionnaires + 404). Each must contain `<title>`, `<meta name="description">`, and JSON-LD `<script>` tags in raw HTML — verified before hydration.
 2. **SEO spot-check.** `curl https://.../phq-9/ | grep -c '<meta'` on 3 routes (PHQ-9, fibromyalgia, PSQI). Confirms SEO fix vs current `next/head` behavior.
@@ -204,7 +218,11 @@ Broken into verifiable chunks (detailed by `writing-plans`):
 
 | Risk | Mitigation |
 |---|---|
-| `react-helmet-async` stale for React 19 | Fallback to `@dr.pogodin/react-helmet` (active fork) or `vite-react-ssg`'s `documentHead` hook. Primary choice verified against latest React 19. |
+| `@unhead/react` SSR integration with `vite-react-ssg` | Verified via `vite-react-ssg`'s official unhead example. Pin to `@unhead/react ^2` + matching `@unhead/vue` peer. Fallback: `vite-react-ssg`'s own `documentHead` hook if Unhead integration breaks. |
+| Path alias `@/*` changes target | `tsconfig.json` `paths` and `vite.config.ts` `resolve.alias` both set explicitly to `./src`. Grep all `@/` imports before merge — must all resolve inside `src/`. |
+| `components.json` (shadcn) references stale paths | Updated in step 1: `css: "src/globals.css"`, remove `config:` key (v4 has no config file), `rsc: false`. |
+| Font FOUC from switching off `next/font` | `index.html` preloads Inter Variable woff2 with `<link rel="preload" as="font" crossorigin>`. `--font-sans` CSS var kept in `:root` for identical utility behavior. |
+| Cloudflare Pages build output dir change (`out` → `dist`) | Documented as explicit manual step in rollout. CF Pages dashboard → project settings → Build output directory: `dist`. Rollback: revert dashboard setting + git revert. |
 | Radix / vaul latest break portal print CSS | Print CSS selectors preserved. Verified explicitly on fibromyalgia + MIDAS result pages before merge. |
 | Tailwind v4 token drift (`warm-text-primary` etc.) | Grep every custom utility class before switching; port each to `@theme` explicitly in step 1. |
 | React 19 ref changes break Radix | All Radix packages ship React 19 support in latest versions. |
