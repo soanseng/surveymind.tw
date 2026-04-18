@@ -44,7 +44,11 @@ const Navbar = () => {
       {name: 'FTND 尼古丁依賴量表', link: '/ftnd'}, 
       {name: 'PGSI 問題賭博嚴重程度指數', link: '/pgsi'}, 
       {name: 'IGDS9-SF 網路遊戲障礙量表', link: '/igds9-sf'}, 
-      {name: 'SAST 性成癮篩檢測驗', link: '/sast'} 
+      {name: 'SAST 性成癮篩檢測驗', link: '/sast'}
+    ] },
+    { name: '疼痛/神經', questionnaire: [
+      { name: '纖維肌痛症 (ACR 2016)', link: '/fibromyalgia' },
+      { name: 'MIDAS 偏頭痛失能評估', link: '/midas' },
     ] },
   ];
 
