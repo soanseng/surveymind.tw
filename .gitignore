@@ -48,3 +48,5 @@ wrangler.toml.backup
 README.org
 # claude
 .claude/
+# git worktrees
+.worktrees/
