@@ -310,12 +310,235 @@ export default function FibromyalgiaPage() {
   );
 }
 
-// Placeholder result component — full implementation in Task 6
-function FibroResult(props: any) {
-  if (!props.submitted) return null;
+interface FibroResultProps {
+  submitted: boolean;
+  open: boolean;
+  setOpen: (v: boolean) => void;
+  score: FibroScore;
+  wpiChecked: boolean[];
+  sssCore: (number | null)[];
+  sssSomatic: (number | null)[];
+  durationMet: boolean | null;
+  nrs: number | null;
+  TriggerComponent: any;
+  Content: any;
+  ContentComponent: any;
+  HeaderComponent: any;
+  TitleComponent: any;
+  DescriptionComponent: any;
+  FooterComponent: any;
+  CloseComponent: any;
+}
+
+function FibroResult(props: FibroResultProps) {
+  const {
+    submitted,
+    open,
+    setOpen,
+    score,
+    Content,
+    HeaderComponent,
+    TitleComponent,
+    DescriptionComponent,
+    FooterComponent,
+    CloseComponent,
+  } = props;
+
+  if (!submitted) return null;
+
+  const heroBorder =
+    score.fs <= 12
+      ? "border-green-400"
+      : score.fs <= 20
+      ? "border-amber-400"
+      : "border-red-400";
+
+  const nhiCallout = (() => {
+    if (score.meetsNhi) {
+      return {
+        tone: "bg-green-50 border-green-300 text-green-900",
+        title: "符合健保量表門檻",
+        body: `本量表結果符合健保 pregabalin / duloxetine 給付申請之量表門檻（診斷準則成立且 NRS ${score.nrs} ≥ 6）。實際給付仍需醫師臨床判斷。`,
+      };
+    }
+    if (score.meetsDx) {
+      return {
+        tone: "bg-amber-50 border-amber-300 text-amber-900",
+        title: "符合診斷準則，但 NRS 未達健保門檻",
+        body: `符合 ACR 2016 診斷準則，但 NRS (${score.nrs}) 未達健保給付門檻 (需 ≥ 6)。`,
+      };
+    }
+    return {
+      tone: "bg-gray-50 border-gray-300 text-gray-900",
+      title: "未完全符合 ACR 2016 診斷準則",
+      body: `尚未成立的準則：${score.failedCriteria.join("、")}。`,
+    };
+  })();
+
+  const wpiItems: AnswerDetailItem[] = WPI_PARTS.map((p, i) => ({
+    question: `${REGION_LABELS[p.region]} — ${p.label}`,
+    answerLabel: props.wpiChecked[i] ? "有疼痛" : "無",
+    score: props.wpiChecked[i] ? 1 : 0,
+  }));
+
+  const sssCoreItems: AnswerDetailItem[] = SSS_CORE_ITEMS.map((q, i) => ({
+    question: q,
+    answerLabel:
+      props.sssCore[i] !== null
+        ? `${props.sssCore[i]} — ${SSS_CORE_LABELS[props.sssCore[i] as number]}`
+        : "未作答",
+    score: props.sssCore[i] ?? "-",
+  }));
+
+  const sssSomaticItems: AnswerDetailItem[] = SSS_SOMATIC_ITEMS.map((q, i) => ({
+    question: `${q}（過去 6 個月內）`,
+    answerLabel:
+      props.sssSomatic[i] !== null
+        ? SSS_SOMATIC_LABELS[props.sssSomatic[i] as number]
+        : "未作答",
+    score: props.sssSomatic[i] ?? "-",
+  }));
+
+  const nrsItem: AnswerDetailItem[] = [
+    {
+      question: "過去 1 週平均疼痛強度 (NRS)",
+      answerLabel: `${props.nrs ?? "-"} / 10`,
+      score: props.nrs ?? "-",
+    },
+  ];
+
+  const durationItem: AnswerDetailItem[] = [
+    {
+      question: "症狀是否持續 3 個月以上且強度相似",
+      answerLabel:
+        props.durationMet === true
+          ? "是"
+          : props.durationMet === false
+          ? "否"
+          : "未作答",
+    },
+  ];
+
+  const sssCoreTotal = sssCoreItems.reduce(
+    (s, it) => s + (typeof it.score === "number" ? it.score : 0),
+    0,
+  );
+  const sssSomaticTotal = sssSomaticItems.reduce(
+    (s, it) => s + (typeof it.score === "number" ? it.score : 0),
+    0,
+  );
+
   return (
-    <div className="mt-8 p-4 bg-gray-100 rounded">
-      <p>結果 UI 建置中…FS = {props.score.fs}</p>
-    </div>
+    <Content open={open} onOpenChange={setOpen}>
+      <div data-print-root>
+        <HeaderComponent>
+          <TitleComponent>纖維肌痛症 (ACR 2016) 結果</TitleComponent>
+          <DescriptionComponent>FS = WPI + SSS，範圍 0–31</DescriptionComponent>
+        </HeaderComponent>
+
+        {/* Print-only clinic header */}
+        <div className="print-header hidden print:block mb-6">
+          <h1 className="text-lg font-bold">台中文心樂丞、理解身心診所</h1>
+          <p className="text-sm">纖維肌痛症 (ACR 2016 WPI+SSS) 結果</p>
+          <p className="text-xs text-gray-600">
+            作答日期：{new Date().toLocaleDateString("zh-TW")}
+          </p>
+          <span className="print-section-label">病患基本資料</span>
+          <div className="text-xs leading-7">
+            <p>姓名：_______________ 病歷號：_______________</p>
+          </div>
+          <span className="print-section-label">量表結果</span>
+        </div>
+
+        <div className="space-y-4 p-2 sm:p-4">
+          {/* Hero card */}
+          <div className={`border-4 ${heroBorder} rounded-lg p-4 text-center`}>
+            <p className="text-sm text-gray-600">纖維肌痛分數 (FS)</p>
+            <p className="text-4xl font-bold">
+              {score.fs}
+              <span className="text-lg font-normal text-gray-500"> / 31</span>
+            </p>
+            <p className="mt-2 font-semibold">
+              {score.meetsDx
+                ? "符合 ACR 2016 纖維肌痛症診斷準則"
+                : "不符合 ACR 2016 纖維肌痛症診斷準則"}
+            </p>
+            {!score.meetsDx && score.failedCriteria.length > 0 && (
+              <p className="text-xs text-gray-600 mt-1">
+                尚未成立：{score.failedCriteria.join("、")}
+              </p>
+            )}
+          </div>
+
+          {/* NHI callout */}
+          <div className={`border ${nhiCallout.tone} rounded-lg p-4`}>
+            <p className="font-semibold">{nhiCallout.title}</p>
+            <p className="text-sm mt-1">{nhiCallout.body}</p>
+          </div>
+
+          {/* Sub-metrics */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+            {[
+              { label: "WPI", value: `${score.wpi} / 19` },
+              { label: "SSS", value: `${score.sss} / 12` },
+              { label: "NRS", value: `${score.nrs} / 10` },
+              { label: "疼痛區域數", value: `${score.regionsWithPain} / 5` },
+            ].map((m) => (
+              <div
+                key={m.label}
+                className="border border-gray-200 rounded p-2 text-center"
+              >
+                <p className="text-xs text-gray-600">{m.label}</p>
+                <p className="font-bold">{m.value}</p>
+              </div>
+            ))}
+          </div>
+
+          <p className="text-xs text-gray-600">
+            本結果僅供臨床參考，不構成診斷。最終診斷請由專科醫師判斷。
+          </p>
+
+          {/* Answer details */}
+          <span className="print-section-label">各題作答明細</span>
+          <AnswerDetailList
+            items={wpiItems}
+            title="WPI 疼痛部位明細"
+            totalLabel={`勾選 ${score.wpi} 項`}
+          />
+          <AnswerDetailList
+            items={sssCoreItems}
+            title="SSS 核心症狀 (過去 1 週)"
+            totalLabel={`小計 ${sssCoreTotal} 分`}
+          />
+          <AnswerDetailList
+            items={sssSomaticItems}
+            title="SSS 身體症狀 (過去 6 個月)"
+            totalLabel={`小計 ${sssSomaticTotal} 分`}
+          />
+          <AnswerDetailList items={durationItem} title="症狀持續時間" />
+          <AnswerDetailList items={nrsItem} title="疼痛強度 (NRS)" />
+
+          <FooterComponent>
+            <div className="flex flex-wrap gap-2 print:hidden">
+              <PrintButton />
+              <ShareButton
+                title="纖維肌痛症 (ACR 2016) 評估結果"
+                text={`FS ${score.fs}/31，WPI ${score.wpi}，SSS ${score.sss}，NRS ${score.nrs}`}
+              />
+              <CloseComponent>關閉</CloseComponent>
+            </div>
+          </FooterComponent>
+
+          {/* Print-only footer */}
+          <div className="print-footer hidden print:block">
+            <strong>台中文心樂丞、理解身心診所</strong> · 陳璿丞醫師
+            <br />
+            報告由 surveymind.tw 產生 · anatomind.com · anxiety.com.tw
+            <br />
+            本結果僅供臨床參考，不構成診斷。最終診斷請由專科醫師判斷。
+          </div>
+        </div>
+      </div>
+    </Content>
   );
 }
