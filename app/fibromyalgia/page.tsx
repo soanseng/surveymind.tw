@@ -17,7 +17,6 @@ import {
   SSS_SOMATIC_ITEMS,
   computeScore,
   type FibroScore,
-  type RegionKey,
 } from "./logic";
 
 export default function FibromyalgiaPage() {
@@ -75,32 +74,6 @@ export default function FibromyalgiaPage() {
     setOpen(true);
   };
 
-  const RegionGroup = ({ region }: { region: RegionKey }) => (
-    <fieldset className="border border-gray-200 rounded-lg p-4 mb-4">
-      <legend className="text-sm font-semibold px-2">
-        {REGION_LABELS[region]}
-      </legend>
-      <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-        {WPI_PARTS.map((p, idx) =>
-          p.region === region ? (
-            <label
-              key={idx}
-              className="flex items-center gap-2 p-2 rounded hover:bg-gray-50 cursor-pointer text-sm"
-            >
-              <input
-                type="checkbox"
-                checked={wpiChecked[idx]}
-                onChange={() => toggleWpi(idx)}
-                className="h-4 w-4"
-              />
-              <span>{p.label}</span>
-            </label>
-          ) : null,
-        )}
-      </div>
-    </fieldset>
-  );
-
   return (
     <div className="container mx-auto px-4">
       <SEOHead config={questionnaireSEO["fibromyalgia"]} path="/fibromyalgia" />
@@ -132,11 +105,34 @@ export default function FibromyalgiaPage() {
             <p className="text-sm text-gray-600 mb-4">
               請勾選過去 <strong>1 週內</strong>有疼痛的部位（可複選，共 19 部位）。
             </p>
-            <RegionGroup region="LU" />
-            <RegionGroup region="RU" />
-            <RegionGroup region="LL" />
-            <RegionGroup region="RL" />
-            <RegionGroup region="AX" />
+            {(["LU", "RU", "LL", "RL", "AX"] as const).map((region) => (
+              <fieldset
+                key={region}
+                className="border border-gray-200 rounded-lg p-4 mb-4"
+              >
+                <legend className="text-sm font-semibold px-2">
+                  {REGION_LABELS[region]}
+                </legend>
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                  {WPI_PARTS.map((p, idx) =>
+                    p.region === region ? (
+                      <label
+                        key={idx}
+                        className="flex items-center gap-2 p-2 rounded hover:bg-gray-50 cursor-pointer text-sm"
+                      >
+                        <input
+                          type="checkbox"
+                          checked={wpiChecked[idx]}
+                          onChange={() => toggleWpi(idx)}
+                          className="h-4 w-4"
+                        />
+                        <span>{p.label}</span>
+                      </label>
+                    ) : null,
+                  )}
+                </div>
+              </fieldset>
+            ))}
             <p className="text-sm text-gray-700">
               已勾選：<strong>{score.wpi}</strong> / 19 部位，疼痛區域數：
               <strong>{score.regionsWithPain}</strong> / 5。
