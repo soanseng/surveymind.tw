@@ -184,3 +184,96 @@
     transform: translateY(0);
   }
 }
+
+/* =============================
+   Print stylesheet — 下載 PDF 給醫師
+   Used by /fibromyalgia and /midas result surfaces.
+   ============================= */
+@media print {
+  /* Hide app chrome and any element marked print:hidden */
+  header,
+  footer,
+  nav,
+  .print\:hidden {
+    display: none !important;
+  }
+
+  /* Radix Dialog + vaul Drawer portal content into document.body.
+     Neutralize their overlays and fixed positioning so result content
+     flows as a normal A4 document. */
+  [data-radix-portal],
+  [data-radix-dialog-portal],
+  [vaul-drawer-wrapper] {
+    all: unset !important;
+    display: contents !important;
+  }
+
+  [data-radix-dialog-overlay],
+  [vaul-overlay],
+  [data-vaul-overlay] {
+    display: none !important;
+  }
+
+  [data-print-root],
+  [data-radix-dialog-content],
+  [vaul-drawer] {
+    all: unset !important;
+    display: block !important;
+    position: static !important;
+    max-height: none !important;
+    max-width: none !important;
+    width: 100% !important;
+    height: auto !important;
+    overflow: visible !important;
+    box-shadow: none !important;
+    border: none !important;
+    background: white !important;
+    transform: none !important;
+    inset: auto !important;
+  }
+
+  @page {
+    size: A4;
+    margin: 15mm;
+  }
+
+  body {
+    background: white !important;
+    color: black !important;
+    font-size: 11pt;
+  }
+
+  /* Each answer item stays together on one page */
+  .answer-detail-item {
+    break-inside: avoid;
+  }
+
+  /* Always expand AnswerDetailList in print (override closed state) */
+  .answer-detail-print-expand {
+    display: block !important;
+  }
+
+  /* Print-only header/footer blocks (hidden on screen) */
+  .print-header {
+    display: block !important;
+  }
+  .print-footer {
+    display: block !important;
+    font-size: 9pt;
+    color: #555;
+    margin-top: 20mm;
+    border-top: 1px solid #ccc;
+    padding-top: 4mm;
+  }
+
+  /* Visual section dividers for doctor parseability */
+  .print-section-label {
+    display: block !important;
+    font-weight: bold;
+    font-size: 10pt;
+    border-bottom: 1px solid #999;
+    margin-top: 8mm;
+    margin-bottom: 3mm;
+    padding-bottom: 1mm;
+  }
+}

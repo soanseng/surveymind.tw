@@ -45,7 +45,7 @@ export default function AnswerDetailList({
           {items.map((item, idx) => (
             <div
               key={idx}
-              className="py-3 flex flex-col sm:flex-row sm:items-start gap-1 sm:gap-3"
+              className="answer-detail-item py-3 flex flex-col sm:flex-row sm:items-start gap-1 sm:gap-3"
             >
               <div className="flex-1 text-gray-900 text-sm sm:text-base leading-relaxed">
                 <span className="inline-block w-7 sm:w-8 shrink-0 text-gray-500 font-medium">
