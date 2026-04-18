@@ -4,6 +4,7 @@ import SEOHead from '@/components/SEOHead';
 import { questionnaireSEO } from '@/lib/seo-config';
 import { useResponsiveDialog } from '@/hooks/useResponsiveDialog';
 import ShareButton from '@/components/ShareButton';
+import AnatomeePromo from '@/components/AnatomeePromo';
 
 const questions = [
   "您是否曾相當努力地避免真實的或想像中的被拋棄？(這不包括自殺或自傷行為)",
@@ -87,7 +88,9 @@ const Page = () => {
       
       <div className="max-w-4xl mx-auto py-8">
         <h1 className="text-3xl font-bold text-center mb-6">麥克連邊緣性人格障礙症篩檢量表 (MSI-BPD)</h1>
-        
+
+        <AnatomeePromo variant="before" />
+
         <div className="bg-blue-50 p-6 rounded-lg mb-8">
           <h2 className="text-lg font-semibold mb-4">使用說明</h2>
           <p className="mb-3">
@@ -242,8 +245,10 @@ const Page = () => {
                   </ul>
                 </div>
 
+                <AnatomeePromo variant="after" />
+
                 <div className="pt-4">
-                  <ShareButton 
+                  <ShareButton
                     title="麥克連邊緣性人格障礙症篩檢量表 (MSI-BPD)"
                     text={`我的得分是${score}分，結果為：${getSeverity(score || 0)}`}
                     url={typeof window !== 'undefined' ? window.location.href : ''}

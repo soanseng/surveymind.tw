@@ -6,6 +6,7 @@ import useQuestionnaireForm from '@/hooks/useQuestionnaireForm';
 import Pagination from '@/hooks/Pagination';
 import { ScrollArea } from '@radix-ui/react-scroll-area';
 import ShareButton from '@/components/ShareButton';
+import AnatomeePromo from '@/components/AnatomeePromo';
 import { useResponsiveDialog } from '@/hooks/useResponsiveDialog';
 
 const questions = [
@@ -257,7 +258,9 @@ const Page = () => {
       
       <div className="max-w-4xl mx-auto py-8">
         <h1 className="text-3xl font-bold text-center mb-6">大五人格量表 (BFI)</h1>
-        
+
+        <AnatomeePromo variant="before" />
+
         <div className="bg-indigo-50 p-6 rounded-lg mb-8">
           <h2 className="text-lg font-semibold mb-4">使用說明</h2>
           <p className="mb-3">
@@ -450,8 +453,10 @@ const Page = () => {
                 </p>
               </div>
               
+              <AnatomeePromo variant="after" />
+
               <div className="pt-2">
-                <ShareButton 
+                <ShareButton
                   title="大五人格測驗"
                   text={score ? `我的大五人格結果：外向性 ${score.extraversion}、友善性 ${score.agreeableness}、嚴謹性 ${score.conscientiousness}、神經質 ${score.neuroticism}、開放性 ${score.openness}` : ''}
                   url={typeof window !== 'undefined' ? window.location.href : ''}
