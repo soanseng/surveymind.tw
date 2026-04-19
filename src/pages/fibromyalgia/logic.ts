@@ -9,6 +9,15 @@ export interface WpiPart {
   region: RegionKey;
 }
 
+export type BodyMapView = "front" | "back";
+
+export interface BodyMapHotspot {
+  partIndex: number;
+  view: BodyMapView;
+  x: number;
+  y: number;
+}
+
 export const WPI_PARTS: WpiPart[] = [
   // 左上區 (LU)
   { label: "左下顎", region: "LU" },
@@ -43,6 +52,28 @@ export const REGION_LABELS: Record<RegionKey, string> = {
   RL: "右下區",
   AX: "中軸區 (含胸腹背)",
 };
+
+export const WPI_BODY_MAP_HOTSPOTS: BodyMapHotspot[] = [
+  { partIndex: 0, view: "front", x: 36, y: 14 },
+  { partIndex: 1, view: "front", x: 39, y: 20 },
+  { partIndex: 2, view: "front", x: 32, y: 27 },
+  { partIndex: 3, view: "front", x: 26, y: 39 },
+  { partIndex: 4, view: "front", x: 22, y: 56 },
+  { partIndex: 5, view: "front", x: 64, y: 14 },
+  { partIndex: 6, view: "front", x: 61, y: 20 },
+  { partIndex: 7, view: "front", x: 68, y: 27 },
+  { partIndex: 8, view: "front", x: 74, y: 39 },
+  { partIndex: 9, view: "front", x: 78, y: 56 },
+  { partIndex: 10, view: "back", x: 38, y: 61 },
+  { partIndex: 11, view: "front", x: 39, y: 76 },
+  { partIndex: 12, view: "front", x: 39, y: 92 },
+  { partIndex: 13, view: "back", x: 62, y: 61 },
+  { partIndex: 14, view: "front", x: 61, y: 76 },
+  { partIndex: 15, view: "front", x: 61, y: 92 },
+  { partIndex: 16, view: "back", x: 50, y: 29 },
+  { partIndex: 17, view: "back", x: 50, y: 49 },
+  { partIndex: 18, view: "front", x: 50, y: 40 },
+];
 
 export const SSS_CORE_LABELS = ["無", "輕度", "中度", "重度"] as const;
 export const SSS_CORE_ITEMS = [

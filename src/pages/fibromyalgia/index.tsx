@@ -5,9 +5,9 @@ import SEOHead from "@/components/SEOHead";
 import { questionnaireSEO } from "@/lib/seo-config";
 import { useResponsiveDialog } from "@/hooks/useResponsiveDialog";
 import ShareButton from "@/components/ShareButton";
-import PrintButton from "@/components/PrintButton";
 import AnswerDetailList, { AnswerDetailItem } from "@/components/AnswerDetailList";
 import { Button } from "@/components/ui/button";
+import FibroBodyMap from "./body-map";
 import {
   WPI_PARTS,
   REGION_LABELS,
@@ -105,34 +105,7 @@ export default function FibromyalgiaPage() {
             <p className="text-sm text-gray-600 mb-4">
               請勾選過去 <strong>1 週內</strong>有疼痛的部位（可複選，共 19 部位）。
             </p>
-            {(["LU", "RU", "LL", "RL", "AX"] as const).map((region) => (
-              <fieldset
-                key={region}
-                className="border border-gray-200 rounded-lg p-4 mb-4"
-              >
-                <legend className="text-sm font-semibold px-2">
-                  {REGION_LABELS[region]}
-                </legend>
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                  {WPI_PARTS.map((p, idx) =>
-                    p.region === region ? (
-                      <label
-                        key={idx}
-                        className="flex items-center gap-2 p-2 rounded hover:bg-gray-50 cursor-pointer text-sm"
-                      >
-                        <input
-                          type="checkbox"
-                          checked={wpiChecked[idx]}
-                          onChange={() => toggleWpi(idx)}
-                          className="h-4 w-4"
-                        />
-                        <span>{p.label}</span>
-                      </label>
-                    ) : null,
-                  )}
-                </div>
-              </fieldset>
-            ))}
+            <FibroBodyMap selected={wpiChecked} onToggle={toggleWpi} />
             <p className="text-sm text-gray-700">
               已勾選：<strong>{score.wpi}</strong> / 19 部位，疼痛區域數：
               <strong>{score.regionsWithPain}</strong> / 5。
@@ -520,7 +493,6 @@ function FibroResult(props: FibroResultProps) {
 
           <FooterComponent>
             <div className="flex flex-wrap gap-2 print:hidden">
-              <PrintButton />
               <ShareButton
                 title="纖維肌痛症 (ACR 2016) 評估結果"
                 text={`FS ${score.fs}/31，WPI ${score.wpi}，SSS ${score.sss}，NRS ${score.nrs}`}

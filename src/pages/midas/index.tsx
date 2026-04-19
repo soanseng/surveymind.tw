@@ -5,7 +5,6 @@ import SEOHead from "@/components/SEOHead";
 import { questionnaireSEO } from "@/lib/seo-config";
 import { useResponsiveDialog } from "@/hooks/useResponsiveDialog";
 import ShareButton from "@/components/ShareButton";
-import PrintButton from "@/components/PrintButton";
 import AnswerDetailList, { AnswerDetailItem } from "@/components/AnswerDetailList";
 import { Button } from "@/components/ui/button";
 
@@ -206,7 +205,6 @@ export default function MidasPage() {
         {submitted && (
           <Content open={open} onOpenChange={setOpen}>
             <ContentComponent
-              data-print-root
               className="sm:max-w-[640px] max-h-[90vh] overflow-y-auto"
             >
               <HeaderComponent>
@@ -279,7 +277,6 @@ export default function MidasPage() {
 
                 <FooterComponent>
                   <div className="flex flex-wrap gap-2 print:hidden">
-                    <PrintButton />
                     <ShareButton
                       title="MIDAS 偏頭痛失能評估結果"
                       text={`MIDAS ${total} 分 (Grade ${gradeInfo.grade} ${gradeInfo.label})，頭痛 ${headacheDays ?? "-"} 天，NRS ${nrs ?? "-"}/10`}

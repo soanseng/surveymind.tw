@@ -8,6 +8,7 @@ import { ScrollArea } from '@radix-ui/react-scroll-area';
 import ShareButton from '@/components/ShareButton';
 import AnatomeePromo from '@/components/AnatomeePromo';
 import { useResponsiveDialog } from '@/hooks/useResponsiveDialog';
+import { BIG_FIVE_DIMENSIONS, computeBigFiveScore } from './scoring';
 
 const questions = [
   "健談的",
@@ -56,13 +57,7 @@ const questions = [
   "懂得藝術、音樂和文學"
 ];
 
-type ScoreType = {
-  extraversion: number;
-  agreeableness: number;
-  conscientiousness: number;
-  neuroticism: number;
-  openness: number;
-};
+type ScoreType = ReturnType<typeof computeBigFiveScore>;
 
 const dimensionNames = {
   extraversion: "🌟 外向性 vs. 🌌 內向性",
@@ -94,8 +89,7 @@ const dimensionDescriptions = {
 `
 };
 
-
-const reverseScoredItems = [5, 20, 30, 1, 11, 26, 36, 7, 17, 22, 42, 8, 23, 33, 34, 40]
+const reverseScoredItems = [5, 20, 30, 1, 11, 26, 36, 7, 17, 22, 42, 8, 23, 33, 34, 40];
 
 const questionsPerPage = 10;
 
@@ -118,35 +112,11 @@ const Page = () => {
   const { open, setOpen, TriggerComponent, Content, ContentComponent, HeaderComponent, TitleComponent, DescriptionComponent, FooterComponent, CloseComponent } = useResponsiveDialog();
 
 
-    const dimensions = {
-      extraversion: [0, 5, 10, 15, 20, 25, 30, 35],
-      agreeableness: [1, 6, 11, 16, 21, 26, 31, 36, 41],
-      conscientiousness: [2, 7, 12, 17, 22, 27, 32, 37, 42],
-      neuroticism: [3, 8, 13, 18, 23, 28, 33, 38],
-      openness: [4, 9, 14, 19, 24, 29, 34, 39, 40, 43],
-    };
-
   useEffect(() => {
     if (formSubmitted) {
-
-    let newScores = {
-      extraversion: 0,
-      agreeableness: 0,
-      conscientiousness: 0,
-      neuroticism: 0,
-      openness: 0,
-    };
-
-    Object.entries(dimensions).forEach(([dimension, indexes]) => {
-      indexes.forEach((index: number) => {
-        newScores[dimension as keyof typeof newScores] += parseInt(
-          answers[index] || "0", 10);
-      });
-    });
-
-      setScore(newScores);
+      setScore(computeBigFiveScore(answers));
     }
-  }, [formSubmitted, answers]);
+  }, [formSubmitted, answers, setScore]);
 
   //calculate the range of questions to display
   const startIndex = currentPage * questionsPerPage;
@@ -209,7 +179,7 @@ const Page = () => {
   }
   let dimensionSummaries: string[] = [];
   const dimensionResults = Object.entries(score || {}).map(([dimension, scoreValue]) => {
-    const dimensionIndexes = dimensions[dimension as keyof typeof dimensions];
+    const dimensionIndexes = BIG_FIVE_DIMENSIONS[dimension as keyof typeof BIG_FIVE_DIMENSIONS];
     const maxScore = dimensionIndexes.length * 5; // Calculate max score based on number of questions per dimension
     const isHigher = scoreValue > maxScore / 2;
     const description = dimensionDescriptions[dimension as keyof typeof dimensionDescriptions];

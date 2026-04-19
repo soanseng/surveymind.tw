@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { printElement } from "@/lib/print";
 
 interface PrintButtonProps {
   label?: string;
@@ -13,6 +14,16 @@ export default function PrintButton({
 }: PrintButtonProps) {
   const handlePrint = () => {
     if (typeof window !== "undefined") {
+      const container =
+        document.activeElement instanceof HTMLElement
+          ? document.activeElement.closest<HTMLElement>("[data-print-root]")
+          : null;
+
+      if (container) {
+        printElement(container);
+        return;
+      }
+
       window.print();
     }
   };

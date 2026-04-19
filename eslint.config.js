@@ -8,8 +8,17 @@ export default tseslint.config(
   {
     ignores: [
       "dist",
+      "dist/**",
       ".next",
+      ".next/**",
       "out",
+      "out/**",
+      ".worktrees",
+      ".worktrees/**",
+      ".playwright-mcp",
+      ".playwright-mcp/**",
+      ".vite-react-ssg-temp",
+      ".vite-react-ssg-temp/**",
       "node_modules",
       "app",
       "components",

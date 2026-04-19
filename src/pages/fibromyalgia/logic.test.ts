@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { computeScore } from "./logic";
+import { computeScore, WPI_BODY_MAP_HOTSPOTS, WPI_PARTS } from "./logic";
 
 describe("computeScore", () => {
   it("meets diagnostic and NHI criteria at the documented 7/5 threshold", () => {
@@ -46,5 +46,13 @@ describe("computeScore", () => {
     expect(result.generalizedPain).toBe(false);
     expect(result.meetsDx).toBe(false);
     expect(result.failedCriteria).toContain("泛發性疼痛 (≥4/5 區)");
+  });
+
+  it("covers every WPI body part exactly once in the SVG body map", () => {
+    const indices = WPI_BODY_MAP_HOTSPOTS.map((spot) => spot.partIndex).sort(
+      (a, b) => a - b,
+    );
+
+    expect(indices).toEqual(WPI_PARTS.map((_, index) => index));
   });
 });

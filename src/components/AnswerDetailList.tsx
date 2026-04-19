@@ -40,8 +40,9 @@ export default function AnswerDetailList({
         </span>
         <span className="text-gray-500 text-sm shrink-0">{open ? "收合 ▲" : "展開 ▼"}</span>
       </button>
-      {open && (
-        <div className="px-3 pb-3 sm:px-4 divide-y divide-gray-100">
+      <div
+        className={`answer-detail-print-expand px-3 pb-3 sm:px-4 divide-y divide-gray-100 ${open ? "block" : "hidden"}`}
+      >
           {items.map((item, idx) => (
             <div
               key={idx}
@@ -72,8 +73,7 @@ export default function AnswerDetailList({
               </div>
             </div>
           ))}
-        </div>
-      )}
+      </div>
     </div>
   );
 }

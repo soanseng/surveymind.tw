@@ -52,3 +52,4 @@ README.org
 .claude/
 # git worktrees
 .worktrees/
+.gstack/
