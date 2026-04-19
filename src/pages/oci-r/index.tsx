@@ -1,10 +1,11 @@
 "use client"
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import SEOHead from '@/components/SEOHead';
 import { questionnaireSEO } from '@/lib/seo-config';
 import useQuestionnaireForm from '@/hooks/useQuestionnaireForm';
 import { useResponsiveDialog } from '@/hooks/useResponsiveDialog';
 import ShareButton from '@/components/ShareButton';
+import CopyResultButton from '@/components/CopyResultButton';
 import AnswerDetailList, { AnswerDetailItem } from '@/components/AnswerDetailList';
 
 const optionLabels = ["完全沒有", "有一點", "中度", "相當", "極度"];
@@ -139,6 +140,22 @@ const Page = () => {
   };
 
   const dimensionScores = calculateDimensionScores();
+
+  const detailItems = useMemo<AnswerDetailItem[]>(
+    () =>
+      questions.map((q, i) => {
+        const v = answers[i];
+        const n = v !== null && v !== '' ? parseInt(v, 10) : null;
+        const dimKey = (Object.entries(dimensions).find(([, idxs]) => idxs.includes(i))?.[0]) as keyof typeof dimensionNames | undefined;
+        return {
+          question: q,
+          answerLabel: n !== null ? optionLabels[n] : '未作答',
+          score: n ?? 0,
+          note: dimKey ? `向度：${dimensionNames[dimKey]}` : undefined,
+        };
+      }),
+    [answers],
+  );
 
   return (
     <div className="container mx-auto px-4">
@@ -276,17 +293,7 @@ const Page = () => {
                 </div>
 
                 <AnswerDetailList
-                  items={questions.map<AnswerDetailItem>((q, i) => {
-                    const v = answers[i];
-                    const n = v !== null && v !== '' ? parseInt(v, 10) : null;
-                    const dimKey = (Object.entries(dimensions).find(([, idxs]) => idxs.includes(i))?.[0]) as keyof typeof dimensionNames | undefined;
-                    return {
-                      question: q,
-                      answerLabel: n !== null ? optionLabels[n] : '未作答',
-                      score: n ?? 0,
-                      note: dimKey ? `向度：${dimensionNames[dimKey]}` : undefined,
-                    };
-                  })}
+                  items={detailItems}
                   totalLabel={`總分 ${score ?? 0} / 72`}
                 />
 
@@ -317,9 +324,30 @@ const Page = () => {
             </div>
 
             <FooterComponent>
-              <CloseComponent className="w-full bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium py-2 px-4 rounded">
-                關閉
-              </CloseComponent>
+              <div className="flex flex-wrap gap-2">
+                <CopyResultButton
+                  title="OCI-R 強迫症狀量表結果"
+                  summary={[
+                    `總分：${score ?? 0} / 72`,
+                    `判讀：${getSeverity(score)}`,
+                    `囤積：${dimensionScores.hoarding} / 12`,
+                    `強迫思考：${dimensionScores.obsessing} / 12`,
+                    `排序/對稱：${dimensionScores.ordering} / 12`,
+                    `檢查：${dimensionScores.checking} / 12`,
+                    `抵銷/中和：${dimensionScores.neutralizing} / 12`,
+                    `清洗：${dimensionScores.washing} / 12`,
+                    getInterpretation(score),
+                  ]
+                    .filter(Boolean)
+                    .join('\n')}
+                  groups={[
+                    { title: '各題作答明細', items: detailItems, totalLabel: `總分 ${score ?? 0} / 72` },
+                  ]}
+                />
+                <CloseComponent className="bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium py-2 px-4 rounded">
+                  關閉
+                </CloseComponent>
+              </div>
             </FooterComponent>
           </ContentComponent>
         </Content>

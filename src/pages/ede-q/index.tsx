@@ -1,9 +1,10 @@
 "use client";
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import SEOHead from '@/components/SEOHead';
 import { questionnaireSEO } from '@/lib/seo-config';
 import { useResponsiveDialog } from '@/hooks/useResponsiveDialog';
 import ShareButton from '@/components/ShareButton';
+import CopyResultButton from '@/components/CopyResultButton';
 import AnswerDetailList, { AnswerDetailItem } from '@/components/AnswerDetailList';
 
 // EDE-Q Questions with their types and Chinese translations
@@ -46,48 +47,48 @@ const subscales = {
   weightConcern: [8, 12, 22, 24, 25]
 };
 
+const getScaleOptions = (type: string) => {
+  switch (type) {
+    case 'days':
+      return [
+        { value: 0, label: '沒有一天' },
+        { value: 1, label: '1-5天' },
+        { value: 2, label: '6-12天' },
+        { value: 3, label: '13-15天' },
+        { value: 4, label: '16-22天' },
+        { value: 5, label: '23-27天' },
+        { value: 6, label: '每一天' }
+      ];
+    case 'proportion':
+      return [
+        { value: 0, label: '沒有一次' },
+        { value: 1, label: '很少次' },
+        { value: 2, label: '少於一半' },
+        { value: 3, label: '一半次數' },
+        { value: 4, label: '超過一半' },
+        { value: 5, label: '大多數時候' },
+        { value: 6, label: '每一次' }
+      ];
+    case 'severity':
+      return [
+        { value: 0, label: '完全沒有' },
+        { value: 1, label: '輕微' },
+        { value: 2, label: '中等' },
+        { value: 3, label: '中等' },
+        { value: 4, label: '顯著' },
+        { value: 5, label: '顯著' },
+        { value: 6, label: '極度' }
+      ];
+    default:
+      return [];
+  }
+};
+
 const Page = () => {
   const [answers, setAnswers] = useState<Record<number, number>>({});
   const [scores, setScores] = useState<any>(null);
   const [validationMessage, setValidationMessage] = useState('');
   const { open, setOpen, Content, ContentComponent, HeaderComponent, TitleComponent, DescriptionComponent, FooterComponent, CloseComponent } = useResponsiveDialog();
-
-  const getScaleOptions = (type: string) => {
-    switch (type) {
-      case 'days':
-        return [
-          { value: 0, label: '沒有一天' },
-          { value: 1, label: '1-5天' },
-          { value: 2, label: '6-12天' },
-          { value: 3, label: '13-15天' },
-          { value: 4, label: '16-22天' },
-          { value: 5, label: '23-27天' },
-          { value: 6, label: '每一天' }
-        ];
-      case 'proportion':
-        return [
-          { value: 0, label: '沒有一次' },
-          { value: 1, label: '很少次' },
-          { value: 2, label: '少於一半' },
-          { value: 3, label: '一半次數' },
-          { value: 4, label: '超過一半' },
-          { value: 5, label: '大多數時候' },
-          { value: 6, label: '每一次' }
-        ];
-      case 'severity':
-        return [
-          { value: 0, label: '完全沒有' },
-          { value: 1, label: '輕微' },
-          { value: 2, label: '中等' },
-          { value: 3, label: '中等' },
-          { value: 4, label: '顯著' },
-          { value: 5, label: '顯著' },
-          { value: 6, label: '極度' }
-        ];
-      default:
-        return [];
-    }
-  };
 
   const calculateScores = () => {
     const subscaleScores: Record<string, number> = {};
@@ -189,6 +190,28 @@ const Page = () => {
 
   const completedQuestions = Object.keys(answers).length;
   const totalQuestions = questions.length;
+
+  const detailItems = useMemo<AnswerDetailItem[]>(
+    () =>
+      questions.map((q) => {
+        const v = answers[q.id];
+        let label = '未作答';
+        if (v !== undefined) {
+          if (q.type === 'number') {
+            label = `${v} 次/天`;
+          } else {
+            const opt = getScaleOptions(q.type).find(o => o.value === v);
+            label = opt ? opt.label : String(v);
+          }
+        }
+        return {
+          question: q.chinese,
+          answerLabel: label,
+          score: v ?? 0,
+        };
+      }),
+    [answers],
+  );
 
   return (
     <div className="container mx-auto px-4">
@@ -355,23 +378,7 @@ const Page = () => {
                 </div>
 
                 <AnswerDetailList
-                  items={questions.map<AnswerDetailItem>((q) => {
-                    const v = answers[q.id];
-                    let label = '未作答';
-                    if (v !== undefined) {
-                      if (q.type === 'number') {
-                        label = `${v} 次/天`;
-                      } else {
-                        const opt = getScaleOptions(q.type).find(o => o.value === v);
-                        label = opt ? opt.label : String(v);
-                      }
-                    }
-                    return {
-                      question: q.chinese,
-                      answerLabel: label,
-                      score: v ?? 0,
-                    };
-                  })}
+                  items={detailItems}
                   totalLabel={`總分 ${scores?.globalScore?.toFixed(2) ?? '0.00'} / 6.0`}
                 />
 
@@ -386,9 +393,33 @@ const Page = () => {
             </div>
 
             <FooterComponent>
-              <CloseComponent className="w-full bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium py-2 px-4 rounded">
-                關閉
-              </CloseComponent>
+              <div className="flex flex-wrap gap-2">
+                <CopyResultButton
+                  title="EDE-Q 飲食障礙檢查問卷結果"
+                  summary={[
+                    scores ? `總分：${scores.globalScore.toFixed(2)} / 6.0` : '',
+                    scores ? `判讀：${getSeverityCategory(scores.globalScore)}` : '',
+                    scores ? `限制：${scores.restraint.toFixed(2)}` : '',
+                    scores ? `飲食擔憂：${scores.eatingConcern.toFixed(2)}` : '',
+                    scores ? `體型擔憂：${scores.shapeConcern.toFixed(2)}` : '',
+                    scores ? `體重擔憂：${scores.weightConcern.toFixed(2)}` : '',
+                    scores ? `暴食發作次數：${scores.behaviors.bingeEpisodes}` : '',
+                    scores ? `失控暴食天數：${scores.behaviors.bingeDays}` : '',
+                    scores ? `催吐次數：${scores.behaviors.vomiting}` : '',
+                    scores ? `使用瀉藥次數：${scores.behaviors.laxatives}` : '',
+                    scores ? `強迫性運動次數：${scores.behaviors.exercise}` : '',
+                    scores ? getInterpretation(scores) : '',
+                  ]
+                    .filter(Boolean)
+                    .join('\n')}
+                  groups={[
+                    { title: '各題作答明細', items: detailItems, totalLabel: `總分 ${scores?.globalScore?.toFixed(2) ?? '0.00'} / 6.0` },
+                  ]}
+                />
+                <CloseComponent className="bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium py-2 px-4 rounded">
+                  關閉
+                </CloseComponent>
+              </div>
             </FooterComponent>
           </ContentComponent>
         </Content>

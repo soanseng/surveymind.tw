@@ -1,5 +1,5 @@
 "use client"
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import SEOHead from '@/components/SEOHead';
 import { questionnaireSEO } from '@/lib/seo-config';
 import useQuestionnaireForm from '@/hooks/useQuestionnaireForm';
@@ -7,6 +7,7 @@ import Pagination from '@/hooks/Pagination';
 import { Input } from '@/components/ui/input';
 import { useResponsiveDialog } from '@/hooks/useResponsiveDialog';
 import ShareButton from '@/components/ShareButton';
+import CopyResultButton from '@/components/CopyResultButton';
 import AnswerDetailList, { AnswerDetailItem } from '@/components/AnswerDetailList';
 
 const questions = [
@@ -251,6 +252,43 @@ const customHandleSubmit = (e: React.FormEvent) => {
 
 
   const validationMessage = customValidationMessage || hookValidationMessage;
+
+  const detailItems = useMemo<AnswerDetailItem[]>(
+    () =>
+      questions.reduce<AnswerDetailItem[]>((acc, q, i) => {
+        if (q.id === 5) return acc;
+        const v = answers[i];
+        let label = '未作答';
+        let scoreVal: number | string = '';
+        if (v !== null && v !== '') {
+          if (q.id === 1 || q.id === 3) {
+            label = v;
+            scoreVal = '';
+          } else {
+            const n = parseInt(v, 10);
+            const selMap: Record<string, { value: number; description: string }[]> = {
+              '2': selection2,
+              '4': selection4,
+              '8': selection8,
+              '9': selection9,
+            };
+            const sel = typeof q.id === 'number' && selMap[String(q.id)]
+              ? selMap[String(q.id)]
+              : selectionA;
+            const found = sel.find(o => o.value === n);
+            label = found ? found.description : v;
+            scoreVal = n;
+          }
+        }
+        acc.push({
+          question: `${q.id}. ${q.question}`,
+          answerLabel: label,
+          score: scoreVal,
+        });
+        return acc;
+      }, []),
+    [answers],
+  );
 
   // Overall progress calculation
   const totalAnswered = answers.filter((answer, index) => {
@@ -507,38 +545,7 @@ const customHandleSubmit = (e: React.FormEvent) => {
                   </div>
                   
                   <AnswerDetailList
-                    items={questions.reduce<AnswerDetailItem[]>((acc, q, i) => {
-                      if (q.id === 5) return acc;
-                      const v = answers[i];
-                      let label = '未作答';
-                      let scoreVal: number | string = '';
-                      if (v !== null && v !== '') {
-                        if (q.id === 1 || q.id === 3) {
-                          label = v;
-                          scoreVal = '';
-                        } else {
-                          const n = parseInt(v, 10);
-                          const selMap: Record<string, { value: number; description: string }[]> = {
-                            '2': selection2,
-                            '4': selection4,
-                            '8': selection8,
-                            '9': selection9,
-                          };
-                          const sel = typeof q.id === 'number' && selMap[String(q.id)]
-                            ? selMap[String(q.id)]
-                            : selectionA;
-                          const found = sel.find(o => o.value === n);
-                          label = found ? found.description : v;
-                          scoreVal = n;
-                        }
-                      }
-                      acc.push({
-                        question: `${q.id}. ${q.question}`,
-                        answerLabel: label,
-                        score: scoreVal,
-                      });
-                      return acc;
-                    }, [])}
+                    items={detailItems}
                     totalLabel={`總分 ${scores.globalScore} / 21`}
                   />
 
@@ -573,9 +580,28 @@ const customHandleSubmit = (e: React.FormEvent) => {
             )}
 
             <FooterComponent>
-              <CloseComponent className="w-full bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium py-2 px-4 rounded">
-                關閉
-              </CloseComponent>
+              <div className="flex flex-wrap gap-2">
+                <CopyResultButton
+                  title="PSQI 匹茲堡睡眠品質量表結果"
+                  summary={[
+                    `總分：${scores.globalScore} / 21`,
+                    `判讀：${scores.globalScore <= 5 ? '睡眠品質很好' : scores.globalScore <= 10 ? '睡眠品質一般' : '需要改善睡眠品質'}`,
+                    `主觀睡眠品質：${scores.component1Score} / 3`,
+                    `入睡時間：${scores.component2Score} / 3`,
+                    `睡眠持續時間：${scores.component3Score} / 3`,
+                    `睡眠效率：${scores.component4Score} / 3`,
+                    `睡眠障礙：${scores.component5Score} / 3`,
+                    `使用睡眠藥物：${scores.component6Score} / 3`,
+                    `日間功能障礙：${scores.component7Score} / 3`,
+                  ].join('\n')}
+                  groups={[
+                    { title: '各題作答明細', items: detailItems, totalLabel: `總分 ${scores.globalScore} / 21` },
+                  ]}
+                />
+                <CloseComponent className="bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium py-2 px-4 rounded">
+                  關閉
+                </CloseComponent>
+              </div>
             </FooterComponent>
           </ContentComponent>
         </Content>

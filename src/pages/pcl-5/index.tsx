@@ -1,9 +1,10 @@
 "use client"
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import SEOHead from '@/components/SEOHead';
 import { questionnaireSEO } from '@/lib/seo-config';
 import { useResponsiveDialog } from '@/hooks/useResponsiveDialog';
 import ShareButton from '@/components/ShareButton';
+import CopyResultButton from '@/components/CopyResultButton';
 import AnswerDetailList, { AnswerDetailItem } from '@/components/AnswerDetailList';
 
 const optionLabels = ['完全沒有', '有一點', '中等程度', '相當嚴重', '極度嚴重'];
@@ -138,6 +139,22 @@ const Page = () => {
   };
 
   const provisionalDiagnosis = formSubmitted ? checkProvisionalDiagnosis(answers) : null;
+
+  const detailItems = useMemo<AnswerDetailItem[]>(
+    () =>
+      questions.map((q, i) => {
+        const v = answers[i];
+        const n = v !== null && v !== '' ? parseInt(v, 10) : null;
+        const cluster = i <= 4 ? 'B 闖入' : i <= 6 ? 'C 逃避' : i <= 13 ? 'D 認知情緒' : 'E 警覺反應';
+        return {
+          question: q,
+          answerLabel: n !== null ? optionLabels[n] : '未作答',
+          score: n ?? 0,
+          note: `群集：${cluster}`,
+        };
+      }),
+    [answers],
+  );
 
   return (
     <div className="container mx-auto px-4">
@@ -278,17 +295,7 @@ const Page = () => {
                 </div>
 
                 <AnswerDetailList
-                  items={questions.map<AnswerDetailItem>((q, i) => {
-                    const v = answers[i];
-                    const n = v !== null && v !== '' ? parseInt(v, 10) : null;
-                    const cluster = i <= 4 ? 'B 闖入' : i <= 6 ? 'C 逃避' : i <= 13 ? 'D 認知情緒' : 'E 警覺反應';
-                    return {
-                      question: q,
-                      answerLabel: n !== null ? optionLabels[n] : '未作答',
-                      score: n ?? 0,
-                      note: `群集：${cluster}`,
-                    };
-                  })}
+                  items={detailItems}
                   totalLabel={`總分 ${score ?? 0} / 80`}
                 />
 
@@ -330,9 +337,30 @@ const Page = () => {
             </div>
 
             <FooterComponent>
-              <CloseComponent className="w-full bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium py-2 px-4 rounded">
-                關閉
-              </CloseComponent>
+              <div className="flex flex-wrap gap-2">
+                <CopyResultButton
+                  title="PCL-5 創傷後壓力症候群檢核表結果"
+                  summary={[
+                    `總分：${score ?? 0} / 80`,
+                    `判讀：${getSeverity(score)}`,
+                    provisionalDiagnosis
+                      ? `B 闖入 ${provisionalDiagnosis.clusters.B}/${symptomClusters.B.required}；C 逃避 ${provisionalDiagnosis.clusters.C}/${symptomClusters.C.required}；D 認知情緒 ${provisionalDiagnosis.clusters.D}/${symptomClusters.D.required}；E 警覺反應 ${provisionalDiagnosis.clusters.E}/${symptomClusters.E.required}`
+                      : '',
+                    provisionalDiagnosis
+                      ? `DSM-5 暫定標準：${provisionalDiagnosis.meets ? '符合' : '不符合'}`
+                      : '',
+                    getInterpretation(score),
+                  ]
+                    .filter(Boolean)
+                    .join('\n')}
+                  groups={[
+                    { title: '各題作答明細', items: detailItems, totalLabel: `總分 ${score ?? 0} / 80` },
+                  ]}
+                />
+                <CloseComponent className="bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium py-2 px-4 rounded">
+                  關閉
+                </CloseComponent>
+              </div>
             </FooterComponent>
           </ContentComponent>
         </Content>

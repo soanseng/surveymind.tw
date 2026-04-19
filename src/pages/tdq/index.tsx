@@ -1,9 +1,10 @@
 'use client'
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import useQuestionnaireForm from '@/hooks/useQuestionnaireForm';
 import Pagination from '@/hooks/Pagination';
 import { useResponsiveDialog } from '@/hooks/useResponsiveDialog';
 import ShareButton from '@/components/ShareButton';
+import CopyResultButton from '@/components/CopyResultButton';
 import SEOHead from '@/components/SEOHead';
 import { questionnaireSEO } from '@/lib/seo-config';
 import AnswerDetailList, { AnswerDetailItem } from '@/components/AnswerDetailList';
@@ -142,6 +143,20 @@ const TdqForm: React.FC = () => {
   const { totalScores, message } = calculateScores();
 
   const validationMessage = customValidationMessage || hookValidationMessage;
+
+  const detailItems = useMemo<AnswerDetailItem[]>(
+    () =>
+      questions.map((q, i) => {
+        const v = answers[i];
+        const n = v !== null && v !== '' ? parseInt(v, 10) : null;
+        return {
+          question: q,
+          answerLabel: n !== null ? optionLabels[n] : '未作答',
+          score: n ?? 0,
+        };
+      }),
+    [answers],
+  );
 
   // Overall progress calculation
   const totalAnswered = answers.filter(answer => answer !== null && answer !== '').length;
@@ -305,15 +320,7 @@ const TdqForm: React.FC = () => {
                 </div>
 
                 <AnswerDetailList
-                  items={questions.map<AnswerDetailItem>((q, i) => {
-                    const v = answers[i];
-                    const n = v !== null && v !== '' ? parseInt(v, 10) : null;
-                    return {
-                      question: q,
-                      answerLabel: n !== null ? optionLabels[n] : '未作答',
-                      score: n ?? 0,
-                    };
-                  })}
+                  items={detailItems}
                   totalLabel={`總分 ${totalScores} / 54`}
                 />
 
@@ -339,9 +346,24 @@ const TdqForm: React.FC = () => {
             </div>
 
             <FooterComponent>
-              <CloseComponent className="w-full bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium py-2 px-4 rounded">
-                關閉
-              </CloseComponent>
+              <div className="flex flex-wrap gap-2">
+                <CopyResultButton
+                  title="TDQ 台灣人憂鬱症量表結果"
+                  summary={[
+                    `總分：${totalScores} / 54`,
+                    `判讀：${getSeverity(totalScores)}`,
+                    message,
+                  ]
+                    .filter(Boolean)
+                    .join('\n')}
+                  groups={[
+                    { title: '各題作答明細', items: detailItems, totalLabel: `總分 ${totalScores} / 54` },
+                  ]}
+                />
+                <CloseComponent className="bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium py-2 px-4 rounded">
+                  關閉
+                </CloseComponent>
+              </div>
             </FooterComponent>
           </ContentComponent>
         </Content>

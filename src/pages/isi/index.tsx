@@ -1,10 +1,11 @@
 "use client"
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import SEOHead from '@/components/SEOHead';
 import { questionnaireSEO } from '@/lib/seo-config';
 import useQuestionnaireForm from '@/hooks/useQuestionnaireForm';
 import { useResponsiveDialog } from '@/hooks/useResponsiveDialog';
 import ShareButton from '@/components/ShareButton';
+import CopyResultButton from '@/components/CopyResultButton';
 import AnswerDetailList, { AnswerDetailItem } from '@/components/AnswerDetailList';
 
 const questions = [
@@ -118,6 +119,21 @@ const Page = () => {
     handleSelectChange(index, value);
     setCustomValidationMessage(''); // Clear validation message when user answers
   };
+
+  const detailItems = useMemo<AnswerDetailItem[]>(
+    () =>
+      questions.map((q, i) => {
+        const v = answers[i];
+        const n = v !== null && v !== '' ? parseInt(v, 10) : null;
+        const options = q.options || defaultOptions;
+        return {
+          question: q.text,
+          answerLabel: n !== null ? options[n] : '未作答',
+          score: n ?? 0,
+        };
+      }),
+    [answers],
+  );
 
   return (
     <div className="container mx-auto px-4">
@@ -252,16 +268,7 @@ const Page = () => {
                 </div>
 
                 <AnswerDetailList
-                  items={questions.map<AnswerDetailItem>((q, i) => {
-                    const v = answers[i];
-                    const n = v !== null && v !== '' ? parseInt(v, 10) : null;
-                    const options = q.options || defaultOptions;
-                    return {
-                      question: q.text,
-                      answerLabel: n !== null ? options[n] : '未作答',
-                      score: n ?? 0,
-                    };
-                  })}
+                  items={detailItems}
                   totalLabel={`總分 ${score ?? 0} / 28`}
                 />
 
@@ -286,9 +293,24 @@ const Page = () => {
             </div>
 
             <FooterComponent>
-              <CloseComponent className="w-full bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium py-2 px-4 rounded">
-                關閉
-              </CloseComponent>
+              <div className="flex flex-wrap gap-2">
+                <CopyResultButton
+                  title="ISI 失眠嚴重度量表結果"
+                  summary={[
+                    `總分：${score ?? 0} / 28`,
+                    `判讀：${getSeverity(score)}`,
+                    getInterpretation(score),
+                  ]
+                    .filter(Boolean)
+                    .join('\n')}
+                  groups={[
+                    { title: '各題作答明細', items: detailItems, totalLabel: `總分 ${score ?? 0} / 28` },
+                  ]}
+                />
+                <CloseComponent className="bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium py-2 px-4 rounded">
+                  關閉
+                </CloseComponent>
+              </div>
             </FooterComponent>
           </ContentComponent>
         </Content>

@@ -1,9 +1,10 @@
 "use client"
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import SEOHead from '@/components/SEOHead';
 import { questionnaireSEO } from '@/lib/seo-config';
 import { useResponsiveDialog } from '@/hooks/useResponsiveDialog';
 import ShareButton from '@/components/ShareButton';
+import CopyResultButton from '@/components/CopyResultButton';
 import AnswerDetailList, { AnswerDetailItem } from '@/components/AnswerDetailList';
 
 const screeningQuestions = [
@@ -80,7 +81,7 @@ const Page = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (hasTrauma === null) {
       setValidationMessage('請先回答是否曾經歷創傷事件。');
       return;
@@ -88,19 +89,32 @@ const Page = () => {
 
     if (hasTrauma) {
       const unansweredQuestions = getUnansweredQuestions();
-      
+
       if (unansweredQuestions.length > 0) {
         setValidationMessage(`請回答第 ${unansweredQuestions.join('、')} 題後再提交。`);
         return;
       }
     }
-    
+
     const totalScore = hasTrauma ? calculateScore() : 0;
     setScore(totalScore);
     setFormSubmitted(true);
     setValidationMessage('');
     setOpen(true);
   };
+
+  const detailItems = useMemo<AnswerDetailItem[]>(
+    () =>
+      screeningQuestions.map((q, i) => {
+        const v = answers[i];
+        return {
+          question: q,
+          answerLabel: v === 'yes' ? '是' : v === 'no' ? '否' : '未作答',
+          score: v === 'yes' ? 1 : 0,
+        };
+      }),
+    [answers],
+  );
 
   return (
     <div className="container mx-auto px-4">
@@ -306,14 +320,7 @@ const Page = () => {
 
                 {hasTrauma && (
                   <AnswerDetailList
-                    items={screeningQuestions.map<AnswerDetailItem>((q, i) => {
-                      const v = answers[i];
-                      return {
-                        question: q,
-                        answerLabel: v === 'yes' ? '是' : v === 'no' ? '否' : '未作答',
-                        score: v === 'yes' ? 1 : 0,
-                      };
-                    })}
+                    items={detailItems}
                     totalLabel={`總分 ${score ?? 0} / 5`}
                   />
                 )}
@@ -350,9 +357,27 @@ const Page = () => {
             </div>
 
             <FooterComponent>
-              <CloseComponent className="w-full bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium py-2 px-4 rounded">
-                關閉
-              </CloseComponent>
+              <div className="flex flex-wrap gap-2">
+                <CopyResultButton
+                  title="PC-PTSD-5 初級照護創傷後壓力症篩檢結果"
+                  summary={[
+                    `創傷暴露史：${hasTrauma === true ? '有' : hasTrauma === false ? '否' : '未作答'}`,
+                    hasTrauma ? `總分：${score ?? 0} / 5` : '',
+                    `判讀：${getSeverity(score, hasTrauma)}`,
+                    getInterpretation(score, hasTrauma),
+                  ]
+                    .filter(Boolean)
+                    .join('\n')}
+                  groups={
+                    hasTrauma
+                      ? [{ title: '各題作答明細', items: detailItems, totalLabel: `總分 ${score ?? 0} / 5` }]
+                      : undefined
+                  }
+                />
+                <CloseComponent className="bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium py-2 px-4 rounded">
+                  關閉
+                </CloseComponent>
+              </div>
             </FooterComponent>
           </ContentComponent>
         </Content>

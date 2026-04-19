@@ -1,9 +1,10 @@
 "use client"
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import SEOHead from '@/components/SEOHead';
 import { questionnaireSEO } from '@/lib/seo-config';
 import { useResponsiveDialog } from '@/hooks/useResponsiveDialog';
 import ShareButton from '@/components/ShareButton';
+import CopyResultButton from '@/components/CopyResultButton';
 import AnswerDetailList, { AnswerDetailItem } from '@/components/AnswerDetailList';
 
 const questions = [
@@ -193,25 +194,55 @@ const Page = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (hasHighSchool === null) {
       setValidationMessage('請選擇您的教育程度');
       return;
     }
-    
+
     const unansweredQuestions = getUnansweredQuestions();
-    
+
     if (unansweredQuestions.length > 0) {
       setValidationMessage(`請完成第 ${unansweredQuestions.join('、')} 題後再提交。`);
       return;
     }
-    
+
     const total = calculateTotalScore();
     setTotalScore(total);
     setFormSubmitted(true);
     setValidationMessage('');
     setOpen(true);
   };
+
+  const detailItems = useMemo<AnswerDetailItem[]>(
+    () =>
+      questions.reduce<AnswerDetailItem[]>((acc, q) => {
+        if (q.type === 'fluency') {
+          const picked = q.items.findIndex((_, idx) => scores[`${q.id}-${idx}`] !== undefined && scores[`${q.id}-${idx}`] > 0);
+          const selected = picked >= 0 ? q.items[picked] : null;
+          acc.push({
+            question: `${q.id}. ${q.question}`,
+            answerLabel: selected ? selected.question : '未作答',
+            score: selected ? selected.points : 0,
+          });
+        } else {
+          let gained = 0;
+          let total = 0;
+          q.items.forEach((item, idx) => {
+            total += item.points;
+            const s = scores[`${q.id}-${idx}`];
+            if (s !== undefined) gained += s;
+          });
+          acc.push({
+            question: `${q.id}. ${q.question}`,
+            answerLabel: `${gained} / ${total}`,
+            score: gained,
+          });
+        }
+        return acc;
+      }, []),
+    [scores],
+  );
 
   return (
     <div className="container mx-auto px-4">
@@ -383,31 +414,7 @@ const Page = () => {
                 </div>
 
                 <AnswerDetailList
-                  items={questions.reduce<AnswerDetailItem[]>((acc, q) => {
-                    if (q.type === 'fluency') {
-                      const picked = q.items.findIndex((_, idx) => scores[`${q.id}-${idx}`] !== undefined && scores[`${q.id}-${idx}`] > 0);
-                      const selected = picked >= 0 ? q.items[picked] : null;
-                      acc.push({
-                        question: `${q.id}. ${q.question}`,
-                        answerLabel: selected ? selected.question : '未作答',
-                        score: selected ? selected.points : 0,
-                      });
-                    } else {
-                      let gained = 0;
-                      let total = 0;
-                      q.items.forEach((item, idx) => {
-                        total += item.points;
-                        const s = scores[`${q.id}-${idx}`];
-                        if (s !== undefined) gained += s;
-                      });
-                      acc.push({
-                        question: `${q.id}. ${q.question}`,
-                        answerLabel: `${gained} / ${total}`,
-                        score: gained,
-                      });
-                    }
-                    return acc;
-                  }, [])}
+                  items={detailItems}
                   totalLabel={`總分 ${totalScore ?? 0} / 30`}
                 />
 
@@ -444,9 +451,29 @@ const Page = () => {
             </div>
 
             <FooterComponent>
-              <CloseComponent className="w-full bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium py-2 px-4 rounded">
-                關閉
-              </CloseComponent>
+              <div className="flex flex-wrap gap-2">
+                <CopyResultButton
+                  title="SLUMS 聖路易大學心智狀態測驗結果"
+                  summary={[
+                    `總分：${totalScore ?? 0} / 30`,
+                    hasHighSchool === null ? '' : `教育程度：${hasHighSchool ? '高中（含）以上' : '高中以下'}`,
+                    totalScore !== null && hasHighSchool !== null
+                      ? `判讀：${getSeverity(totalScore, hasHighSchool)}`
+                      : '',
+                    totalScore !== null && hasHighSchool !== null
+                      ? getInterpretation(totalScore, hasHighSchool)
+                      : '',
+                  ]
+                    .filter(Boolean)
+                    .join('\n')}
+                  groups={[
+                    { title: '各題作答明細', items: detailItems, totalLabel: `總分 ${totalScore ?? 0} / 30` },
+                  ]}
+                />
+                <CloseComponent className="bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium py-2 px-4 rounded">
+                  關閉
+                </CloseComponent>
+              </div>
             </FooterComponent>
           </ContentComponent>
         </Content>

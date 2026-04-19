@@ -4,6 +4,7 @@ import SEOHead from '@/components/SEOHead';
 import { questionnaireSEO } from '@/lib/seo-config';
 import { useResponsiveDialog } from '@/hooks/useResponsiveDialog';
 import ShareButton from '@/components/ShareButton';
+import CopyResultButton from '@/components/CopyResultButton';
 
 const stages = [
   {
@@ -307,9 +308,38 @@ const Page = () => {
             </div>
 
             <FooterComponent>
-              <CloseComponent className="w-full bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium py-2 px-4 rounded">
-                關閉
-              </CloseComponent>
+              <div className="flex flex-wrap gap-2">
+                <CopyResultButton
+                  title="FAST 功能性評估分級量表結果"
+                  summary={[
+                    selectedStage !== null
+                      ? `階段：第 ${selectedStage} 期${selectedSubStage ? `（${selectedSubStage}）` : ''}`
+                      : '',
+                    getSelectedStageDetails() ? `分級：${getSelectedStageDetails()?.severity}` : '',
+                    getSelectedStageDetails() ? `功能狀態：${getSelectedStageDetails()?.description}` : '',
+                    selectedStage !== null ? getInterpretation(selectedStage) : '',
+                  ]
+                    .filter(Boolean)
+                    .join('\n')}
+                  groups={[
+                    {
+                      title: '各題作答明細',
+                      items: [
+                        {
+                          question: 'FAST 功能階段',
+                          answerLabel: selectedStage !== null
+                            ? `第 ${selectedStage} 期${selectedSubStage ? `（${selectedSubStage}）` : ''} - ${getSelectedStageDetails()?.severity ?? ''}`
+                            : '未作答',
+                          score: selectedStage ?? undefined,
+                        },
+                      ],
+                    },
+                  ]}
+                />
+                <CloseComponent className="bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium py-2 px-4 rounded">
+                  關閉
+                </CloseComponent>
+              </div>
             </FooterComponent>
           </ContentComponent>
         </Content>

@@ -1,8 +1,9 @@
 "use client"
-import { useEffect, useState } from 'react';
+import { useMemo, useState } from 'react';
 import useQuestionnaireForm from '@/hooks/useQuestionnaireForm';
 import { useResponsiveDialog } from '@/hooks/useResponsiveDialog';
 import ShareButton from '@/components/ShareButton';
+import CopyResultButton from '@/components/CopyResultButton';
 import SEOHead from '@/components/SEOHead';
 import { questionnaireSEO } from '@/lib/seo-config';
 import AnswerDetailList, { AnswerDetailItem } from '@/components/AnswerDetailList';
@@ -89,6 +90,20 @@ const Page = () => {
   };
 
   const validationMessage = customValidationMessage || hookValidationMessage;
+
+  const detailItems = useMemo<AnswerDetailItem[]>(
+    () =>
+      questions.map((q, i) => {
+        const v = answers[i];
+        const n = v !== null && v !== '' ? parseInt(v, 10) : null;
+        return {
+          question: q,
+          answerLabel: n !== null ? optionLabels[n] : '未作答',
+          score: n ?? 0,
+        };
+      }),
+    [answers],
+  );
 
   const handleAnswerChange = (index: number, value: string) => {
     handleSelectChange(index, value);
@@ -222,15 +237,7 @@ const Page = () => {
                 </div>
 
                 <AnswerDetailList
-                  items={questions.map<AnswerDetailItem>((q, i) => {
-                    const v = answers[i];
-                    const n = v !== null && v !== '' ? parseInt(v, 10) : null;
-                    return {
-                      question: q,
-                      answerLabel: n !== null ? optionLabels[n] : '未作答',
-                      score: n ?? 0,
-                    };
-                  })}
+                  items={detailItems}
                   totalLabel={`總分 ${score ?? 0} / 27`}
                 />
 
@@ -255,9 +262,24 @@ const Page = () => {
             </div>
 
             <FooterComponent>
-              <CloseComponent className="w-full bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium py-2 px-4 rounded">
-                關閉
-              </CloseComponent>
+              <div className="flex flex-wrap gap-2">
+                <CopyResultButton
+                  title="PHQ-9 憂鬱症篩檢結果"
+                  summary={[
+                    `總分：${score ?? 0} / 27`,
+                    `判讀：${getSeverity(score)}`,
+                    getInterpretation(score),
+                  ]
+                    .filter(Boolean)
+                    .join('\n')}
+                  groups={[
+                    { title: '各題作答明細', items: detailItems, totalLabel: `總分 ${score ?? 0} / 27` },
+                  ]}
+                />
+                <CloseComponent className="bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium py-2 px-4 rounded">
+                  關閉
+                </CloseComponent>
+              </div>
             </FooterComponent>
           </ContentComponent>
         </Content>

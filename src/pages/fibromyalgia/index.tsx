@@ -5,6 +5,7 @@ import SEOHead from "@/components/SEOHead";
 import { questionnaireSEO } from "@/lib/seo-config";
 import { useResponsiveDialog } from "@/hooks/useResponsiveDialog";
 import ShareButton from "@/components/ShareButton";
+import CopyResultButton from "@/components/CopyResultButton";
 import AnswerDetailList, { AnswerDetailItem } from "@/components/AnswerDetailList";
 import { Button } from "@/components/ui/button";
 import FibroBodyMap from "./body-map";
@@ -475,6 +476,22 @@ function FibroResult(props: FibroResultProps) {
 
           <FooterComponent>
             <div className="flex flex-wrap gap-2">
+              <CopyResultButton
+                title="纖維肌痛症 (ACR 2016) 評估結果"
+                summary={[
+                  `FS：${score.fs} / 31`,
+                  `判讀：${score.meetsDx ? "符合 ACR 2016 診斷準則" : "不符合 ACR 2016 診斷準則"}`,
+                  `${nhiCallout.title}：${nhiCallout.body}`,
+                  `WPI：${score.wpi} / 19  SSS：${score.sss} / 12  NRS：${score.nrs} / 10  疼痛區域數：${score.regionsWithPain} / 5`,
+                ].join("\n")}
+                groups={[
+                  { title: "WPI 疼痛部位明細", items: wpiItems, totalLabel: `勾選 ${score.wpi} 項` },
+                  { title: "SSS 核心症狀 (過去 1 週)", items: sssCoreItems, totalLabel: `小計 ${sssCoreTotal} 分` },
+                  { title: "SSS 身體症狀 (過去 6 個月)", items: sssSomaticItems, totalLabel: `小計 ${sssSomaticTotal} 分` },
+                  { title: "症狀持續時間", items: durationItem },
+                  { title: "疼痛強度 (NRS)", items: nrsItem },
+                ]}
+              />
               <ShareButton
                 title="纖維肌痛症 (ACR 2016) 評估結果"
                 text={`FS ${score.fs}/31，WPI ${score.wpi}，SSS ${score.sss}，NRS ${score.nrs}`}

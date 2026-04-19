@@ -1,11 +1,12 @@
 "use client"
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import SEOHead from '@/components/SEOHead';
 import { questionnaireSEO } from '@/lib/seo-config';
 import useQuestionnaireForm from '@/hooks/useQuestionnaireForm';
 import Pagination from '@/hooks/Pagination';
 import { useResponsiveDialog } from '@/hooks/useResponsiveDialog';
 import ShareButton from '@/components/ShareButton';
+import CopyResultButton from '@/components/CopyResultButton';
 import AnswerDetailList, { AnswerDetailItem } from '@/components/AnswerDetailList';
 
 const optionLabels = ["從不", "很少", "有時", "常常", "非常頻繁"];
@@ -133,6 +134,21 @@ const ASRSForm: React.FC = () => {
   const { partAScores, partBScores } = calculateScores();
   const resultA = getADHDLikelihood(partAScores);
   const resultB = getADHDLikelihood(partBScores);
+
+  const detailItems = useMemo<AnswerDetailItem[]>(
+    () =>
+      questions.map((q, i) => {
+        const v = answers[i];
+        const n = v !== null && v !== '' ? parseInt(v, 10) : null;
+        return {
+          question: q,
+          answerLabel: n !== null ? optionLabels[n] : '未作答',
+          score: n ?? 0,
+          note: i < 9 ? 'A部分（不專心）' : 'B部分（過動/衝動）',
+        };
+      }),
+    [answers],
+  );
 
   const validationMessage = customValidationMessage || hookValidationMessage;
 
@@ -305,16 +321,7 @@ const ASRSForm: React.FC = () => {
                 </div>
                 
                 <AnswerDetailList
-                  items={questions.map<AnswerDetailItem>((q, i) => {
-                    const v = answers[i];
-                    const n = v !== null && v !== '' ? parseInt(v, 10) : null;
-                    return {
-                      question: q,
-                      answerLabel: n !== null ? optionLabels[n] : '未作答',
-                      score: n ?? 0,
-                      note: i < 9 ? 'A部分（不專心）' : 'B部分（過動/衝動）',
-                    };
-                  })}
+                  items={detailItems}
                   totalLabel={`A ${partAScores} / 36，B ${partBScores} / 36`}
                 />
 
@@ -349,9 +356,21 @@ const ASRSForm: React.FC = () => {
             </div>
 
             <FooterComponent>
-              <CloseComponent className="w-full bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium py-2 px-4 rounded">
-                關閉
-              </CloseComponent>
+              <div className="flex flex-wrap gap-2">
+                <CopyResultButton
+                  title="ASRS 成人ADHD評估結果"
+                  summary={[
+                    `A部分（不專心）：${partAScores} / 36 - ${resultA.replace('😲', '').replace('🤔', '').replace('🙂', '').trim()}`,
+                    `B部分（過動/衝動）：${partBScores} / 36 - ${resultB.replace('😲', '').replace('🤔', '').replace('🙂', '').trim()}`,
+                  ].join('\n')}
+                  groups={[
+                    { title: '各題作答明細', items: detailItems, totalLabel: `A ${partAScores} / 36，B ${partBScores} / 36` },
+                  ]}
+                />
+                <CloseComponent className="bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium py-2 px-4 rounded">
+                  關閉
+                </CloseComponent>
+              </div>
             </FooterComponent>
           </ContentComponent>
         </Content>

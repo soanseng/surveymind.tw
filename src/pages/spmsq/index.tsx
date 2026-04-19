@@ -1,9 +1,10 @@
 "use client"
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import SEOHead from '@/components/SEOHead';
 import { questionnaireSEO } from '@/lib/seo-config';
 import { useResponsiveDialog } from '@/hooks/useResponsiveDialog';
 import ShareButton from '@/components/ShareButton';
+import CopyResultButton from '@/components/CopyResultButton';
 import AnswerDetailList, { AnswerDetailItem } from '@/components/AnswerDetailList';
 
 const questions = [
@@ -123,7 +124,7 @@ const Page = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const unansweredQuestions = getUnansweredQuestions();
-    
+
     if (unansweredQuestions.length > 0) {
       if (unansweredQuestions.length > 5) {
         setValidationMessage(`還有 ${unansweredQuestions.length} 題尚未評分，請為所有題目標記正確或錯誤後再提交。`);
@@ -132,13 +133,28 @@ const Page = () => {
       }
       return;
     }
-    
+
     const errors = correctness.filter(c => c === false).length;
     setErrorCount(errors);
     setFormSubmitted(true);
     setValidationMessage('');
     setOpen(true);
   };
+
+  const detailItems = useMemo<AnswerDetailItem[]>(
+    () =>
+      questions.map((q, i) => {
+        const c = correctness[i];
+        const resp = answers[i];
+        return {
+          question: q.question,
+          answerLabel: c === true ? '✓ 正確' : c === false ? '✗ 錯誤' : '未評分',
+          score: c === null ? '' : (c ? '正確' : '錯誤'),
+          note: resp ? `回答：${resp}` : undefined,
+        };
+      }),
+    [answers, correctness],
+  );
 
   return (
     <div className="container mx-auto px-4">
@@ -291,16 +307,7 @@ const Page = () => {
                 </div>
 
                 <AnswerDetailList
-                  items={questions.map<AnswerDetailItem>((q, i) => {
-                    const c = correctness[i];
-                    const resp = answers[i];
-                    return {
-                      question: q.question,
-                      answerLabel: c === true ? '✓ 正確' : c === false ? '✗ 錯誤' : '未評分',
-                      score: c === null ? '' : (c ? '正確' : '錯誤'),
-                      note: resp ? `回答：${resp}` : undefined,
-                    };
-                  })}
+                  items={detailItems}
                   totalLabel={`錯誤 ${errorCount ?? 0} 題 / 10`}
                 />
 
@@ -326,9 +333,24 @@ const Page = () => {
             </div>
 
             <FooterComponent>
-              <CloseComponent className="w-full bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium py-2 px-4 rounded">
-                關閉
-              </CloseComponent>
+              <div className="flex flex-wrap gap-2">
+                <CopyResultButton
+                  title="SPMSQ 簡易認知功能評估結果"
+                  summary={[
+                    `錯誤題數：${errorCount ?? 0} / 10`,
+                    errorCount !== null ? `判讀：${getSeverity(errorCount)}` : '',
+                    errorCount !== null ? getInterpretation(errorCount) : '',
+                  ]
+                    .filter(Boolean)
+                    .join('\n')}
+                  groups={[
+                    { title: '各題作答明細', items: detailItems, totalLabel: `錯誤 ${errorCount ?? 0} 題 / 10` },
+                  ]}
+                />
+                <CloseComponent className="bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium py-2 px-4 rounded">
+                  關閉
+                </CloseComponent>
+              </div>
             </FooterComponent>
           </ContentComponent>
         </Content>

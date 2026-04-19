@@ -1,5 +1,5 @@
 "use client"
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import SEOHead from '@/components/SEOHead';
 import { questionnaireSEO } from '@/lib/seo-config';
 import useQuestionnaireForm from '@/hooks/useQuestionnaireForm';
@@ -13,6 +13,7 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import ShareButton from '@/components/ShareButton';
+import CopyResultButton from '@/components/CopyResultButton';
 import { Button } from '@/components/ui/button';
 import AnswerDetailList, { AnswerDetailItem } from '@/components/AnswerDetailList';
 
@@ -95,6 +96,19 @@ const Page = () => {
     handleSelectChange(index, value);
     setCustomValidationMessage('');
   };
+
+  const detailItems = useMemo<AnswerDetailItem[]>(
+    () =>
+      questions.map((q, i) => {
+        const v = answers[i];
+        return {
+          question: q,
+          answerLabel: v !== null && v !== '' ? answerLabels[v] : '未作答',
+          score: v === '1' ? 1 : 0,
+        };
+      }),
+    [answers],
+  );
 
   return (
     <div className="container mx-auto px-4">
@@ -226,14 +240,7 @@ const Page = () => {
                 </div>
 
                 <AnswerDetailList
-                  items={questions.map<AnswerDetailItem>((q, i) => {
-                    const v = answers[i];
-                    return {
-                      question: q,
-                      answerLabel: v !== null && v !== '' ? answerLabels[v] : '未作答',
-                      score: v === '1' ? 1 : 0,
-                    };
-                  })}
+                  items={detailItems}
                   totalLabel={`總分 ${score ?? 0} / 8`}
                 />
 
@@ -258,9 +265,24 @@ const Page = () => {
             </div>
 
             <FooterComponent>
-              <CloseComponent className="w-full bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium py-2 px-4 rounded">
-                關閉
-              </CloseComponent>
+              <div className="flex flex-wrap gap-2">
+                <CopyResultButton
+                  title="AD-8 認知功能篩檢結果"
+                  summary={[
+                    `總分：${score ?? 0} / 8`,
+                    `判讀：${getSeverity(score)}`,
+                    getInterpretation(score),
+                  ]
+                    .filter(Boolean)
+                    .join('\n')}
+                  groups={[
+                    { title: '各題作答明細', items: detailItems, totalLabel: `總分 ${score ?? 0} / 8` },
+                  ]}
+                />
+                <CloseComponent className="bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium py-2 px-4 rounded">
+                  關閉
+                </CloseComponent>
+              </div>
             </FooterComponent>
           </ContentComponent>
         </Content>

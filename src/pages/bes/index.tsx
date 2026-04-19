@@ -1,9 +1,10 @@
 "use client";
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import SEOHead from '@/components/SEOHead';
 import { questionnaireSEO } from '@/lib/seo-config';
 import { useResponsiveDialog } from '@/hooks/useResponsiveDialog';
 import ShareButton from '@/components/ShareButton';
+import CopyResultButton from '@/components/CopyResultButton';
 import AnswerDetailList, { AnswerDetailItem } from '@/components/AnswerDetailList';
 
 // BES Questions with weighted options
@@ -246,6 +247,20 @@ const Page = () => {
   const completedQuestions = Object.keys(answers).length;
   const totalQuestions = questions.length;
 
+  const detailItems = useMemo<AnswerDetailItem[]>(
+    () =>
+      questions.map((q) => {
+        const v = answers[q.id];
+        const opt = v !== undefined ? q.options.find(o => o.value === v) : undefined;
+        return {
+          question: q.chinese,
+          answerLabel: opt ? opt.chinese : '未作答',
+          score: v ?? 0,
+        };
+      }),
+    [answers],
+  );
+
   return (
     <div className="container mx-auto px-4">
       <SEOHead config={questionnaireSEO["bes"]} path="/bes" />
@@ -380,15 +395,7 @@ const Page = () => {
                 </div>
 
                 <AnswerDetailList
-                  items={questions.map<AnswerDetailItem>((q) => {
-                    const v = answers[q.id];
-                    const opt = v !== undefined ? q.options.find(o => o.value === v) : undefined;
-                    return {
-                      question: q.chinese,
-                      answerLabel: opt ? opt.chinese : '未作答',
-                      score: v ?? 0,
-                    };
-                  })}
+                  items={detailItems}
                   totalLabel={`總分 ${score ?? 0} / 46`}
                 />
 
@@ -434,9 +441,24 @@ const Page = () => {
             </div>
 
             <FooterComponent>
-              <CloseComponent className="w-full bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium py-2 px-4 rounded">
-                關閉
-              </CloseComponent>
+              <div className="flex flex-wrap gap-2">
+                <CopyResultButton
+                  title="BES 暴食量表結果"
+                  summary={[
+                    `總分：${score ?? 0} / 46`,
+                    `判讀：${getSeverity(score ?? 0)}`,
+                    getInterpretation(score ?? 0),
+                  ]
+                    .filter(Boolean)
+                    .join('\n')}
+                  groups={[
+                    { title: '各題作答明細', items: detailItems, totalLabel: `總分 ${score ?? 0} / 46` },
+                  ]}
+                />
+                <CloseComponent className="bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium py-2 px-4 rounded">
+                  關閉
+                </CloseComponent>
+              </div>
             </FooterComponent>
           </ContentComponent>
         </Content>

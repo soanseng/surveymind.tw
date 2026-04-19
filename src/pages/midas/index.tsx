@@ -5,6 +5,7 @@ import SEOHead from "@/components/SEOHead";
 import { questionnaireSEO } from "@/lib/seo-config";
 import { useResponsiveDialog } from "@/hooks/useResponsiveDialog";
 import ShareButton from "@/components/ShareButton";
+import CopyResultButton from "@/components/CopyResultButton";
 import AnswerDetailList, { AnswerDetailItem } from "@/components/AnswerDetailList";
 import { Button } from "@/components/ui/button";
 
@@ -263,6 +264,19 @@ export default function MidasPage() {
 
                 <FooterComponent>
                   <div className="flex flex-wrap gap-2">
+                    <CopyResultButton
+                      title="MIDAS 偏頭痛失能評估結果"
+                      summary={[
+                        `MIDAS 總分：${total}`,
+                        `失能等級：Grade ${gradeInfo.grade} — ${gradeInfo.label}`,
+                        `頭痛總天數 (Q A)：${headacheDays ?? "-"} 天`,
+                        `平均 NRS (Q B)：${nrs ?? "-"} / 10`,
+                      ].join("\n")}
+                      groups={[
+                        { title: "MIDAS 第 1–5 題", items: detailItems, totalLabel: `總分 ${total} 分` },
+                        { title: "附帶記錄 (Q A / Q B)", items: companionItems },
+                      ]}
+                    />
                     <ShareButton
                       title="MIDAS 偏頭痛失能評估結果"
                       text={`MIDAS ${total} 分 (Grade ${gradeInfo.grade} ${gradeInfo.label})，頭痛 ${headacheDays ?? "-"} 天，NRS ${nrs ?? "-"}/10`}

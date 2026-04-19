@@ -1,11 +1,12 @@
 "use client"
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import SEOHead from '@/components/SEOHead';
 import { questionnaireSEO } from '@/lib/seo-config';
 import useQuestionnaireForm from '@/hooks/useQuestionnaireForm';
 import Pagination from '@/hooks/Pagination';
 import { useResponsiveDialog } from '@/hooks/useResponsiveDialog';
 import ShareButton from '@/components/ShareButton';
+import CopyResultButton from '@/components/CopyResultButton';
 import AnswerDetailList, { AnswerDetailItem } from '@/components/AnswerDetailList';
 
 const optionLabels = ["完全沒有", "有一點點", "還算不少", "非常的多"];
@@ -158,6 +159,22 @@ const SNAP4Form: React.FC = () => {
   const inattentionResult = interpretScore(inattentionScores, 'inattention');
   const hyperactivityImpulsivityResult = interpretScore(hyperactivityImpulsivityScores, 'hyperactivityImpulsivity');
   const oppositionalDefiantResult = interpretScore(oppositionalDefiantScores, 'oppositionalDefiant');
+
+  const detailItems = useMemo<AnswerDetailItem[]>(
+    () =>
+      questions.map((q, i) => {
+        const v = answers[i];
+        const n = v !== null && v !== '' ? parseInt(v, 10) : null;
+        const section = i < 9 ? '注意力不足' : i < 18 ? '過動/衝動' : '對立反抗';
+        return {
+          question: q,
+          answerLabel: n !== null ? optionLabels[n] : '未作答',
+          score: n ?? 0,
+          note: section,
+        };
+      }),
+    [answers],
+  );
 
   const validationMessage = customValidationMessage || hookValidationMessage;
 
@@ -348,17 +365,7 @@ const SNAP4Form: React.FC = () => {
                 </div>
                 
                 <AnswerDetailList
-                  items={questions.map<AnswerDetailItem>((q, i) => {
-                    const v = answers[i];
-                    const n = v !== null && v !== '' ? parseInt(v, 10) : null;
-                    const section = i < 9 ? '注意力不足' : i < 18 ? '過動/衝動' : '對立反抗';
-                    return {
-                      question: q,
-                      answerLabel: n !== null ? optionLabels[n] : '未作答',
-                      score: n ?? 0,
-                      note: section,
-                    };
-                  })}
+                  items={detailItems}
                   totalLabel={`注意力 ${inattentionScores}，過動 ${hyperactivityImpulsivityScores}，對立 ${oppositionalDefiantScores}`}
                 />
 
@@ -407,9 +414,22 @@ const SNAP4Form: React.FC = () => {
             </div>
 
             <FooterComponent>
-              <CloseComponent className="w-full bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium py-2 px-4 rounded">
-                關閉
-              </CloseComponent>
+              <div className="flex flex-wrap gap-2">
+                <CopyResultButton
+                  title="SNAP-IV 兒童ADHD評估結果"
+                  summary={[
+                    `注意力不足：${inattentionScores} / 27 - ${inattentionResult}`,
+                    `過動/衝動：${hyperactivityImpulsivityScores} / 27 - ${hyperactivityImpulsivityResult}`,
+                    `對立反抗：${oppositionalDefiantScores} / 24 - ${oppositionalDefiantResult}`,
+                  ].join('\n')}
+                  groups={[
+                    { title: '各題作答明細', items: detailItems, totalLabel: `注意力 ${inattentionScores}，過動 ${hyperactivityImpulsivityScores}，對立 ${oppositionalDefiantScores}` },
+                  ]}
+                />
+                <CloseComponent className="bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium py-2 px-4 rounded">
+                  關閉
+                </CloseComponent>
+              </div>
             </FooterComponent>
           </ContentComponent>
         </Content>

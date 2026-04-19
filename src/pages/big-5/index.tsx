@@ -1,11 +1,13 @@
 "use client"
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import SEOHead from '@/components/SEOHead';
 import { questionnaireSEO } from '@/lib/seo-config';
 import useQuestionnaireForm from '@/hooks/useQuestionnaireForm';
 import Pagination from '@/hooks/Pagination';
 import { ScrollArea } from '@radix-ui/react-scroll-area';
 import ShareButton from '@/components/ShareButton';
+import CopyResultButton from '@/components/CopyResultButton';
+import { AnswerDetailItem } from '@/components/AnswerDetailList';
 import AnatomeePromo from '@/components/AnatomeePromo';
 import { useResponsiveDialog } from '@/hooks/useResponsiveDialog';
 import { BIG_FIVE_DIMENSIONS, computeBigFiveScore } from './scoring';
@@ -222,6 +224,46 @@ const Page = () => {
   const totalAnswered = answers.filter(answer => answer !== null && answer !== '').length;
   const overallProgress = (totalAnswered / questions.length) * 100;
 
+  const detailItems = useMemo<AnswerDetailItem[]>(() => {
+    const dimensionOfIndex: Record<number, string> = {};
+    Object.entries(BIG_FIVE_DIMENSIONS).forEach(([dim, indexes]) => {
+      indexes.forEach((idx) => {
+        dimensionOfIndex[idx] = dim;
+      });
+    });
+    const dimensionLabels: Record<string, string> = {
+      extraversion: '外向性',
+      agreeableness: '友善性',
+      conscientiousness: '嚴謹性',
+      neuroticism: '神經質',
+      openness: '開放性',
+    };
+    const optionLabels = ["完全不同意", "有點不同意", "不太同意也不否認", "有點同意", "完全同意"];
+    return questions.map((q, i) => {
+      const v = answers[i];
+      const n = v !== null && v !== '' ? parseInt(v, 10) : null;
+      const dim = dimensionOfIndex[i];
+      return {
+        question: `我認為我是(有)...${q}`,
+        answerLabel: n !== null ? optionLabels[n - 1] ?? String(n) : '未作答',
+        score: n ?? 0,
+        note: dim ? dimensionLabels[dim] : undefined,
+      };
+    });
+  }, [answers]);
+
+  const copySummary = useMemo(() => {
+    if (!score) return '';
+    const maxFor = (dim: keyof typeof BIG_FIVE_DIMENSIONS) => BIG_FIVE_DIMENSIONS[dim].length * 5;
+    return [
+      `外向性 vs 內向性：${score.extraversion} / ${maxFor('extraversion')}`,
+      `友善性 vs 獨立性：${score.agreeableness} / ${maxFor('agreeableness')}`,
+      `嚴謹性 vs 靈活性：${score.conscientiousness} / ${maxFor('conscientiousness')}`,
+      `神經質 vs 情緒穩定性：${score.neuroticism} / ${maxFor('neuroticism')}`,
+      `開放性 vs 實用性：${score.openness} / ${maxFor('openness')}`,
+    ].join('\n');
+  }, [score]);
+
   return (
     <div className="container mx-auto px-4">
       <SEOHead config={questionnaireSEO["big-5"]} path="/big-5" />
@@ -435,9 +477,18 @@ const Page = () => {
             </div>
 
             <FooterComponent>
-              <CloseComponent className="w-full bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium py-2 px-4 rounded">
-                關閉
-              </CloseComponent>
+              <div className="flex flex-wrap gap-2">
+                <CopyResultButton
+                  title="大五人格評估結果"
+                  summary={copySummary}
+                  groups={[
+                    { title: '各題作答明細', items: detailItems },
+                  ]}
+                />
+                <CloseComponent className="bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium py-2 px-4 rounded">
+                  關閉
+                </CloseComponent>
+              </div>
             </FooterComponent>
           </ContentComponent>
         </Content>
