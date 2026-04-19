@@ -406,20 +406,6 @@ function FibroResult(props: FibroResultProps) {
           <DescriptionComponent>FS = WPI + SSS，範圍 0–31</DescriptionComponent>
         </HeaderComponent>
 
-        {/* Print-only clinic header */}
-        <div className="print-header hidden print:block mb-6">
-          <h1 className="text-lg font-bold">台中文心樂丞、理解身心診所</h1>
-          <p className="text-sm">纖維肌痛症 (ACR 2016 WPI+SSS) 結果</p>
-          <p className="text-xs text-gray-600">
-            作答日期：{new Date().toLocaleDateString("zh-TW")}
-          </p>
-          <span className="print-section-label">病患基本資料</span>
-          <div className="text-xs leading-7">
-            <p>姓名：_______________ 病歷號：_______________</p>
-          </div>
-          <span className="print-section-label">量表結果</span>
-        </div>
-
         <div className="space-y-4 p-2 sm:p-4">
           {/* Hero card */}
           <div className={`border-4 ${heroBorder} rounded-lg p-4 text-center`}>
@@ -469,7 +455,6 @@ function FibroResult(props: FibroResultProps) {
           </p>
 
           {/* Answer details */}
-          <span className="print-section-label">各題作答明細</span>
           <AnswerDetailList
             items={wpiItems}
             title="WPI 疼痛部位明細"
@@ -489,7 +474,7 @@ function FibroResult(props: FibroResultProps) {
           <AnswerDetailList items={nrsItem} title="疼痛強度 (NRS)" />
 
           <FooterComponent>
-            <div className="flex flex-wrap gap-2 print:hidden">
+            <div className="flex flex-wrap gap-2">
               <ShareButton
                 title="纖維肌痛症 (ACR 2016) 評估結果"
                 text={`FS ${score.fs}/31，WPI ${score.wpi}，SSS ${score.sss}，NRS ${score.nrs}`}
@@ -497,15 +482,6 @@ function FibroResult(props: FibroResultProps) {
               <CloseComponent>關閉</CloseComponent>
             </div>
           </FooterComponent>
-
-          {/* Print-only footer */}
-          <div className="print-footer hidden print:block">
-            <strong>台中文心樂丞、理解身心診所</strong> · 陳璿丞醫師
-            <br />
-            報告由 surveymind.tw 產生 · anatomind.com · anxiety.com.tw
-            <br />
-            本結果僅供臨床參考，不構成診斷。最終診斷請由專科醫師判斷。
-          </div>
         </div>
       </ContentComponent>
     </Content>

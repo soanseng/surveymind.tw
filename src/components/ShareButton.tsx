@@ -54,7 +54,7 @@ const ShareButton: React.FC<ShareButtonProps> = ({ title, text, url }) => {
   };
 
   return (
-    <div className="print:hidden">
+    <div>
       <Button
         variant="link"
         onClick={() => window.open("https://lin.ee/4iRHvdC", "_blank")}
