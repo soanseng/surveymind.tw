@@ -229,38 +229,10 @@
     display: none !important;
   }
 
-  /* Radix Dialog + vaul Drawer portal content into document.body.
-     Neutralize their overlays and fixed positioning so result content
-     flows as a normal A4 document. */
-  [data-radix-portal],
-  [data-radix-dialog-portal],
-  [vaul-drawer-wrapper] {
-    all: unset !important;
-    display: contents !important;
-  }
-
   [data-radix-dialog-overlay],
   [vaul-overlay],
   [data-vaul-overlay] {
     display: none !important;
-  }
-
-  [data-print-root],
-  [data-radix-dialog-content],
-  [vaul-drawer] {
-    all: unset !important;
-    display: block !important;
-    position: static !important;
-    max-height: none !important;
-    max-width: none !important;
-    width: 100% !important;
-    height: auto !important;
-    overflow: visible !important;
-    box-shadow: none !important;
-    border: none !important;
-    background: white !important;
-    transform: none !important;
-    inset: auto !important;
   }
 
   @page {
@@ -272,6 +244,54 @@
     background: white !important;
     color: black !important;
     font-size: 11pt;
+  }
+
+  body[data-print-mode="true"] * {
+    visibility: hidden !important;
+  }
+
+  body[data-print-mode="true"] [data-print-host="true"],
+  body[data-print-mode="true"] [data-print-host="true"] * {
+    visibility: visible !important;
+  }
+
+  body[data-print-mode="true"] [data-print-host="true"] {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    inset: auto !important;
+    width: 100% !important;
+    min-height: 100vh !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: visible !important;
+    box-sizing: border-box !important;
+    background: white !important;
+    border: none !important;
+    box-shadow: none !important;
+    transform: none !important;
+    z-index: 2147483647 !important;
+  }
+
+  body[data-print-mode="true"] [data-print-host="true"] > * {
+    display: block !important;
+    position: static !important;
+    max-width: none !important;
+    max-height: none !important;
+    width: 100% !important;
+    height: auto !important;
+    margin: 0 !important;
+    padding: 0 15mm !important;
+    overflow: visible !important;
+    box-sizing: border-box !important;
+    background: white !important;
+    border: none !important;
+    box-shadow: none !important;
+    transform: none !important;
+  }
+
+  body[data-print-mode="true"] .print\:hidden {
+    display: none !important;
   }
 
   /* Each answer item stays together on one page */

@@ -12,12 +12,9 @@ export default function PrintButton({
   label = "下載 PDF 給醫師",
   className = "",
 }: PrintButtonProps) {
-  const handlePrint = () => {
+  const handlePrint = (trigger: HTMLElement) => {
     if (typeof window !== "undefined") {
-      const container =
-        document.activeElement instanceof HTMLElement
-          ? document.activeElement.closest<HTMLElement>("[data-print-root]")
-          : null;
+      const container = trigger.closest<HTMLElement>("[data-print-root]");
 
       if (container) {
         printElement(container);
@@ -32,7 +29,7 @@ export default function PrintButton({
     <Button
       type="button"
       variant="outline"
-      onClick={handlePrint}
+      onClick={(event) => handlePrint(event.currentTarget)}
       className={`print:hidden ${className}`}
       aria-label={label}
     >
