@@ -37,6 +37,10 @@ export function useResponsiveDialog() {
   const BaseFooterComponent = isDesktop ? DialogFooter : DrawerFooter;
   const BaseCloseComponent =  isDesktop ? DialogClose : DrawerClose;
 
+  // `data-print-root` marks this surface as the print target. src/lib/print.ts
+  // walks up from the PrintButton to the nearest [data-print-root] and clones
+  // that subtree into document.body for printing. Every questionnaire that
+  // uses this hook gets printing for free.
   const ContentComponent = React.useMemo(
     () =>
       React.forwardRef<any, any>(({ className, ...props }, ref) =>

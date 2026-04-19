@@ -218,93 +218,113 @@
 
 /* =============================
    Print stylesheet — 下載 PDF 給醫師
-   Used by /fibromyalgia and /midas result surfaces.
+   Architecture:
+   src/lib/print.ts clones the questionnaire result surface into a
+   [data-print-host] node appended directly to <body>, then sets
+   body[data-print-mode="true"] and calls window.print(). Cross-device
+   correctness (Android Chrome / iPhone Safari / desktop) depends on:
+     - Hiding the clone on screen so users never see it
+     - Hiding every other direct child of <body> in print (React root,
+       Radix portals, Vaul portals) so only the clone prints
+     - Keeping the clone in normal flow (position: static) so iOS
+       Safari paginates it correctly instead of clipping to page 1
+     - Aggressively neutralising modal chrome inherited by the clone
+       (max-height, overflow, transform, fixed positioning)
    ============================= */
+
+/* Clone lives in the DOM while printing; keep it invisible on screen. */
+[data-print-host="true"] {
+  display: none;
+}
+
 @media print {
-  /* Hide app chrome and any element marked print:hidden */
-  header,
-  footer,
-  nav,
-  .print\:hidden {
+  @page {
+    size: A4;
+    margin: 15mm;
+  }
+
+  html,
+  body {
+    background: white !important;
+    color: black !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+
+  body {
+    font-size: 11pt;
+  }
+
+  /* When printing, hide every direct body child except the clone. Using
+     display:none (not visibility) so the hidden subtrees take no layout
+     space — critical for iOS Safari pagination. */
+  body[data-print-mode="true"] > *:not([data-print-host="true"]) {
     display: none !important;
   }
 
+  body[data-print-mode="true"] [data-print-host="true"] {
+    display: block !important;
+    position: static !important;
+    width: 100% !important;
+    max-width: none !important;
+    max-height: none !important;
+    height: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: visible !important;
+    background: white !important;
+    border: none !important;
+    box-shadow: none !important;
+    transform: none !important;
+  }
+
+  /* Neutralise every inherited Tailwind / Radix / Vaul style on the
+     cloned subtree. Without this, iOS Safari honours max-h-[90vh],
+     overflow-y-auto, translate-x-[-50%] etc. and either clips content
+     or drops it off the visible print area. */
+  body[data-print-mode="true"] [data-print-host="true"] * {
+    position: static !important;
+    inset: auto !important;
+    max-height: none !important;
+    height: auto !important;
+    overflow: visible !important;
+    transform: none !important;
+    box-shadow: none !important;
+    filter: none !important;
+    animation: none !important;
+  }
+
+  /* Any lingering overlays that somehow survive the sibling hide. */
   [data-radix-dialog-overlay],
   [vaul-overlay],
   [data-vaul-overlay] {
     display: none !important;
   }
 
-  @page {
-    size: A4;
-    margin: 15mm;
-  }
-
-  body {
-    background: white !important;
-    color: black !important;
-    font-size: 11pt;
-  }
-
-  body[data-print-mode="true"] * {
-    visibility: hidden !important;
-  }
-
-  body[data-print-mode="true"] [data-print-host="true"],
-  body[data-print-mode="true"] [data-print-host="true"] * {
-    visibility: visible !important;
-  }
-
-  body[data-print-mode="true"] [data-print-host="true"] {
-    position: fixed !important;
-    top: 0 !important;
-    left: 0 !important;
-    inset: auto !important;
-    width: 100% !important;
-    min-height: 100vh !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    overflow: visible !important;
-    box-sizing: border-box !important;
-    background: white !important;
-    border: none !important;
-    box-shadow: none !important;
-    transform: none !important;
-    z-index: 2147483647 !important;
-  }
-
-  body[data-print-mode="true"] [data-print-host="true"] > * {
-    display: block !important;
-    position: static !important;
-    max-width: none !important;
-    max-height: none !important;
-    width: 100% !important;
-    height: auto !important;
-    margin: 0 !important;
-    padding: 0 15mm !important;
-    overflow: visible !important;
-    box-sizing: border-box !important;
-    background: white !important;
-    border: none !important;
-    box-shadow: none !important;
-    transform: none !important;
-  }
-
-  body[data-print-mode="true"] .print\:hidden {
+  /* Elements explicitly marked not-for-print (share buttons, close
+     affordances etc.) — both in the live modal and inside the clone. */
+  .print\:hidden {
     display: none !important;
   }
 
-  /* Each answer item stays together on one page */
+  /* Keep each answer item on a single page. */
   .answer-detail-item {
     break-inside: avoid;
   }
 
-  /* Always expand AnswerDetailList in print (override closed state) */
+  /* Always expand AnswerDetailList in print even if collapsed on screen. */
   .answer-detail-print-expand {
     display: block !important;
   }
 
-  /* Print-only header/footer blocks (hidden on screen) */
+  /* Hide the AnswerDetailList collapse button in the printed clone. */
+  body[data-print-mode="true"] [data-print-host="true"] [aria-expanded] {
+    display: none !important;
+  }
+
+  /* Print-only header/footer blocks (hidden on screen via `hidden print:block`). */
   .print-header {
     display: block !important;
   }
@@ -317,7 +337,7 @@
     padding-top: 4mm;
   }
 
-  /* Visual section dividers for doctor parseability */
+  /* Visual section dividers for doctor parseability. */
   .print-section-label {
     display: block !important;
     font-weight: bold;
