@@ -11,47 +11,10 @@
   "lang": "zh-TW",
   "icons": [
     {
-      "src": "/favicon-16x16.png",
-      "sizes": "16x16",
-      "type": "image/png"
-    },
-    {
-      "src": "/favicon-32x32.png", 
-      "sizes": "32x32",
-      "type": "image/png"
-    },
-    {
-      "src": "/apple-touch-icon.png",
-      "sizes": "180x180",
-      "type": "image/png"
-    },
-    {
-      "src": "/android-chrome-192x192.png",
-      "sizes": "192x192", 
-      "type": "image/png",
-      "purpose": "any maskable"
-    },
-    {
-      "src": "/android-chrome-512x512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any maskable"
-    }
-  ],
-  "screenshots": [
-    {
-      "src": "/screenshot-wide.png",
-      "sizes": "1280x720",
-      "type": "image/png",
-      "form_factor": "wide",
-      "label": "心理健康評估平台主頁"
-    },
-    {
-      "src": "/screenshot-narrow.png", 
-      "sizes": "750x1334",
-      "type": "image/png",
-      "form_factor": "narrow",
-      "label": "憂鬱症量表評估頁面"
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
     }
   ],
   "related_applications": [],
@@ -61,22 +24,19 @@
       "name": "憂鬱症評估",
       "short_name": "憂鬱症",
       "description": "快速進行憂鬱症篩檢評估",
-      "url": "/tdq",
-      "icons": [{ "src": "/favicon-96x96.png", "sizes": "96x96" }]
+      "url": "/tdq"
     },
     {
-      "name": "焦慮症評估", 
+      "name": "焦慮症評估",
       "short_name": "焦慮症",
       "description": "快速進行焦慮症篩檢評估",
-      "url": "/gad",
-      "icons": [{ "src": "/favicon-96x96.png", "sizes": "96x96" }]
+      "url": "/gad"
     },
     {
       "name": "睡眠品質評估",
       "short_name": "睡眠",
       "description": "評估睡眠品質和睡眠障礙",
-      "url": "/psqi", 
-      "icons": [{ "src": "/favicon-96x96.png", "sizes": "96x96" }]
+      "url": "/psqi"
     }
   ],
   "scope": "/",
